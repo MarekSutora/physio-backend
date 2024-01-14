@@ -1,29 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity.Data;
-using diploma_thesis_backend.Models.DTO;
 using Microsoft.AspNetCore.Identity;
-using diploma_thesis_backend.Models.Domain;
-using Microsoft.AspNetCore.Http;
 
 namespace diploma_thesis_backend.Controllers
 {
-    public class UsersController : ControllerBase
-    {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-
-        public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    [ApiController]
+    [Route("[controller]")]
+    public class AccountController : ControllerBase
+   
+        public AccountController()
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+
         }
 
-        [HttpPost("register")]
+        [HttpPost]
+        [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
         {
             if (ModelState.IsValid)
@@ -55,12 +47,12 @@ namespace diploma_thesis_backend.Controllers
                     return BadRequest(result.Errors);
                 }
             }
-
             // Invalid model state
             return BadRequest("Invalid user data.");
         }
 
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDto)
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
@@ -81,10 +73,11 @@ namespace diploma_thesis_backend.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("logout")]
+        [HttpPost]
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok();
         }
     }
