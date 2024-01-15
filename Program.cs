@@ -1,8 +1,7 @@
-using DataAccess.Model.Entities;
-using diploma_thesis_backend.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Application;
+using DataAccess;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,44 +12,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Cookie.Name = "MyDiplomaCookie";
-        options.SlidingExpiration = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.LoginPath = "/Account/login";
-        options.LogoutPath = "/Account/logout";
-
-        // Handle redirect manually to prevent redirection to login page
-        options.Events = new CookieAuthenticationEvents
-        {
-            OnRedirectToLogin = context =>
-            {
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            },
-            // Optionally handle other redirects like access denied
-            OnRedirectToAccessDenied = context =>
-            {
-                context.Response.StatusCode = 403;
-                return Task.CompletedTask;
-            }
-        };
-    });
-
-builder.Services.AddAuthorization();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddDataAccess(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("myAllowSpecificOrigins",
+    options.AddPolicy("AllowedOrigins",
                       policy =>
                       {
                           policy.WithOrigins("https://localhost:3000")
@@ -71,7 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("myAllowSpecificOrigins");
+app.UseCors("AllowedOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();

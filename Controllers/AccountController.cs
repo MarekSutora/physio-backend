@@ -1,84 +1,65 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+using Shared.DTO.Auth;
+using Application.Services.Interfaces;
+using Application.Common.Auth;
 
 namespace diploma_thesis_backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class AccountController : ControllerBase
-   
-        public AccountController()
-        {
+    {
+        private readonly IAuthService _authService;
 
+        public AccountController(
+                       IAuthService authService
+                   )
+        {
+            _authService = authService;
         }
 
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Check if the email already exists
-                var existingUser = await _userManager.FindByEmailAsync(registerRequestDto.Email);
-                if (existingUser != null)
-                {
-                    return BadRequest("Email already in use.");
-                }
-
-                // Create a new user
-                var user = new ApplicationUser { 
-                    UserName = registerRequestDto.Email,
-                    Email = registerRequestDto.Email,
-                    Name = "test",
-                    DateCreated = DateTime.Now
-                };
-                var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
-
-                if (result.Succeeded)
-                {
-                    // User creation successful, proceed with additional tasks like sending a confirmation email
-                    return Ok(new { message = "User registered successfully." });
-                }
-                else
-                {
-                    // Return errors (e.g., password complexity)
-                    return BadRequest(result.Errors);
-                }
+                return BadRequest("Invalid user data.");
             }
-            // Invalid model state
-            return BadRequest("Invalid user data.");
+
+            var registrationResult = await _authService.RegisterUserAsync(registerRequestDto);
+
+            return registrationResult switch
+            {
+                RegisterUserResult.Success => Ok(new { message = "User registered successfully." }),
+                RegisterUserResult.EmailAlreadyInUse => BadRequest("Email already in use."),
+                _ => BadRequest("Registration failed."),
+            };
         }
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDto)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
-            if (user != null)
+            var result = await _authService.LoginUserAsync(loginRequestDto);
+
+            if (result.Outcome == LoginUserResult.LoginUserOutcome.Success)
             {
-                var signInResult = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-                if (signInResult)
-                {
-                    var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties
-                    {
-                        IsPersistent = true
-                    });
-                    
-                    return Ok("Successfully logged in.");
-                }
+                return Ok("Successfully logged in.");
             }
-            return Unauthorized();
+            else
+            {
+                return Unauthorized("Login Failed.");
+            }
         }
 
         [HttpPost]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Ok();
+            throw new NotImplementedException();
         }
     }
 }
