@@ -7,7 +7,7 @@ namespace diploma_thesis_backend.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

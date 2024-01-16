@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTO.Auth;
 using Application.Services.Interfaces;
 using Application.Common.Auth;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -47,7 +48,12 @@ namespace diploma_thesis_backend.Controllers
 
             if (result.Outcome == LoginUserResult.LoginUserOutcome.Success)
             {
-                return Ok("Successfully logged in.");
+                return Ok(new
+                {
+                    jwtToken = result.AccessToken,
+                    refreshToken = result.RefreshToken,
+                    expiryDate = result.ExpiryDate
+                });
             }
             else
             {
@@ -55,11 +61,22 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("Logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto refreshTokenRequest)
         {
-            throw new NotImplementedException();
+            var result = await _authService.RefreshTokenAsync(refreshTokenRequest.RefreshToken);
+
+            if (result is null)
+            {
+                return Unauthorized("Invalid refresh token.");
+            }
+
+            return Ok(new
+            {
+                jwtToken = result.AccessToken,
+                refreshToken = result.RefreshToken,
+                expiryDate = result.ExpiryDate
+            });
         }
     }
 }
