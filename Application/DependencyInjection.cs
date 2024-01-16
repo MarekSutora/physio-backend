@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Application.Services.Interfaces;
-using diploma_thesis_backend.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Common.Auth;
 using Application.Services.Implementation;
+using DataAccess;
 
 namespace Application
 {
@@ -24,7 +24,17 @@ namespace Application
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
-            services.AddAuthorization();
+            //add authorization policies for admin and physiotherapist and patient
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("Physiotherapist", policy =>
+                                   policy.RequireRole("Physiotherapist"));
+                options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
+            }
+            );
+
 
             services.AddAuthentication(options =>
             {
@@ -45,7 +55,7 @@ namespace Application
                         ValidIssuer = configuration["JwtSettings:Issuer"],
                         ValidAudience = configuration["JwtSettings:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
-                    };     
+                    };
                 });
         }
     }
