@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class ActivityType
+    public class Blog
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
-        public decimal NormalCost { get; set; }
-        public int Duration { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
     }
 }
