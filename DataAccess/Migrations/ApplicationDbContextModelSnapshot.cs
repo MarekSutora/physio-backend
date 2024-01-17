@@ -22,6 +22,47 @@ namespace diploma_thesis_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("NormalCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityType");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("TempAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("DataAccess.Model.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -29,6 +70,15 @@ namespace diploma_thesis_backend.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -79,6 +129,9 @@ namespace diploma_thesis_backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -87,6 +140,8 @@ namespace diploma_thesis_backend.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -101,16 +156,17 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eed760ae-11a8-4a07-b5c4-662ca13273a5",
+                            Id = "de4d21de-535e-4ff3-a849-7164c971a6cb",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b41c905e-3a50-4939-af29-3697753234af",
+                            Active = false,
+                            ConcurrencyStamp = "e40ed039-2c74-4e5a-98a9-c191e5cc80fe",
                             DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEChaRmf7crCKLhBEDdSGdyJAcVZvZ2Lm2ULKyYohuLdHpzWBcYK1KbmQBwucT/8xhw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPj31FAC487fBEOeXb0BcGkHMRVdfOFFTrXDEj1WnwasLTrQMohzxbEJHks819DwvA==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
@@ -119,16 +175,17 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            Id = "9e7d954e-aa41-4663-b6c1-f405142f43e8",
+                            Id = "afbfb812-6142-45f3-82ad-9d4ea70b6250",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7ef9751e-a615-4e10-95ca-007d856dbd3b",
+                            Active = false,
+                            ConcurrencyStamp = "aa47db27-6a67-45c8-ac6c-de24d01a2dfb",
                             DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@PHYSIOTHERAPIST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJir5d6Cmv20nGn//X/ChvgxsropyTBIuxmfUO8cdGUNp8QzwgeYPmtFPo2ZRTS5FQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECqH5L1+XI11K00bdxkoZkGyP8qgpwVYs4XWZm1h9RyrNt82vLYw4nAodChq+vswqQ==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
@@ -137,22 +194,156 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            Id = "a9f4bc23-cd2b-44aa-8056-09fad4c54fcf",
+                            Id = "6bdb90ef-a318-42f1-8fda-cb714b0b0045",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "09785dab-620d-4c4b-96b2-f3fa8fe50298",
+                            Active = false,
+                            ConcurrencyStamp = "18cba12b-131d-4cdb-9f78-8c71bf57cd25",
                             DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "patient@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@PATIENT.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELIoZbHsiWjpbc1ObfwJGYntSzTXrilMKF3k6GqIWY78VjM7oIwezEBaaee2BkuTCQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEMaKaHboevPWMX68BEhlOVnp6ffOMwJQXgNq88PSreeXuMFgaRuyz3CPF0bUxm4ig==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ActivityTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PatientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityTypeId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Appointment");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Diagnosis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diagnosis");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("EndedWorkingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartedWorkingDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId1");
+
+                    b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.EmployeeType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmployeeType");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Patient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Patient");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -191,7 +382,7 @@ namespace diploma_thesis_backend.Migrations
                         new
                         {
                             Id = "545BBA82-840A-4446-BFF6-64834A8DA52F",
-                            Name = "Physiotherapist",
+                            Name = "Employee",
                             NormalizedName = "PHYSIOTHERAPIST"
                         },
                         new
@@ -291,17 +482,17 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "eed760ae-11a8-4a07-b5c4-662ca13273a5",
+                            UserId = "de4d21de-535e-4ff3-a849-7164c971a6cb",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "9e7d954e-aa41-4663-b6c1-f405142f43e8",
+                            UserId = "afbfb812-6142-45f3-82ad-9d4ea70b6250",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "a9f4bc23-cd2b-44aa-8056-09fad4c54fcf",
+                            UserId = "6bdb90ef-a318-42f1-8fda-cb714b0b0045",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -323,6 +514,50 @@ namespace diploma_thesis_backend.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.Address", "Address")
+                        .WithMany("ApplicationUsers")
+                        .HasForeignKey("AddressId");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Appointment", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.ActivityType", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("ActivityTypeId");
+
+                    b.HasOne("DataAccess.Model.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Employee", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("Employees")
+                        .HasForeignKey("ApplicationUserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Payment", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -374,6 +609,21 @@ namespace diploma_thesis_backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+                {
+                    b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
+                {
+                    b.Navigation("ApplicationUsers");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

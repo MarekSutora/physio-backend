@@ -45,7 +45,7 @@ namespace diploma_thesis_backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "545BBA82-840A-4446-BFF6-64834A8DA52F", null, "Physiotherapist", "PHYSIOTHERAPIST" },
+                    { "545BBA82-840A-4446-BFF6-64834A8DA52F", null, "Employee", "PHYSIOTHERAPIST" },
                     { "8036F52A-701F-4AA4-8639-D9C8123FD8C6", null, "Admin", "ADMIN" },
                     { "C7D20194-9C7E-40DB-9C63-F71D20116529", null, "Patient", "PATIENT" }
                 });

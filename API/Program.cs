@@ -1,7 +1,5 @@
 using Application;
 using DataAccess;
-using Serilog;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
