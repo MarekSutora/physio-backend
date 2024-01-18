@@ -96,8 +96,7 @@ namespace Application.Services.Implementation
             var user = new ApplicationUser
             {
                 UserName = registerRequestDto.Email,
-                Email = registerRequestDto.Email,
-                DateCreated = DateTime.Now
+                Email = registerRequestDto.Email
             };
 
             var result = await _userManager.CreateAsync(user, registerRequestDto.Password);

@@ -12,10 +12,8 @@ namespace DataAccess.Model.Entities
         public int Id { get; set; }
 
         public List<Diagnosis> Diagnosiss { get; } = [];
-        public List<PatientDiagnosis> PatientDiagnosiss { get; } = [];
 
-
-        public int PersonId { get; set; }
-        public Person Person { get; set; } = null!;
+        public int? PersonId { get; set; }
+        public Person Person { get; set; }
     }
 }

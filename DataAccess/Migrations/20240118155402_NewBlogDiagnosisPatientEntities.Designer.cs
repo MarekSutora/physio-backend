@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace diploma_thesis_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240118155402_NewBlogDiagnosisPatientEntities")]
+    partial class NewBlogDiagnosisPatientEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,15 +155,15 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "093e0e2b-e37a-4118-bc00-55d1bcd93b17",
+                            Id = "81c95449-6ba1-463d-b15f-8e2098972958",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e1de13e1-1db0-455f-afee-3fa5468d2d96",
+                            ConcurrencyStamp = "600e57fd-8095-4624-a72c-68a16db1a2fb",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGVwJcpMi6Tunl6aSMq8p3I41szWuu0nkHK2ZGR3eAXyRDwToC75iB5yO96dmZCGSA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL17XIArfzI5DT13qSUQ51QDfzmvlBOSP+ztE/aUGWDWZ4qyCeLGjtGpiqz5Nw0JNQ==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -170,15 +173,15 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            Id = "bb640d04-0531-4474-88f5-e7bd841ee440",
+                            Id = "d94ec95c-8841-4897-9588-358f39797e3d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a623756a-b593-4b02-a895-33a2b8f92800",
+                            ConcurrencyStamp = "29a90191-da23-48b0-951c-a0f43e90c184",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@PHYSIOTHERAPIST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKpDNi4NLwf0dakh5twH94fVn5VHeU1QjjfXw3M7ZELl7hycNBRIDEFTFjKpgtcBcA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB/MZVoooPiCd8KqxCOc1nwz5MfyTlD2g6KidJJRFj/3ter2cUqrk+shIkWtBXj15A==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -188,15 +191,15 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            Id = "408a39c3-160e-4154-85fd-bd3f9c447364",
+                            Id = "4124aeeb-07b9-4466-baab-e910bfdaf26a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9d92a66c-35a4-4c62-8329-4ca41b3e503a",
+                            ConcurrencyStamp = "bc8d48e6-f1d8-48dc-bf4f-30dc4d46e3cc",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "patient@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@PATIENT.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ72f6B6euW1ONbM4oxHWAd0GNYsWMwUnIU1hqRIHDTtnWyAw7G5HB3au6NS0INkuw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENlHyBcyVbV0LauIrUUnep/pREjhdt199iBYjLY0uac4YKWBRGZwUXZ4/QuMiQNWyA==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -235,66 +238,6 @@ namespace diploma_thesis_backend.Migrations
                     b.HasIndex("PaymentId");
 
                     b.ToTable("Appointment");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.Blog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Blog");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.BlogKeyword", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BlogPostId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlogPostId");
-
-                    b.ToTable("BlogKeyword");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BlogPost");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Diagnosis", b =>
@@ -387,7 +330,7 @@ namespace diploma_thesis_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("PersonId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -609,17 +552,17 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "093e0e2b-e37a-4118-bc00-55d1bcd93b17",
+                            UserId = "81c95449-6ba1-463d-b15f-8e2098972958",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "bb640d04-0531-4474-88f5-e7bd841ee440",
+                            UserId = "d94ec95c-8841-4897-9588-358f39797e3d",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "408a39c3-160e-4154-85fd-bd3f9c447364",
+                            UserId = "4124aeeb-07b9-4466-baab-e910bfdaf26a",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -649,11 +592,9 @@ namespace diploma_thesis_backend.Migrations
                         .WithMany("ApplicationUsers")
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("DataAccess.Model.Entities.Person", "Person")
+                    b.HasOne("DataAccess.Model.Entities.Person", null)
                         .WithMany("ApplicationUsers")
                         .HasForeignKey("PersonId");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Appointment", b =>
@@ -673,17 +614,6 @@ namespace diploma_thesis_backend.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("Payment");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.BlogKeyword", b =>
-                {
-                    b.HasOne("DataAccess.Model.Entities.BlogPost", "BlogPost")
-                        .WithMany("BlogKeywordss")
-                        .HasForeignKey("BlogPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BlogPost");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Employee", b =>
@@ -711,7 +641,9 @@ namespace diploma_thesis_backend.Migrations
                 {
                     b.HasOne("DataAccess.Model.Entities.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Person");
                 });
@@ -799,11 +731,6 @@ namespace diploma_thesis_backend.Migrations
             modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
                 {
                     b.Navigation("ApplicationUsers");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
-                {
-                    b.Navigation("BlogKeywordss");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.EmployeeType", b =>
