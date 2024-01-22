@@ -10,11 +10,11 @@ namespace diploma_thesis_backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AccountController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
 
-        public AccountController(
+        public AuthController(
                        IAuthService authService
                    )
         {
@@ -50,10 +50,16 @@ namespace diploma_thesis_backend.Controllers
             {
                 return Ok(new
                 {
-                    jwtToken = result.AccessToken,
-                    refreshToken = result.RefreshToken,
-                    expiryDate = result.ExpiryDate
+                    Id = result.UserId,
+                    FullName = result.FullName,
+                    BackendTokens = new
+                    {
+                        jwtToken = result.AccessToken,
+                        refreshToken = result.RefreshToken,
+                        expiryDate = result.ExpiryDate
+                    }
                 });
+
             }
             else
             {

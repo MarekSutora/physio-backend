@@ -32,6 +32,10 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
+            // Create password hasher
+            var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+            // Seed Roles
             var adminRoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6";
             var physiotherapistRoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F";
             var patientRoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529";
@@ -40,8 +44,9 @@ namespace DataAccess
                 new IdentityRole { Id = adminRoleId, Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = physiotherapistRoleId, Name = "Employee", NormalizedName = "PHYSIOTHERAPIST" },
                 new IdentityRole { Id = patientRoleId, Name = "Patient", NormalizedName = "PATIENT" }
-                );
+            );
 
+            // Seed Users
             ApplicationUser admin = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
@@ -50,55 +55,49 @@ namespace DataAccess
                 Email = "admin@example.com",
                 NormalizedEmail = "ADMIN@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Adpassword123!"),
-                SecurityStamp = new Guid().ToString("D")
+                PersonId = 1 // Assuming this is the ID for the related Person
             };
+            admin.PasswordHash = passwordHasher.HashPassword(admin, "Adpassword123!");
 
             ApplicationUser physiotherapist = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
                 UserName = "physiotherapist@example.com",
-                NormalizedUserName = "PHYSIOTHERAPIST@PHYSIOTHERAPIST.COM",
+                NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
                 Email = "physiotherapist@example.com",
                 NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Pypassword123!"),
-                SecurityStamp = new Guid().ToString("D")
+                PersonId = 2 // Assuming this is the ID for the related Person
             };
+            physiotherapist.PasswordHash = passwordHasher.HashPassword(physiotherapist, "Pypassword123!");
 
             ApplicationUser patient = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
                 UserName = "patient@example.com",
-                NormalizedUserName = "PATIENT@PATIENT.COM",
+                NormalizedUserName = "PATIENT@EXAMPLE.COM",
                 Email = "patient@example.com",
-                NormalizedEmail = "patient@EXAMPLE.COM",
+                NormalizedEmail = "PATIENT@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Papassword123!"),
-                SecurityStamp = new Guid().ToString("D")
+                PersonId = 3 // Assuming this is the ID for the related Person
             };
+            patient.PasswordHash = passwordHasher.HashPassword(patient, "Papassword123!");
 
-            builder.Entity<ApplicationUser>().HasData(admin);
-            builder.Entity<ApplicationUser>().HasData(physiotherapist);
-            builder.Entity<ApplicationUser>().HasData(patient);
+            builder.Entity<ApplicationUser>().HasData(admin, physiotherapist, patient);
 
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = adminRoleId, // Use the actual admin role ID from the seeded roles
-                UserId = admin.Id
-            });
+            // Seed User Roles
+            builder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string> { RoleId = adminRoleId, UserId = admin.Id },
+                new IdentityUserRole<string> { RoleId = physiotherapistRoleId, UserId = physiotherapist.Id },
+                new IdentityUserRole<string> { RoleId = patientRoleId, UserId = patient.Id }
+            );
 
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = physiotherapistRoleId, // Use the actual admin role ID from the seeded roles
-                UserId = physiotherapist.Id
-            });
-
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = patientRoleId, // Use the actual admin role ID from the seeded roles
-                UserId = patient.Id
-            });
+            // Seed Persons
+            builder.Entity<Person>().HasData(
+                new Person { Id = 1, FirstName = "Admin", LastName = "User" },
+                new Person { Id = 2, FirstName = "John", LastName = "Doe" },
+                new Person { Id = 3, FirstName = "Jane", LastName = "Doe" }
+            );
         }
     }
 }

@@ -12,6 +12,7 @@ using Application.Common.Auth;
 using static Application.Common.Auth.LoginUserResult;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using DataAccess;
 
 namespace Application.Services.Implementation
 {
@@ -20,14 +21,17 @@ namespace Application.Services.Implementation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
+        private readonly ApplicationDbContext _context;
 
         public AuthService(UserManager<ApplicationUser> userManager,
                 IOptions<JwtSettings> jwtSettings,
-                SignInManager<ApplicationUser> signInManager)
+                SignInManager<ApplicationUser> signInManager,
+                ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
+            _context = dbContext;
         }
 
         public Task<ConfirmEmailResult> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto)
@@ -43,7 +47,18 @@ namespace Application.Services.Implementation
         public async Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto)
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
+
+
+
             if (user == null)
+            {
+                return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
+            }
+
+            // Include the Person entity when retrieving the ApplicationUser
+            var person = await _context.Person.FirstOrDefaultAsync(p => p.Id == user.PersonId);
+
+            if (person == null)
             {
                 return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
             }
@@ -59,6 +74,9 @@ namespace Application.Services.Implementation
 
             return new LoginUserResult
             {
+                FullName = $"{person.FirstName} {person.LastName}",
+                //FullName = "test meno",
+                UserId = user.Id,
                 Outcome = LoginUserOutcome.Success,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 RefreshToken = await GenerateRefreshToken(user),
@@ -102,7 +120,7 @@ namespace Application.Services.Implementation
             var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Basic");
+                await _userManager.AddToRoleAsync(user, "Patient");
             }
             else
             {
