@@ -18,7 +18,6 @@ namespace DataAccess
         public DbSet<BlogPost> BlogPost { get; set; }
         public DbSet<Diagnosis> Diagnosis { get; set; }
         public DbSet<Employee> Employee { get; set; }
-        public DbSet<EmployeeType> EmployeeType { get; set; }
         public DbSet<Patient> Patient { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<Person> Person { get; set; }
@@ -42,7 +41,7 @@ namespace DataAccess
 
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = adminRoleId, Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Id = physiotherapistRoleId, Name = "Employee", NormalizedName = "PHYSIOTHERAPIST" },
+                new IdentityRole { Id = physiotherapistRoleId, Name = "Physiotherapist", NormalizedName = "PHYSIOTHERAPIST" },
                 new IdentityRole { Id = patientRoleId, Name = "Patient", NormalizedName = "PATIENT" }
             );
 

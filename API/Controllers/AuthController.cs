@@ -50,8 +50,12 @@ namespace diploma_thesis_backend.Controllers
             {
                 return Ok(new
                 {
-                    Id = result.UserId,
-                    FullName = result.FullName,
+                    User = new
+                    {
+                        Id = result.UserId,
+                        FullName = result.FullName,
+
+                    },
                     BackendTokens = new
                     {
                         jwtToken = result.AccessToken,

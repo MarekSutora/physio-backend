@@ -29,10 +29,9 @@ namespace Application
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("Employee", policy =>
-                                   policy.RequireRole("Employee"));
+                options.AddPolicy("Physiotherapist", policy =>
+                                   policy.RequireRole("Physiotherapist"));
                 options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
-                options.AddPolicy("Trainer", policy => policy.RequireRole("Trainer"));
             }
             );
 

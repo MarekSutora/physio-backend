@@ -17,7 +17,6 @@ namespace DataAccess.Model.Entities
         public string? EmailAddress { get; set; }
 
         public ICollection<ApplicationUser> ApplicationUsers { get; } = new List<ApplicationUser>();
-        public ICollection<Employee> Employees { get; } = new List<Employee>();
 
         public int? AddressId { get; set; }
         public Address? Address { get; set; }

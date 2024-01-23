@@ -13,9 +13,6 @@ namespace DataAccess.Model.Entities
         public DateTime? EndedWorkingDate { get; set; }
         public decimal Salary { get; set; }
 
-        public int? EmployeeTypeId { get; set; }
-        public EmployeeType? EmployeeType { get; set; }
-
         public Guid? ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; } = null!;
     }
