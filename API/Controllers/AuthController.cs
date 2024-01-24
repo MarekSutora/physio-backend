@@ -22,15 +22,10 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
+        [Route("RegisterPatient")]
+        public async Task<IActionResult> RegisterPatient([FromBody] RegisterRequestDto registerRequestDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid user data.");
-            }
-
-            var registrationResult = await _authService.RegisterUserAsync(registerRequestDto);
+            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto);
 
             return registrationResult switch
             {
@@ -60,7 +55,7 @@ namespace diploma_thesis_backend.Controllers
                     {
                         jwtToken = result.AccessToken,
                         refreshToken = result.RefreshToken,
-                        expiryDate = result.ExpiryDate
+                        expirationDate = result.ExpiryDate
                     }
                 });
 

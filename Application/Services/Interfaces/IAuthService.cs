@@ -6,7 +6,7 @@ namespace Application.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<RegisterUserResult> RegisterUserAsync(RegisterRequestDto registerRequestDto);
+        Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto);
 
         Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto);
 
@@ -17,5 +17,7 @@ namespace Application.Services.Interfaces
         Task<ResetPasswordResult> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
 
         Task<LoginUserResult> RefreshTokenAsync(string refreshToken);
+
+        bool VerifyUser(int uid);
     }
 }

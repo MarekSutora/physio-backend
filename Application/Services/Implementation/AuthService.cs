@@ -104,31 +104,51 @@ namespace Application.Services.Implementation
             };
         }
 
-        public async Task<RegisterUserResult> RegisterUserAsync(RegisterRequestDto registerRequestDto)
+        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto)
         {
             var userWithSameEmail = await _userManager.FindByEmailAsync(registerRequestDto.Email);
             if (userWithSameEmail != null)
             {
                 return RegisterUserResult.EmailAlreadyInUse;
             }
+
+            // Create a new Person entity
+            var person = new Person
+            {
+                FirstName = registerRequestDto.FirstName,
+                LastName = registerRequestDto.LastName,
+                PhoneNumber = registerRequestDto.PhoneNumber
+            };
+
+            await _context.Person.AddAsync(person);
+
+            await _context.SaveChangesAsync();
+
             var user = new ApplicationUser
             {
                 UserName = registerRequestDto.Email,
-                Email = registerRequestDto.Email
+                Email = registerRequestDto.Email,
+                EmailConfirmed = true,
+                PersonId = person.Id
             };
 
-            var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
-            if (result.Succeeded)
+
+            var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);
+
+            if (userCreationResult.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "Patient");
+
+                await _context.SaveChangesAsync();
+
+                return RegisterUserResult.Success;
             }
             else
             {
                 return RegisterUserResult.Failure;
             }
-
-            return RegisterUserResult.Success;
         }
+
 
         public Task<Response<string>> ResetPassword(ResetPasswordRequestDto resetPasswordRequestDto)
         {
@@ -138,6 +158,11 @@ namespace Application.Services.Implementation
         public Task<ResetPasswordResult> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
         {
             throw new NotImplementedException();
+        }
+
+        public bool VerifyUser(int uid)
+        {
+            return true;
         }
 
         private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)
@@ -167,8 +192,8 @@ namespace Application.Services.Implementation
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
-                issuer: null,
-                audience: null,
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
                 signingCredentials: signingCredentials);
