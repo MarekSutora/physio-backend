@@ -1,11 +1,11 @@
 ﻿using DataAccess.Model.Entities;
 namespace DataAccess.Model.Entities
 {
-    public class AvailableAppointmentActivityType
+    public class AvailableReservationActivityType
     {
-        public int AvailableAppointmentId { get; set; }
+        public int AvailableReservationId { get; set; }
         public int ActivityTypeId { get; set; }
-        public AvailableAppointment AvailableAppointment { get; set; } = null!;
+        public AvailableReservation AvailableReservation { get; set; } = null!;
 
         public ActivityType ActivityType { get; set; } = null!;
     }

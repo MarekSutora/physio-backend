@@ -14,6 +14,6 @@ namespace DataAccess.Model.Entities
         public DateTime DateTimeCreated { get; set; }
 
 
-        public ICollection<Appointment> Appointments { get; } = new List<Appointment>();
+        public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
     }
 }

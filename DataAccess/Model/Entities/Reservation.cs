@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class Appointment
+    public class Reservation
     {
         public int Id { get; set; }
-        public DateTime AppointmentCreatedDate { get; set; }
-        public DateTime AppointmentDoneDate { get; set; }
+        public DateTime ReservationCreatedDate { get; set; }
+        public DateTime ReservationDoneDate { get; set; }
         public string Description { get; set; }
 
-        public int? AvailableAppointmentId { get; set; }
-        public AvailableAppointment? AvailableAppointment { get; set; }
+        public int? AvailableReservationId { get; set; }
+        public AvailableReservation? AvailableReservation { get; set; }
 
         public int? PaymentId { get; set; }
         public Payment? Payment { get; set; }

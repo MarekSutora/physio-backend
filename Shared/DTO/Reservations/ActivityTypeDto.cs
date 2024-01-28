@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Model.Entities
+namespace Shared.DTO.Reservations
 {
-    public class ActivityType
+    public class ActivityTypeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,10 +14,5 @@ namespace DataAccess.Model.Entities
         public decimal NormalCost { get; set; }
         public int Duration { get; set; }
         public string HexColor { get; set; }
-
-        public List<AvailableReservation> AvailableReservations { get; } = [];
-        public List<AvailableReservationActivityType> AvailableReservationActivityTypes { get; } = [];
-
-        public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
     }
 }

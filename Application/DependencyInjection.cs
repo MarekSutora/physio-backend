@@ -21,6 +21,7 @@ namespace Application
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IReservationsService, ReservationsService>();
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 

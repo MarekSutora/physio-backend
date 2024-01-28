@@ -16,7 +16,7 @@ namespace DataAccess
         public DbSet<ActivityType> ActivityType { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<Reservation> Reservation { get; set; }
         public DbSet<Blog> Blog { get; set; }
         public DbSet<BlogKeyword> BlogKeyword { get; set; }
         public DbSet<BlogPost> BlogPost { get; set; }
@@ -26,8 +26,8 @@ namespace DataAccess
         public DbSet<Payment> Payment { get; set; }
         public DbSet<Person> Person { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosis { get; set; }
-        public DbSet<AvailableAppointment> AvailableAppointment { get; set; }
-        public DbSet<AvailableAppointmentActivityType> AvailableAppointmentActivityType { get; set; }
+        public DbSet<AvailableReservation> AvailableReservation { get; set; }
+        public DbSet<AvailableReservationActivityType> AvailableReservationActivityType { get; set; }
 
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
@@ -38,12 +38,12 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AvailableAppointment>()
+            builder.Entity<AvailableReservation>()
             .HasMany(e => e.ActivityTypes)
-            .WithMany(e => e.AvailableAppointments)
-            .UsingEntity<AvailableAppointmentActivityType>(
-                l => l.HasOne<ActivityType>(e => e.ActivityType).WithMany(e => e.AvailableAppointmentActivityTypes),
-                r => r.HasOne<AvailableAppointment>(e => e.AvailableAppointment).WithMany(e => e.AvailableAppointmentActivityTypes));
+            .WithMany(e => e.AvailableReservations)
+            .UsingEntity<AvailableReservationActivityType>(
+                l => l.HasOne<ActivityType>(e => e.ActivityType).WithMany(e => e.AvailableReservationActivityTypes),
+                r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationActivityTypes));
 
             builder.Entity<Patient>()
             .HasMany(e => e.Diagnosiss)
@@ -56,9 +56,9 @@ namespace DataAccess
 
             builder.SeedActivityTypes();
 
-            builder.SeedAvailableAppointments();
+            builder.SeedAvailableReservations();
 
-            builder.SeedAvailableAppointmentActivityTypes();
+            builder.SeedAvailableReservationActivityTypes();
         }
     }
 }

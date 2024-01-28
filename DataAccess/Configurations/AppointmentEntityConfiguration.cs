@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    public class AppointmentEntityConfiguration : IEntityTypeConfiguration<Appointment>
+    public class ReservationEntityConfiguration : IEntityTypeConfiguration<Reservation>
     {
-        public void Configure(EntityTypeBuilder<Appointment> builder)
+        public void Configure(EntityTypeBuilder<Reservation> builder)
         {
 
         }
