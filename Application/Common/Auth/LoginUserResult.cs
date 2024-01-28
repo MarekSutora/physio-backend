@@ -17,6 +17,7 @@ namespace Application.Common.Auth
         public string RefreshToken { get; set; }
 
         public DateTime ExpiryDate { get; set; }
+        public IList<string> roles { get; internal set; }
 
         public enum LoginUserOutcome
         {

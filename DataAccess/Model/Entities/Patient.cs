@@ -10,10 +10,10 @@ namespace DataAccess.Model.Entities
     public class Patient
     {
         public int Id { get; set; }
-
-        public List<Diagnosis> Diagnosiss { get; } = [];
-
         public int? PersonId { get; set; }
         public Person Person { get; set; }
+
+        public List<Diagnosis> Diagnosiss { get; } = [];
+        public List<PatientDiagnosis> PatientDiagnosiss { get; } = [];
     }
 }

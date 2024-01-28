@@ -69,7 +69,7 @@ namespace diploma_thesis_backend.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "ActivityType",
+                name: "ActivityTypeSeeding",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -174,7 +174,7 @@ namespace diploma_thesis_backend.Migrations
                     table.ForeignKey(
                         name: "FK_Appointment_ActivityType_ActivityTypeId",
                         column: x => x.ActivityTypeId,
-                        principalTable: "ActivityType",
+                        principalTable: "ActivityTypeSeeding",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Appointment_Patient_PatientId",
@@ -283,7 +283,7 @@ namespace diploma_thesis_backend.Migrations
                 name: "Appointment");
 
             migrationBuilder.DropTable(
-                name: "ActivityType");
+                name: "ActivityTypeSeeding");
 
             migrationBuilder.DropTable(
                 name: "Patient");

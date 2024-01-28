@@ -12,6 +12,6 @@ namespace DataAccess.Model.Entities
         public int? PersonId { get; set; }
         public Person Person { get; set; }
 
-        public ICollection<BlogPost> BlogPosts { get; set; }
+        public ICollection<BlogPost> BlogPosts { get; } = new List<BlogPost>();
     }
 }

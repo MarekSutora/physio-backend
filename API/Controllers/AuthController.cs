@@ -29,9 +29,9 @@ namespace diploma_thesis_backend.Controllers
 
             return registrationResult switch
             {
-                RegisterUserResult.Success => Ok(new { message = "User registered successfully." }),
-                RegisterUserResult.EmailAlreadyInUse => BadRequest("Email already in use."),
-                _ => BadRequest("Registration failed."),
+                RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
+                RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email je už použítý." }),
+                _ => BadRequest(new { message = "Registrácia zlyhala." }),
             };
         }
 
@@ -49,7 +49,7 @@ namespace diploma_thesis_backend.Controllers
                     {
                         Id = result.UserId,
                         FullName = result.FullName,
-
+                        Roles = result.roles,
                     },
                     BackendTokens = new
                     {
@@ -62,7 +62,7 @@ namespace diploma_thesis_backend.Controllers
             }
             else
             {
-                return Unauthorized("Login Failed.");
+                return Unauthorized("Nesprávne prihlasovacie údaje.");
             }
         }
 

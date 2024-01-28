@@ -123,7 +123,7 @@ namespace diploma_thesis_backend.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "Duration",
-                table: "ActivityType",
+                table: "ActivityTypeSeeding",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -377,7 +377,7 @@ namespace diploma_thesis_backend.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Duration",
-                table: "ActivityType");
+                table: "ActivityTypeSeeding");
 
             migrationBuilder.RenameColumn(
                 name: "RegisteredDate",

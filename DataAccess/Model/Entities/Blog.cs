@@ -12,6 +12,6 @@ namespace DataAccess.Model.Entities
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public ICollection<BlogPost> BlogPosts { get; set; }
+        public ICollection<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
     }
 }

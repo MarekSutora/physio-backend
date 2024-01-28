@@ -14,5 +14,6 @@ namespace DataAccess.Model.Entities
         public int Severity { get; set; }
 
         public List<Patient> Patients { get; } = [];
+        public List<PatientDiagnosis> PatientDiagnosiss { get; } = [];
     }
 }

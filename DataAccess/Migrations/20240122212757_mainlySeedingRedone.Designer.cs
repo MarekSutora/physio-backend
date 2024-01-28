@@ -25,7 +25,7 @@ namespace diploma_thesis_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityTypeSeeding", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace diploma_thesis_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityType");
+                    b.ToTable("ActivityTypeSeeding");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
@@ -698,7 +698,7 @@ namespace diploma_thesis_backend.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.Appointment", b =>
                 {
-                    b.HasOne("DataAccess.Model.Entities.ActivityType", null)
+                    b.HasOne("DataAccess.Model.Entities.ActivityTypeSeeding", null)
                         .WithMany("Appointments")
                         .HasForeignKey("ActivityTypeId");
 
@@ -850,7 +850,7 @@ namespace diploma_thesis_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityTypeSeeding", b =>
                 {
                     b.Navigation("Appointments");
                 });
