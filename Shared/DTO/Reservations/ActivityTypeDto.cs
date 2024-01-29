@@ -11,7 +11,7 @@ namespace Shared.DTO.Reservations
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal NormalCost { get; set; }
+        public decimal Cost { get; set; }
         public int Duration { get; set; }
         public string HexColor { get; set; }
     }

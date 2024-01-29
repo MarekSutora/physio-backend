@@ -30,12 +30,14 @@ namespace Application.Services.Implementation
                 {
                     Id = a.Id,
                     Date = a.Date,
+                    Capacity = a.Capacity,
+                    ReservedAmount = a.ReservedAmount,
                     ActivityTypes = a.ActivityTypes.Select(at => new ActivityTypeDto
                     {
                         Id = at.Id,
                         Name = at.Name,
                         Description = at.Description,
-                        NormalCost = at.NormalCost,
+                        Cost = at.Cost,
                         Duration = at.Duration,
                         HexColor = at.HexColor
                     }).ToList()

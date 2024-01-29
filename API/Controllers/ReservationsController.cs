@@ -15,13 +15,12 @@ namespace diploma_thesis_backend.Controllers
             _reservationService = reservationService;
         }
 
-        // GET reservations?available=true&activityTypes=true
-        [HttpGet]
-        public async Task<IActionResult> GetReservations([FromQuery] bool available, [FromQuery] bool activityTypes)
+        // GET /available-reservations
+        [HttpGet("available-reservations")]
+        public async Task<IActionResult> GetAvailableReservations()
         {
-            if (available && activityTypes)
+            try
             {
-                // Logic to get reservations that are available and include their associated activity types
                 var reservationsWithActivities = await _reservationService.GetAvailableReservationsWithActivityTypesAsync();
 
                 if (reservationsWithActivities.Any())
@@ -33,10 +32,13 @@ namespace diploma_thesis_backend.Controllers
                     return NotFound("No available reservations with activity types found.");
                 }
             }
+            catch (Exception ex)
+            {
+                // Log the exception details here
 
-            // If both query parameters are not true, you can decide what to do,
-            // such as returning all reservations, returning a BadRequest, etc.
-            return BadRequest("Both 'available' and 'activityTypes' must be set to true.");
+                // Return a generic error message to the client
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
     }
 }
