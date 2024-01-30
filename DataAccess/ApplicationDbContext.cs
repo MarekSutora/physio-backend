@@ -32,7 +32,7 @@ namespace DataAccess
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
         {
-            this.Database.Migrate();
+            //this.Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
