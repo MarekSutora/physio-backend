@@ -21,7 +21,7 @@ namespace Application.Services.Implementation
 
         public async Task<List<AvailableReservationDto>> GetAvailableReservationsWithActivityTypesAsync()
         {
-            var threeMonthsFromNow = DateTime.Today.AddMonths(3);
+            var threeMonthsFromNow = DateTime.Today.AddDays(-5).AddMonths(3);
 
             var availableAppointments = await _context.AvailableReservation
                 .Where(a => a.Date >= DateTime.Today && a.Date <= threeMonthsFromNow)

@@ -1,10 +1,5 @@
 ﻿using DataAccess.Model.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Seeding
 {
@@ -12,13 +7,33 @@ namespace DataAccess.Seeding
     {
         public static void SeedAvailableReservationActivityTypes(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AvailableReservationActivityType>().HasData(
-                new AvailableReservationActivityType { AvailableReservationId = 1, ActivityTypeId = 1 },
-            new AvailableReservationActivityType { AvailableReservationId = 1, ActivityTypeId = 2 },
-            new AvailableReservationActivityType { AvailableReservationId = 2, ActivityTypeId = 1 },
-            new AvailableReservationActivityType { AvailableReservationId = 2, ActivityTypeId = 3 }
-            // Continue adding the rest of the generated Reservations
-            );
+            var availableReservationActivityTypes = new List<AvailableReservationActivityType>();
+
+            // Assuming AvailableReservations IDs range from 1 to 17 and ActivityType IDs range from 1 to 4
+            for (int availableReservationId = 1; availableReservationId <= 17; availableReservationId++)
+            {
+                var assignedActivityTypes = new HashSet<int>();
+
+                // Ensure each AvailableReservation has between 1 to 3 ActivityTypes
+                int numberOfActivityTypes = new Random().Next(1, 4);
+                for (int i = 0; i < numberOfActivityTypes; i++)
+                {
+                    int activityTypeId;
+                    do
+                    {
+                        activityTypeId = new Random().Next(1, 5); // ActivityType IDs 1 to 4
+                    }
+                    while (!assignedActivityTypes.Add(activityTypeId)); // Ensure no duplicates
+
+                    availableReservationActivityTypes.Add(new AvailableReservationActivityType
+                    {
+                        AvailableReservationId = availableReservationId,
+                        ActivityTypeId = activityTypeId
+                    });
+                }
+            }
+
+            modelBuilder.Entity<AvailableReservationActivityType>().HasData(availableReservationActivityTypes.ToArray());
         }
     }
 }

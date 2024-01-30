@@ -3,6 +3,8 @@ using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -18,7 +20,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOrigins",
                       policy =>
                       {
-                          policy.WithOrigins("https://localhost:3000")
+                          policy.WithOrigins(corsOrigins)
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
