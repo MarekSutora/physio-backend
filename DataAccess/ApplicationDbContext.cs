@@ -39,6 +39,8 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
+
+            // AvailableReservation -> ActivityType many to many
             builder.Entity<AvailableReservation>()
             .HasMany(e => e.ActivityTypes)
             .WithMany(e => e.AvailableReservations)
@@ -46,12 +48,32 @@ namespace DataAccess
                 l => l.HasOne<ActivityType>(e => e.ActivityType).WithMany(e => e.AvailableReservationActivityTypes),
                 r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationActivityTypes));
 
+
+            // patient -> diagnosis many to many
             builder.Entity<Patient>()
             .HasMany(e => e.Diagnosiss)
             .WithMany(e => e.Patients)
             .UsingEntity<PatientDiagnosis>(
                 l => l.HasOne<Diagnosis>(e => e.Diagnosis).WithMany(e => e.PatientDiagnosiss),
                 r => r.HasOne<Patient>(e => e.Patient).WithMany(e => e.PatientDiagnosiss));
+
+
+            // patient -> person 1:1
+            builder.Entity<Patient>()
+           .HasKey(s => s.PersonId);
+
+            builder.Entity<Patient>()
+                       .HasOne<Person>(p => p.Person)
+                       .WithOne(s => s.Patient);
+
+
+            // ApplicationUser -> person 1:1
+            builder.Entity<ApplicationUser>()
+           .HasKey(s => s.PersonId);
+
+            builder.Entity<ApplicationUser>()
+                       .HasOne<Person>(p => p.Person)
+                       .WithOne(s => s.ApplicationUser);
 
             builder.SeedApplicationUsers();
 

@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace diploma_thesis_backend.Migrations
+namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240130073702_seedAR")]
-    partial class seedAR
+    [Migration("20240130202706_fromScratchMigration")]
+    partial class fromScratchMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,7 +150,7 @@ namespace diploma_thesis_backend.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PersonId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
@@ -197,58 +197,58 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1b89cdec-a76c-4caf-a209-76e0b0efaf0a",
+                            Id = "a737762e-b7b3-4333-ad6a-47684bd2d01d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dac84364-21c5-4b15-9255-0786aa036f6a",
+                            ConcurrencyStamp = "d3b632c6-2ba8-4c55-b1e1-8029bf9be117",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG82HM33db92Ecph0sgIFzRjbNI22l2xgVaA6n/+qCUF+tZYe3O4yUbh5gMI36ltyw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECkPbiRo73ZxL79Uk7eSVLtY7daBp3yk73DvWSr0J/adUY8qJNxRLBwlCpIx43j6wA==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "6b8b8119-04e4-4a64-b905-d06d8247109b",
+                            SecurityStamp = "8213ccc0-3e39-4dcd-98ca-492a946a41b1",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "a53fc396-157a-4e12-901c-bab515297d43",
+                            Id = "ef67c72c-c548-41ca-af20-8ddab55acfbe",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "89fc8f43-2227-4aae-81ef-37beace63b91",
+                            ConcurrencyStamp = "7ca8f56a-ec42-4bbd-963a-83b068d36f22",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKiMKrhhHCYGsg5sJL+aHLqGFRiNlyklYQPG18KlTv+QL6d0t/e1OLRFzL0k1t9C0Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECMkTLbRCe8SCsgoITL3k/ocmKNyWinkLJuXNsRHodOBsRASYECw/uOCIT4Qi5feXQ==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "e63f03b7-3369-4b3c-a966-3c9164e2fde9",
+                            SecurityStamp = "165a03a6-62b4-4b8f-9af9-1eb967960dac",
                             TwoFactorEnabled = false,
                             UserName = "physiotherapist@example.com"
                         },
                         new
                         {
-                            Id = "edb62273-187b-486f-9897-1e5bc06c8004",
+                            Id = "a5d9a70f-c8fa-4e1d-8d93-c46afa657f9b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "299ad2ab-885c-4970-a970-de59cdc64c9b",
+                            ConcurrencyStamp = "f6dcc418-3f66-42e4-89b2-7a816876b560",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAtoK/s321dlOgff1qKyaa/nRCRbrTgDcQF9/3XWMFIdhrh7N+Yb8oyN6hntMeJ2Bw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOG6DAuwyjWjEidVSiak/IEZ2IUf7oULwKikRjJitbefqiK+huPXPUaGIRlYTvTXPw==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "acc1236c-dc38-40cf-89a9-d5660290ace8",
+                            SecurityStamp = "2c1387c9-458e-4e17-a4ec-545bbe82c162",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
@@ -414,7 +414,7 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            ActivityTypeId = 1,
+                            ActivityTypeId = 3,
                             AvailableReservationId = 1
                         },
                         new
@@ -424,12 +424,7 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 1
-                        },
-                        new
-                        {
-                            ActivityTypeId = 3,
+                            ActivityTypeId = 4,
                             AvailableReservationId = 2
                         },
                         new
@@ -439,12 +434,12 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            ActivityTypeId = 2,
-                            AvailableReservationId = 3
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 2
                         },
                         new
                         {
-                            ActivityTypeId = 3,
+                            ActivityTypeId = 4,
                             AvailableReservationId = 3
                         },
                         new
@@ -454,23 +449,33 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 4
-                        },
-                        new
-                        {
                             ActivityTypeId = 2,
                             AvailableReservationId = 4
                         },
                         new
                         {
                             ActivityTypeId = 4,
-                            AvailableReservationId = 4
-                        },
-                        new
-                        {
-                            ActivityTypeId = 3,
                             AvailableReservationId = 5
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 5
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 5
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 6
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 6
                         },
                         new
                         {
@@ -484,52 +489,47 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 7
+                        },
+                        new
+                        {
                             ActivityTypeId = 4,
                             AvailableReservationId = 7
                         },
                         new
                         {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 8
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 9
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 9
+                        },
+                        new
+                        {
                             ActivityTypeId = 1,
-                            AvailableReservationId = 8
-                        },
-                        new
-                        {
-                            ActivityTypeId = 2,
-                            AvailableReservationId = 8
-                        },
-                        new
-                        {
-                            ActivityTypeId = 4,
-                            AvailableReservationId = 9
-                        },
-                        new
-                        {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 9
-                        },
-                        new
-                        {
-                            ActivityTypeId = 4,
                             AvailableReservationId = 10
                         },
                         new
                         {
                             ActivityTypeId = 3,
-                            AvailableReservationId = 10
-                        },
-                        new
-                        {
-                            ActivityTypeId = 2,
                             AvailableReservationId = 11
                         },
                         new
                         {
-                            ActivityTypeId = 2,
+                            ActivityTypeId = 4,
                             AvailableReservationId = 12
                         },
                         new
                         {
-                            ActivityTypeId = 4,
+                            ActivityTypeId = 2,
                             AvailableReservationId = 12
                         },
                         new
@@ -539,47 +539,42 @@ namespace diploma_thesis_backend.Migrations
                         },
                         new
                         {
-                            ActivityTypeId = 1,
-                            AvailableReservationId = 14
-                        },
-                        new
-                        {
-                            ActivityTypeId = 2,
-                            AvailableReservationId = 14
-                        },
-                        new
-                        {
                             ActivityTypeId = 3,
                             AvailableReservationId = 14
                         },
                         new
                         {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 15
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 14
                         },
                         new
                         {
                             ActivityTypeId = 1,
+                            AvailableReservationId = 14
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
                             AvailableReservationId = 15
                         },
                         new
                         {
                             ActivityTypeId = 4,
-                            AvailableReservationId = 16
-                        },
-                        new
-                        {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 16
-                        },
-                        new
-                        {
-                            ActivityTypeId = 3,
-                            AvailableReservationId = 17
+                            AvailableReservationId = 15
                         },
                         new
                         {
                             ActivityTypeId = 1,
+                            AvailableReservationId = 16
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 16
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
                             AvailableReservationId = 17
                         });
                 });
@@ -635,10 +630,7 @@ namespace diploma_thesis_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ApplicationUserId1")
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -651,7 +643,7 @@ namespace diploma_thesis_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId1");
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BlogId");
 
@@ -690,10 +682,7 @@ namespace diploma_thesis_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ApplicationUserId1")
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -708,7 +697,7 @@ namespace diploma_thesis_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId1");
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Employee");
                 });
@@ -1006,17 +995,17 @@ namespace diploma_thesis_backend.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "1b89cdec-a76c-4caf-a209-76e0b0efaf0a",
+                            UserId = "a737762e-b7b3-4333-ad6a-47684bd2d01d",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "a53fc396-157a-4e12-901c-bab515297d43",
+                            UserId = "ef67c72c-c548-41ca-af20-8ddab55acfbe",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "edb62273-187b-486f-9897-1e5bc06c8004",
+                            UserId = "a5d9a70f-c8fa-4e1d-8d93-c46afa657f9b",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -1048,7 +1037,9 @@ namespace diploma_thesis_backend.Migrations
 
                     b.HasOne("DataAccess.Model.Entities.Person", "Person")
                         .WithMany("ApplicationUsers")
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Person");
                 });
@@ -1087,7 +1078,7 @@ namespace diploma_thesis_backend.Migrations
                 {
                     b.HasOne("DataAccess.Model.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("BlogPosts")
-                        .HasForeignKey("ApplicationUserId1")
+                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1106,7 +1097,7 @@ namespace diploma_thesis_backend.Migrations
                 {
                     b.HasOne("DataAccess.Model.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("ApplicationUserId1")
+                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

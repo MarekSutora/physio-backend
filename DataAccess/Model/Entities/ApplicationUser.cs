@@ -9,8 +9,8 @@ namespace DataAccess.Model.Entities
         public DateTime RegisteredDate { get; set; }
 
 
-        public int? PersonId { get; set; }
-        public Person Person { get; set; }
+        public int PersonId { get; set; }
+        public Person Person { get; set; } = null!;
 
         public ICollection<BlogPost> BlogPosts { get; } = new List<BlogPost>();
     }

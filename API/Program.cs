@@ -3,8 +3,6 @@ using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -15,19 +13,37 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowedOrigins",
-                      policy =>
-                      {
-                          policy.WithOrigins(corsOrigins)
-                          .AllowCredentials()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                      });
-});
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowedOrigin",
+                          policy =>
+                          {
+                              policy.WithOrigins("https://localhost:3000")
+                              .AllowCredentials()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                          });
+    });
+}
+else
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowedOrigin",
+                          policy =>
+                          {
+                              policy.WithOrigins("https://mareksutora.sk")
+                              .AllowCredentials()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                          });
+    });
+}
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -38,7 +54,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowedOrigins");
+app.UseCors("AllowedOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();

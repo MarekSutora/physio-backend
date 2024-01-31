@@ -69,14 +69,14 @@ namespace Application.Services.Implementation
                 return new LoginUserResult { Outcome = LoginUserOutcome.InvalidCredentials };
             }
 
-            var roles = _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
 
             // Assuming GenerateJwtToken is a method that generates the JWT token
             var jwtSecurityToken = await GenerateJwtToken(user);
 
             return new LoginUserResult
             {
-                roles = roles.Result,
+                roles = roles,
                 FullName = $"{person.FirstName} {person.LastName}",
                 //FullName = "test meno",
                 UserId = user.Id,
