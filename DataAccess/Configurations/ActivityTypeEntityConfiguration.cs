@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Configurations
 {
-    public class ActivityTypeEntityConfiguration : IEntityTypeConfiguration<ActivityType>
+    public class ServiceTypeEntityConfiguration : IEntityTypeConfiguration<ServiceType>
     {
-        public void Configure(EntityTypeBuilder<ActivityType> builder)
+        public void Configure(EntityTypeBuilder<ServiceType> builder)
         {
 
         }

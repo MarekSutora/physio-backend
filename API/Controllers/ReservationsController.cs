@@ -21,7 +21,7 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var reservationsWithActivities = await _reservationService.GetAvailableReservationsWithActivityTypesAsync();
+                var reservationsWithActivities = await _reservationService.GetAvailableReservationsWithServiceTypesAsync();
 
                 if (reservationsWithActivities.Any())
                 {
@@ -29,7 +29,7 @@ namespace diploma_thesis_backend.Controllers
                 }
                 else
                 {
-                    return NotFound("No available reservations with activity types found.");
+                    return NotFound("No available reservations with service types found.");
                 }
             }
             catch (Exception ex)

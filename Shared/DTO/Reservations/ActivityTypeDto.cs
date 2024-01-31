@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Reservations
 {
-    public class ActivityTypeDto
+    public class ServiceTypeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

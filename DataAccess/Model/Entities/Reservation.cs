@@ -9,8 +9,9 @@ namespace DataAccess.Model.Entities
     public class Reservation
     {
         public int Id { get; set; }
+        public bool Cancelled { get; set; }
         public DateTime ReservationCreatedDate { get; set; }
-        public DateTime ReservationDoneDate { get; set; }
+        public DateTime ReservationFinishedDate { get; set; }
         public string Description { get; set; }
 
         public int? AvailableReservationId { get; set; }
@@ -23,8 +24,5 @@ namespace DataAccess.Model.Entities
         public int? PatientId { get; set; }
         public Patient? Patient { get; set; }
 
-
-        public int? ActivityTypeId { get; set; }
-        public ActivityType? ActivityType { get; set; }
     }
 }

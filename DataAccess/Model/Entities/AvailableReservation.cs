@@ -13,8 +13,8 @@ namespace DataAccess.Model.Entities
         public int ReservedAmount { get; set; }
         public DateTime Date { get; set; }
 
-        public List<ActivityType> ActivityTypes { get; } = [];
-        public List<AvailableReservationActivityType> AvailableReservationActivityTypes { get; } = [];
+        public List<ServiceType> ServiceTypes { get; } = [];
+        public List<AvailableReservationServiceType> AvailableReservationServiceTypes { get; } = [];
         public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
     }
 }

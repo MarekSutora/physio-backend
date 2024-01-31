@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class ActivityTypeToDisplay
+    public class ServiceTypeToDisplay
     {
         public int Id { get; set; }
     }

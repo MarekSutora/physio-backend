@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240131141058_AddedPhysioRoleToAdmin")]
+    partial class AddedPhysioRoleToAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,88 @@ namespace DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HexColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Cost = 60m,
+                            Description = "Individuálna konzultácia",
+                            Duration = 30,
+                            HexColor = "#007bff",
+                            Name = "Konzultácia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Cost = 50m,
+                            Description = "Terapeutická fyzioterapia",
+                            Duration = 60,
+                            HexColor = "#28a745",
+                            Name = "Fyzioterapia"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Cost = 40m,
+                            Description = "Relaxačná masáž",
+                            Duration = 45,
+                            HexColor = "#dc3545",
+                            Name = "Masáž"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Cost = 40m,
+                            Description = "Rehabilitačné cvičenia",
+                            Duration = 60,
+                            HexColor = "#ffc107",
+                            Name = "Rehabilitácia"
+                        });
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityTypeToDisplay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityTypeToDisplay");
+                });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
                 {
@@ -121,58 +206,58 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e2a33bb0-c13f-4cd0-a2e8-cee43284da17",
+                            Id = "284a3606-d583-4e61-b754-0dcaf9f7e791",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ccebb077-8b6c-431c-92eb-98822c81d22b",
+                            ConcurrencyStamp = "65755459-c4cb-44db-b32b-91b1c6f65050",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMRHQTzfys6nk7kfsjyJXchLnpyiN3ri2uZzk059PHFndFBQOM+dzU7zBDE32/Bg6g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENKf4IQi1i1H+nNFC/Y8HTjKXkp7FUkl+nsa2FI5I4dS8fFb1WY1f/I6eoSvIgzrOQ==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "5f264002-82d5-42a2-a9d5-2b96de0a89e6",
+                            SecurityStamp = "9981328d-bc97-445a-bb7b-62086abb0b55",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "d4e6ae1f-61e0-4fc6-ad0c-36a4dace2998",
+                            Id = "67b15e36-90d2-4383-bd46-b05fe4065958",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "306daf4b-8636-49aa-a4c7-25073ba3f91a",
+                            ConcurrencyStamp = "76c0af5b-b375-46f5-9987-813bd2207879",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEERdkOiI/n7aOP+b06asufE/U9FgoInP1A31DppV58rm6XmsTIhXdU+zIXC0J/Ef5w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBaYwqCBc3yAzviuLcrnBUWRlltGr/I2XS8xPaKiiuGoJO3p0BSSjWmJeF3GOXOTmw==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "c3d5cde4-4a21-46c4-9f32-5679ff2c83ed",
+                            SecurityStamp = "4617fe4f-134a-458f-bf82-9a92617cb62c",
                             TwoFactorEnabled = false,
                             UserName = "physiotherapist@example.com"
                         },
                         new
                         {
-                            Id = "cd3728f3-80be-41ae-a2dc-87b6458269ef",
+                            Id = "1a82c7f9-2056-4465-92b2-87f0a927e2cd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "62d85e8c-b32e-49c2-a8ef-5bc43dbaf181",
+                            ConcurrencyStamp = "2d051bfc-3719-422c-8f6d-599a90243b24",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELuZEQxkZRMdzXjysGx+slPvL/xbjyKSQgwCk0tMOnKWZ4fhYMBhqPVmLNK8aK85Lw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEl/GLz/JOZrJwybtTjqZcgEwwK9kFT2gtnJuEemslLl+OuYdCczpTksuM6Crr/caA==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "c369445d-fcd6-404e-bfda-011b7e924011",
+                            SecurityStamp = "5c2090d2-5cdc-4020-8594-fc1188e907e0",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
@@ -198,21 +283,299 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AvailableReservation");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 1,
+                            Date = new DateTime(2024, 1, 29, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 2,
+                            Date = new DateTime(2024, 1, 29, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 3,
+                            Date = new DateTime(2024, 1, 29, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Capacity = 4,
+                            Date = new DateTime(2024, 1, 29, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Capacity = 5,
+                            Date = new DateTime(2024, 1, 29, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Capacity = 6,
+                            Date = new DateTime(2024, 1, 30, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Capacity = 1,
+                            Date = new DateTime(2024, 2, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Capacity = 2,
+                            Date = new DateTime(2024, 2, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Capacity = 3,
+                            Date = new DateTime(2024, 2, 1, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Capacity = 4,
+                            Date = new DateTime(2024, 2, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Capacity = 4,
+                            Date = new DateTime(2024, 2, 1, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Capacity = 5,
+                            Date = new DateTime(2024, 2, 1, 14, 35, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Capacity = 1,
+                            Date = new DateTime(2024, 2, 1, 16, 5, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Capacity = 2,
+                            Date = new DateTime(2024, 3, 1, 7, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Capacity = 10,
+                            Date = new DateTime(2024, 3, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Capacity = 1,
+                            Date = new DateTime(2024, 3, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Capacity = 2,
+                            Date = new DateTime(2024, 3, 1, 13, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservedAmount = 0
+                        });
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationActivityType", b =>
                 {
+                    b.Property<int>("ActivityTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AvailableReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ServiceTypeId")
-                        .HasColumnType("int");
+                    b.HasKey("ActivityTypeId", "AvailableReservationId");
 
-                    b.HasKey("AvailableReservationId", "ServiceTypeId");
+                    b.HasIndex("AvailableReservationId");
 
-                    b.HasIndex("ServiceTypeId");
+                    b.ToTable("AvailableReservationActivityType");
 
-                    b.ToTable("AvailableReservationServiceType");
+                    b.HasData(
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 1
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 2
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 2
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 3
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 3
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 3
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 4
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 5
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 5
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 6
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 6
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 6
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 7
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 8
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 9
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 9
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 10
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 10
+                        },
+                        new
+                        {
+                            ActivityTypeId = 1,
+                            AvailableReservationId = 11
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 11
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 12
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 13
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 13
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 14
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 15
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 15
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 15
+                        },
+                        new
+                        {
+                            ActivityTypeId = 3,
+                            AvailableReservationId = 16
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 16
+                        },
+                        new
+                        {
+                            ActivityTypeId = 4,
+                            AvailableReservationId = 17
+                        },
+                        new
+                        {
+                            ActivityTypeId = 2,
+                            AvailableReservationId = 17
+                        });
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Blog", b =>
@@ -450,11 +813,11 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AvailableReservationId")
+                    b.Property<int?>("ActivityTypeId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Cancelled")
-                        .HasColumnType("bit");
+                    b.Property<int?>("AvailableReservationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -472,10 +835,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("ReservationFinishedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ServiceTypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityTypeId");
 
                     b.HasIndex("AvailableReservationId");
 
@@ -483,74 +845,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("PaymentId");
 
-                    b.HasIndex("ServiceTypeId");
-
                     b.ToTable("Reservation");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.ServiceType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HexColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ServiceType");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeDurationCost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServiceTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceTypeId");
-
-                    b.ToTable("ServiceTypeDurationCost");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeToDisplay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ServiceTypeToDisplay");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -689,22 +984,22 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "e2a33bb0-c13f-4cd0-a2e8-cee43284da17",
+                            UserId = "284a3606-d583-4e61-b754-0dcaf9f7e791",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "e2a33bb0-c13f-4cd0-a2e8-cee43284da17",
+                            UserId = "284a3606-d583-4e61-b754-0dcaf9f7e791",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "d4e6ae1f-61e0-4fc6-ad0c-36a4dace2998",
+                            UserId = "67b15e36-90d2-4383-bd46-b05fe4065958",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "cd3728f3-80be-41ae-a2dc-87b6458269ef",
+                            UserId = "1a82c7f9-2056-4465-92b2-87f0a927e2cd",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -739,23 +1034,23 @@ namespace DataAccess.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationActivityType", b =>
                 {
+                    b.HasOne("DataAccess.Model.Entities.ActivityType", "ActivityType")
+                        .WithMany("AvailableReservationActivityTypes")
+                        .HasForeignKey("ActivityTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataAccess.Model.Entities.AvailableReservation", "AvailableReservation")
-                        .WithMany("AvailableReservationServiceTypes")
+                        .WithMany("AvailableReservationActivityTypes")
                         .HasForeignKey("AvailableReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Model.Entities.ServiceType", "ServiceType")
-                        .WithMany("AvailableReservationServiceTypes")
-                        .HasForeignKey("ServiceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("ActivityType");
 
                     b.Navigation("AvailableReservation");
-
-                    b.Navigation("ServiceType");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.BlogKeyword", b =>
@@ -840,6 +1135,10 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.Reservation", b =>
                 {
+                    b.HasOne("DataAccess.Model.Entities.ActivityType", "ActivityType")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ActivityTypeId");
+
                     b.HasOne("DataAccess.Model.Entities.AvailableReservation", "AvailableReservation")
                         .WithMany("Reservations")
                         .HasForeignKey("AvailableReservationId");
@@ -852,26 +1151,13 @@ namespace DataAccess.Migrations
                         .WithMany("Reservations")
                         .HasForeignKey("PaymentId");
 
-                    b.HasOne("DataAccess.Model.Entities.ServiceType", null)
-                        .WithMany("Reservations")
-                        .HasForeignKey("ServiceTypeId");
+                    b.Navigation("ActivityType");
 
                     b.Navigation("AvailableReservation");
 
                     b.Navigation("Patient");
 
                     b.Navigation("Payment");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeDurationCost", b =>
-                {
-                    b.HasOne("DataAccess.Model.Entities.ServiceType", "ServiceType")
-                        .WithMany("ServiceTypeDurationCosts")
-                        .HasForeignKey("ServiceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -925,6 +1211,13 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataAccess.Model.Entities.ActivityType", b =>
+                {
+                    b.Navigation("AvailableReservationActivityTypes");
+
+                    b.Navigation("Reservations");
+                });
+
             modelBuilder.Entity("DataAccess.Model.Entities.Address", b =>
                 {
                     b.Navigation("ApplicationUsers");
@@ -937,7 +1230,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservation", b =>
                 {
-                    b.Navigation("AvailableReservationServiceTypes");
+                    b.Navigation("AvailableReservationActivityTypes");
 
                     b.Navigation("Reservations");
                 });
@@ -972,15 +1265,6 @@ namespace DataAccess.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("DataAccess.Model.Entities.ServiceType", b =>
-                {
-                    b.Navigation("AvailableReservationServiceTypes");
-
-                    b.Navigation("Reservations");
-
-                    b.Navigation("ServiceTypeDurationCosts");
                 });
 #pragma warning restore 612, 618
         }

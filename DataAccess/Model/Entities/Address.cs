@@ -11,6 +11,6 @@ namespace DataAccess.Model.Entities
         public int Id { get; set; }
         public string TempAddress { get; set; }
 
-        public ICollection<ApplicationUser> ApplicationUsers { get; } = new List<ApplicationUser>();
+        public ICollection<Person> ApplicationUsers { get; } = new List<Person>();
     }
 }

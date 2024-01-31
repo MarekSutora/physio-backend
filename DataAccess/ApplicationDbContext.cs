@@ -13,7 +13,7 @@ namespace DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<ActivityType> ActivityType { get; set; }
+        public DbSet<ServiceType> ServiceType { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
@@ -27,12 +27,14 @@ namespace DataAccess
         public DbSet<Person> Person { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosis { get; set; }
         public DbSet<AvailableReservation> AvailableReservation { get; set; }
-        public DbSet<AvailableReservationActivityType> AvailableReservationActivityType { get; set; }
+        public DbSet<AvailableReservationServiceType> AvailableReservationServiceType { get; set; }
+        public DbSet<ServiceTypeToDisplay> ServiceTypeToDisplay { get; set; }
 
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
         {
             //this.Database.Migrate();
+            //this.Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -40,13 +42,13 @@ namespace DataAccess
             base.OnModelCreating(builder);
 
 
-            // AvailableReservation -> ActivityType many to many
+            // AvailableReservation -> ServiceType many to many
             builder.Entity<AvailableReservation>()
-            .HasMany(e => e.ActivityTypes)
+            .HasMany(e => e.ServiceTypes)
             .WithMany(e => e.AvailableReservations)
-            .UsingEntity<AvailableReservationActivityType>(
-                l => l.HasOne<ActivityType>(e => e.ActivityType).WithMany(e => e.AvailableReservationActivityTypes),
-                r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationActivityTypes));
+            .UsingEntity<AvailableReservationServiceType>(
+                l => l.HasOne<ServiceType>(e => e.ServiceType).WithMany(e => e.AvailableReservationServiceTypes),
+                r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationServiceTypes));
 
 
             // patient -> diagnosis many to many
@@ -75,11 +77,11 @@ namespace DataAccess
 
             builder.SeedApplicationUsers();
 
-            builder.SeedActivityTypes();
+            builder.SeedServiceTypes();
 
             builder.SeedAvailableReservations();
 
-            builder.SeedAvailableReservationActivityTypes();
+            builder.SeedAvailableReservationServiceTypes();
         }
     }
 }

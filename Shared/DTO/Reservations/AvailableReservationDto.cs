@@ -12,6 +12,6 @@ namespace Shared.DTO.Reservations
         public DateTime Date { get; set; }
         public int Capacity { get; set; }
         public int ReservedAmount { get; set; }
-        public List<ActivityTypeDto> ActivityTypes { get; set; } = new List<ActivityTypeDto>();
+        public List<ServiceTypeDto> ServiceTypes { get; set; } = new List<ServiceTypeDto>();
     }
 }

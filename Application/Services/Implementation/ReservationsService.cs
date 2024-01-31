@@ -19,32 +19,32 @@ namespace Application.Services.Implementation
             _context = context;
         }
 
-        public async Task<List<AvailableReservationDto>> GetAvailableReservationsWithActivityTypesAsync()
+        public async Task<List<AvailableReservationDto>> GetAvailableReservationsWithServiceTypesAsync()
         {
-            var threeMonthsFromNow = DateTime.Today.AddDays(-5).AddMonths(3);
+            //var threeMonthsFromNow = DateTime.Today.AddDays(-5).AddMonths(3);
 
-            var availableAppointments = await _context.AvailableReservation
-                .Where(a => a.Date >= DateTime.Today && a.Date <= threeMonthsFromNow)
-                .Include(a => a.ActivityTypes)
-                .Select(a => new AvailableReservationDto
-                {
-                    Id = a.Id,
-                    Date = a.Date,
-                    Capacity = a.Capacity,
-                    ReservedAmount = a.ReservedAmount,
-                    ActivityTypes = a.ActivityTypes.Select(at => new ActivityTypeDto
-                    {
-                        Id = at.Id,
-                        Name = at.Name,
-                        Description = at.Description,
-                        Cost = at.Cost,
-                        Duration = at.Duration,
-                        HexColor = at.HexColor
-                    }).ToList()
-                })
-                .ToListAsync();
+            //var availableAppointments = await _context.AvailableReservation
+            //    .Where(a => a.Date >= DateTime.Today && a.Date <= threeMonthsFromNow)
+            //    .Include(a => a.ServiceTypes)
+            //    .Select(a => new AvailableReservationDto
+            //    {
+            //        Id = a.Id,
+            //        Date = a.Date,
+            //        Capacity = a.Capacity,
+            //        ReservedAmount = a.ReservedAmount,
+            //        ServiceTypes = a.ServiceTypes.Select(at => new ServiceTypeDto
+            //        {
+            //            Id = at.Id,
+            //            Name = at.Name,
+            //            Description = at.Description,
+            //            Cost = at.Cost,
+            //            Duration = at.Duration,
+            //            HexColor = at.HexColor
+            //        }).ToList()
+            //    })
+            //    .ToListAsync();
 
-            return availableAppointments;
+            return null;
         }
     }
 }

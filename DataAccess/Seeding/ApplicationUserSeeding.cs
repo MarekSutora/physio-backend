@@ -70,6 +70,7 @@ namespace DataAccess.Seeding
             // Seed User Roles
             builder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string> { RoleId = adminRoleId, UserId = admin.Id },
+                new IdentityUserRole<string> { RoleId = physiotherapistRoleId, UserId = admin.Id },
                 new IdentityUserRole<string> { RoleId = physiotherapistRoleId, UserId = physiotherapist.Id },
                 new IdentityUserRole<string> { RoleId = patientRoleId, UserId = patient.Id }
             );

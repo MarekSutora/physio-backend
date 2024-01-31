@@ -1,7 +1,14 @@
 using Application;
 using DataAccess;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
+{
+    loggerConfiguration
+        .ReadFrom.Configuration(hostingContext.Configuration);
+});
 
 // Add services to the container.
 
@@ -13,37 +20,28 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedOriginDev",
+                      policy =>
+                      {
+                          policy.WithOrigins("https://localhost:3000")
+                          .AllowCredentials()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                      });
+    options.AddPolicy("AllowedOriginProd",
+                      policy =>
+                      {
+                          policy.WithOrigins("https://mareksutora.sk")
+                          .AllowCredentials()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                      });
+});
+
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowedOrigin",
-                          policy =>
-                          {
-                              policy.WithOrigins("https://localhost:3000")
-                              .AllowCredentials()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader();
-                          });
-    });
-}
-else
-{
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowedOrigin",
-                          policy =>
-                          {
-                              policy.WithOrigins("https://mareksutora.sk")
-                              .AllowCredentials()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader();
-                          });
-    });
-}
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -54,7 +52,16 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowedOrigin");
+app.UseSerilogRequestLogging();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowedOriginDev");
+}
+else
+{
+    app.UseCors("AllowedOriginProd");
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
