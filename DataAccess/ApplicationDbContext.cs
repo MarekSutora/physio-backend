@@ -68,12 +68,10 @@ namespace DataAccess
 
 
             // ApplicationUser -> person 1:1
-            builder.Entity<ApplicationUser>()
-           .HasKey(s => s.PersonId);
-
-            builder.Entity<ApplicationUser>()
-                       .HasOne<Person>(p => p.Person)
-                       .WithOne(s => s.ApplicationUser);
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.HasIndex(e => e.PersonId).IsUnique();
+            });
 
             builder.SeedApplicationUsers();
 
