@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Common.Auth;
 using Application.Services.Implementation;
 using DataAccess;
+using AutoMapper;
+using Application.Mappings;
 
 namespace Application
 {
@@ -22,6 +24,7 @@ namespace Application
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IReservationsService, ReservationsService>();
+            services.AddScoped<IServiceTypeService, ServiceTypeService>();
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
@@ -69,6 +72,8 @@ namespace Application
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
                     };
                 });
+
+            services.AddAutoMapper(typeof(ServiceTypeProfile));
         }
     }
 }

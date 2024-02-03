@@ -48,15 +48,13 @@ namespace Application.Services.Implementation
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
 
-
-
             if (user == null)
             {
                 return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
             }
 
             // Include the Person entity when retrieving the ApplicationUser
-            var person = await _context.Person.FirstOrDefaultAsync(p => p.Id == user.PersonId);
+            var person = await _context.Persons.FirstOrDefaultAsync(p => p.Id == user.PersonId);
 
             if (person == null)
             {
@@ -123,7 +121,7 @@ namespace Application.Services.Implementation
                 PhoneNumber = registerRequestDto.PhoneNumber
             };
 
-            await _context.Person.AddAsync(person);
+            await _context.Persons.AddAsync(person);
 
             await _context.SaveChangesAsync();
 

@@ -1,5 +1,6 @@
 using Application;
 using DataAccess;
+using diploma_thesis_backend.API.Middlewares;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 //}
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -9,6 +9,8 @@ namespace DataAccess.Model.Entities
     public class ServiceType
     {
         public int Id { get; set; }
+
+        //TODO unique
         public string Name { get; set; }
         public decimal Cost { get; set; }
         public string HexColor { get; set; }

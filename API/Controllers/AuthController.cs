@@ -53,16 +53,15 @@ namespace diploma_thesis_backend.Controllers
                     },
                     BackendTokens = new
                     {
-                        jwtToken = result.AccessToken,
+                        accessToken = result.AccessToken,
                         refreshToken = result.RefreshToken,
                         expirationDate = result.ExpiryDate
                     }
                 });
-
             }
             else
             {
-                return Unauthorized("Nesprávne prihlasovacie údaje.");
+                return BadRequest("Nesprávne prihlasovacie údaje.");
             }
         }
 

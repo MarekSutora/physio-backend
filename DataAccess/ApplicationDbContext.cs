@@ -13,22 +13,22 @@ namespace DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<ServiceType> ServiceType { get; set; }
-        public DbSet<Address> Address { get; set; }
-        public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<Reservation> Reservation { get; set; }
-        public DbSet<Blog> Blog { get; set; }
-        public DbSet<BlogKeyword> BlogKeyword { get; set; }
-        public DbSet<BlogPost> BlogPost { get; set; }
-        public DbSet<Diagnosis> Diagnosis { get; set; }
-        public DbSet<Employee> Employee { get; set; }
-        public DbSet<Patient> Patient { get; set; }
-        public DbSet<Payment> Payment { get; set; }
-        public DbSet<Person> Person { get; set; }
-        public DbSet<PatientDiagnosis> PatientDiagnosis { get; set; }
-        public DbSet<AvailableReservation> AvailableReservation { get; set; }
-        public DbSet<AvailableReservationServiceType> AvailableReservationServiceType { get; set; }
-        public DbSet<ServiceTypeToDisplay> ServiceTypeToDisplay { get; set; }
+        public DbSet<ServiceType> ServiceTypes { get; set; }
+        public DbSet<Address> Addresss { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogKeyword> BlogKeywords { get; set; }
+        public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<Diagnosis> Diagnosiss { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
+        public DbSet<AvailableReservation> AvailableReservations { get; set; }
+        public DbSet<AvailableReservationServiceType> AvailableReservationServiceTypes { get; set; }
+        public DbSet<ServiceTypeToDisplay> ServiceTypeToDisplays { get; set; }
 
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
