@@ -8,6 +8,7 @@ namespace Application.Services.Interfaces
 {
     public interface IReservationsService
     {
+        Task<bool> CreateReservationAsync(CreateReservationDto createReservationDto);
         Task<List<AvailableReservationDto>> GetAvailableReservationsWithServiceTypesAsync();
     }
 }

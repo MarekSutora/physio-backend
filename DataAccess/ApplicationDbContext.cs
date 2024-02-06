@@ -13,7 +13,6 @@ namespace DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<Address> Addresss { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
@@ -28,7 +27,10 @@ namespace DataAccess
         public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
         public DbSet<AvailableReservation> AvailableReservations { get; set; }
         public DbSet<AvailableReservationServiceType> AvailableReservationServiceTypes { get; set; }
+        public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeToDisplay> ServiceTypeToDisplays { get; set; }
+        public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions options)
         : base(options)

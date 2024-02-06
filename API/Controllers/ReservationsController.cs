@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Application.Services.Interfaces;
+using Shared.DTO.Reservations;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -30,6 +31,30 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     return NotFound("No available reservations with service types found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+
+                // Return a generic error message to the client
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto createReservationDto)
+        {
+            try
+            {
+                var result = await _reservationService.CreateReservationAsync(createReservationDto);
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Failed to create reservation");
                 }
             }
             catch (Exception ex)

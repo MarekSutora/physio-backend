@@ -15,6 +15,7 @@ namespace DataAccess.Model.Entities
         public decimal Cost { get; set; }
 
         public int ServiceTypeId { get; set; }
+
         public ServiceType ServiceType { get; set; } = null!;
 
     }

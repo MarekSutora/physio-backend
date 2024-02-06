@@ -8,6 +8,7 @@ namespace Shared.DTO.ServiceType
 {
     public class ServiceTypeDurationCostDto
     {
+        public int Id { get; set; }
         public int DurationMinutes { get; set; }
         public decimal Cost { get; set; }
     }

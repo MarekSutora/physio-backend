@@ -19,6 +19,11 @@ namespace Application.Services.Implementation
             _context = context;
         }
 
+        public Task<bool> CreateReservationAsync(CreateReservationDto createReservationDto)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<AvailableReservationDto>> GetAvailableReservationsWithServiceTypesAsync()
         {
             //var threeMonthsFromNow = DateTime.Today.AddDays(-5).AddMonths(3);

@@ -9,6 +9,7 @@ namespace diploma_thesis_backend.Controllers
 {
     [Route("/service-types")]
     [ApiController]
+    [Produces("application/json")]
     public class ServiceTypesController : Controller
     {
         private readonly IServiceTypeService _serviceTypeService;
@@ -42,7 +43,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateServiceType([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
             try
@@ -50,7 +51,7 @@ namespace diploma_thesis_backend.Controllers
                 var result = await _serviceTypeService.UpdateServiceTypeAsync(updateServiceTypeDto);
                 if (result)
                 {
-                    return Ok();
+                    return Ok("Successfully updated ServiceType.");
                 }
                 else
                 {
@@ -69,8 +70,8 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var (serviceTypes, success) = await _serviceTypeService.GetAllServiceTypesAsync();
-                if (success)
+                var serviceTypes = await _serviceTypeService.GetAllServiceTypesAsync();
+                if (serviceTypes.Count > 0)
                 {
                     return Ok(serviceTypes);
                 }
@@ -94,7 +95,7 @@ namespace diploma_thesis_backend.Controllers
                 var (success, message) = await _serviceTypeService.DeleteServiceTypeAsync(id);
                 if (success)
                 {
-                    return Ok();
+                    return Ok("Success");
                 }
                 else
                 {

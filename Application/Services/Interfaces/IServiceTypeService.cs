@@ -12,7 +12,7 @@ namespace Application.Services.Interfaces
     {
         Task<bool> CreateServiceTypeAsync(CreateNewServiceTypeDto createNewServiceTypeDto);
         Task<(bool, string)> DeleteServiceTypeAsync(int id);
-        Task<(List<ServiceType>, bool)> GetAllServiceTypesAsync();
+        Task<List<ServiceTypeDto>> GetAllServiceTypesAsync();
         Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto);
     }
 }

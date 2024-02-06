@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Implementation
 {
+    //TODO - poriadne vyriesit logging, exception handling
     public class ServiceTypeService : IServiceTypeService
     {
         private readonly ApplicationDbContext _context;
@@ -77,38 +78,59 @@ namespace Application.Services.Implementation
         }
 
 
-        public async Task<(List<ServiceType>, bool)> GetAllServiceTypesAsync()
+        public async Task<List<ServiceTypeDto>> GetAllServiceTypesAsync()
         {
             try
             {
-                var serviceTypes = await _context.ServiceTypes.ToListAsync();
-                return (serviceTypes, true);
+                var serviceTypes = await _context.ServiceTypes
+                         .Include(st => st.ServiceTypeDurationCosts)
+                         .ToListAsync();
+
+                // Use AutoMapper to map from ServiceType entities to ServiceTypeDto
+                return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
             }
-            catch
+            catch (Exception ex)
             {
-                return (null, false);
+                // Log the exception here using a logger
+                // For example: _logger.LogError(ex, "An error occurred while getting all service types.");
+                throw new Exception("An error occurred while getting all service types.", ex);
             }
         }
+
 
         public async Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
-            // Nájdite existujúcu službu podľa ID
-            var existingServiceType = await _context.ServiceTypes.FindAsync(updateServiceTypeDto.Id);
+            var serviceType = await _context.ServiceTypes
+                .Include(st => st.ServiceTypeDurationCosts)
+                .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id);
 
-            if (existingServiceType == null)
+            if (serviceType == null)
             {
-                // ServiceType neexistuje
-                return false;
+                return false; // ServiceType doesn't exist
             }
 
-            // Aktualizujte existujúcu službu pomocou hodnôt z DTO
-            _mapper.Map(updateServiceTypeDto, existingServiceType);
+            // Odstránenie existujúcich ServiceTypeDurationCosts
+            _context.ServiceTypeDurationCosts.RemoveRange(serviceType.ServiceTypeDurationCosts);
 
-            // Uložte zmeny v databáze
-            _context.ServiceTypes.Update(existingServiceType);
-            var updated = await _context.SaveChangesAsync();
-            return updated > 0;
+            // Pridanie nových ServiceTypeDurationCosts
+            foreach (var durationCostDto in updateServiceTypeDto.ServiceTypeDurationCosts)
+            {
+                serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                {
+                    DurationMinutes = durationCostDto.DurationMinutes,
+                    Cost = durationCostDto.Cost,
+                    ServiceTypeId = serviceType.Id
+                });
+            }
+
+            // Aktualizácia vlastností ServiceType
+            serviceType.Name = updateServiceTypeDto.Name;
+            serviceType.Description = updateServiceTypeDto.Description;
+            serviceType.HexColor = updateServiceTypeDto.HexColor;
+
+            // Uloženie zmien
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
         }
-
     }
 }

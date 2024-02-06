@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240206155643_ServiceTypeChanges")]
+    partial class ServiceTypeChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,58 +124,58 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7d5c1d61-4f4b-4f78-a7dd-fa6313326584",
+                            Id = "b19744f0-306a-4f96-82e0-65173beb363c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "80412e42-1d3e-43da-b2fc-a22af1bad134",
+                            ConcurrencyStamp = "2c26aa40-1c96-4fb0-bb9d-9ba0c3a9fd3a",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ1ZpykxPTnEP4jyyHKDsvw/etnQb20dZ1UQIaB+cuMoQYX8WZ+zEdnd9SauoSmV/g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEErOdTo25Ia5Q6aQuY+sqy6UNy/VU34PUFxJJYEtbfR04vyv28v/rWuo9IlS+rpFkA==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "93b0589f-8086-445a-8c9c-eb3cf8fb0b4d",
+                            SecurityStamp = "533896fe-51e1-4f48-b478-be0b5c77bc53",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "f13a2170-2de4-4021-bf08-fa87df056aca",
+                            Id = "559dcfe0-d24e-4d44-b6a3-89ff329693ec",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "10012c79-7248-402d-9db2-a5bfa01a293a",
+                            ConcurrencyStamp = "df896a26-36bf-4317-9400-905c4306bcc1",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPF6yCCV9NhFCD1tZNHxPYhZIsiGIzPzoqJCP1IiZ3FNqpe0lLBk20oqBa4hxJc+YQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPLkJ4QBFAGTCFQTM85ah4PJetn62Ht0Sw7Opjg4bOtPUGTMo1z0DuhmOF5izj5R/g==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "2367df58-47fb-4a5d-9f3d-c38a5a0266f4",
+                            SecurityStamp = "449ca71c-47a7-45ea-a820-999af2ef4c17",
                             TwoFactorEnabled = false,
                             UserName = "physiotherapist@example.com"
                         },
                         new
                         {
-                            Id = "29aa6dbf-c1df-4ae7-88ee-1054832a8d09",
+                            Id = "3336bc12-205e-4057-98b9-e0ae6025fbb6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "07280a3d-b913-4f20-8b59-5de72cd900e9",
+                            ConcurrencyStamp = "556186d8-afa3-4647-bff2-99b90eb3e9d6",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAIRNZVIh0Gs+X2tpN+94OsHXn7d9SxxGtpeliXVBKSq4UtBkGP2Gu71tOdiDkJsGw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOcJejD/sT3AnUv+/n4FuFkkLeDyoPpxxlLxdyBHcxswFpywLE3OXB9jRucGBmr8xg==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "ffdde672-d56a-428b-ade0-5e5bb9d92678",
+                            SecurityStamp = "bedf36f9-73ff-4d29-9a9c-b1ba889baff8",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
@@ -534,7 +537,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.ToTable("ServiceTypeDurationCosts");
+                    b.ToTable("ServiceTypeDurationCost");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeToDisplay", b =>
@@ -686,22 +689,22 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "7d5c1d61-4f4b-4f78-a7dd-fa6313326584",
+                            UserId = "b19744f0-306a-4f96-82e0-65173beb363c",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "7d5c1d61-4f4b-4f78-a7dd-fa6313326584",
+                            UserId = "b19744f0-306a-4f96-82e0-65173beb363c",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "f13a2170-2de4-4021-bf08-fa87df056aca",
+                            UserId = "559dcfe0-d24e-4d44-b6a3-89ff329693ec",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "29aa6dbf-c1df-4ae7-88ee-1054832a8d09",
+                            UserId = "3336bc12-205e-4057-98b9-e0ae6025fbb6",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });

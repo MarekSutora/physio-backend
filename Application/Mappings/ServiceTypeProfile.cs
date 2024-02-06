@@ -14,7 +14,10 @@ namespace Application.Mappings
             CreateMap<UpdateServiceTypeDto, ServiceType>()
                 .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
 
-            CreateMap<ServiceTypeDurationCostDto, ServiceTypeDurationCost>();
+            CreateMap<ServiceType, ServiceTypeDto>()
+                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
+
+            CreateMap<ServiceTypeDurationCost, ServiceTypeDurationCostDto>().ReverseMap();
         }
     }
 }

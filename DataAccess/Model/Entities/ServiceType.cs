@@ -12,7 +12,7 @@ namespace DataAccess.Model.Entities
 
         //TODO unique
         public string Name { get; set; }
-        public decimal Cost { get; set; }
+
         public string HexColor { get; set; }
 
         public string Description { get; set; }
@@ -22,7 +22,7 @@ namespace DataAccess.Model.Entities
         public List<AvailableReservationServiceType> AvailableReservationServiceTypes { get; } = [];
 
 
-        public ICollection<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = new List<ServiceTypeDurationCost>();
-        public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
+        public ICollection<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; } = new List<ServiceTypeDurationCost>();
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }
