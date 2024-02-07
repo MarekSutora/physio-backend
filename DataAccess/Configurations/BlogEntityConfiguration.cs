@@ -13,7 +13,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Blog> builder)
         {
-
+            builder.Property(b => b.Title).IsRequired();
         }
     }
 }

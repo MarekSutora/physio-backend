@@ -70,15 +70,8 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var serviceTypes = await _serviceTypeService.GetAllServiceTypesAsync();
-                if (serviceTypes.Count > 0)
-                {
-                    return Ok(serviceTypes);
-                }
-                else
-                {
-                    return NotFound("No service types found");
-                }
+                var serviceTypes = await _serviceTypeService.GetAllActiveServiceTypesAsync();
+                return Ok(serviceTypes); // Always return OK with the list (even if it's empty)
             }
             catch (Exception ex)
             {
@@ -92,14 +85,14 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var (success, message) = await _serviceTypeService.DeleteServiceTypeAsync(id);
+                var success = await _serviceTypeService.SoftDeleteServiceTypeAsync(id);
                 if (success)
                 {
                     return Ok("Success");
                 }
                 else
                 {
-                    return BadRequest(message);
+                    return BadRequest("Failed");
                 }
             }
             catch (Exception ex)

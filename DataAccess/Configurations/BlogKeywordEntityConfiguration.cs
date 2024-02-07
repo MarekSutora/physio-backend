@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    public class BlogKeywordEntityConfiguration : IEntityTypeConfiguration<Employee>
+    public class BlogPostKeywordEntityConfiguration : IEntityTypeConfiguration<BlogPostKeyword>
     {
-        public void Configure(EntityTypeBuilder<Employee> builder)
+        public void Configure(EntityTypeBuilder<BlogPostKeyword> builder)
         {
-
+            builder.Property(bpk => bpk.Name).IsRequired().HasMaxLength(100);
         }
     }
 }

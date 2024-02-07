@@ -45,90 +45,68 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task<(bool, string)> DeleteServiceTypeAsync(int id)
+        public async Task<bool> SoftDeleteServiceTypeAsync(int id)
         {
             try
             {
-                // Overte, či existuje nejaká rezervácia, ktorá obsahuje daný typ služby
-                bool hasReservations = await _context.AvailableReservationServiceTypes
-                    .AnyAsync(arst => arst.ServiceTypeId == id);
-
-                if (hasReservations)
-                {
-                    // Neumožnite odstránenie služby a vráťte správu s false
-                    return (false, "Služba sa nedá odstrániť, pretože je s ňou spojená aktívna rezervácia.");
-                }
-
-                // Ak neexistujú žiadne aktívne rezervácie spojené s týmto typom služby, odstráňte službu
                 var serviceType = await _context.ServiceTypes.FindAsync(id);
-                if (serviceType != null)
-                {
-                    _context.ServiceTypes.Remove(serviceType);
-                    await _context.SaveChangesAsync();
-                    return (true, "Služba bola úspešne odstránená.");
-                }
+                if (serviceType == null) return false;
 
-                return (false, "Služba s daným ID nebola nájdená.");
+                // Mark as inactive and rename
+                serviceType.Active = false;
+                serviceType.Name += $"_odstranena_{DateTime.Now:yyyyMMdd}";
+
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return (false, $"Pri odstraňovaní služby došlo k chybe: {e.Message}");
+                throw new Exception($"Error soft-deleting service type: {e.Message}", e);
             }
         }
 
-
-        public async Task<List<ServiceTypeDto>> GetAllServiceTypesAsync()
+        public async Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync()
         {
             try
             {
                 var serviceTypes = await _context.ServiceTypes
-                         .Include(st => st.ServiceTypeDurationCosts)
-                         .ToListAsync();
+                    .Where(st => st.Active)
+                    .Include(st => st.ServiceTypeDurationCosts.Where(cost => cost.Active))
+                    .ToListAsync();
 
-                // Use AutoMapper to map from ServiceType entities to ServiceTypeDto
                 return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
             }
             catch (Exception ex)
             {
-                // Log the exception here using a logger
-                // For example: _logger.LogError(ex, "An error occurred while getting all service types.");
-                throw new Exception("An error occurred while getting all service types.", ex);
+                throw new Exception("An error occurred while getting active service types.", ex);
             }
         }
-
 
         public async Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
             var serviceType = await _context.ServiceTypes
                 .Include(st => st.ServiceTypeDurationCosts)
-                .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id);
+                .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id && st.Active);
 
-            if (serviceType == null)
+            if (serviceType == null) return false;
+
+            // Mark existing duration costs as inactive
+            foreach (var cost in serviceType.ServiceTypeDurationCosts)
             {
-                return false; // ServiceType doesn't exist
+                cost.Active = false;
             }
 
-            // Odstránenie existujúcich ServiceTypeDurationCosts
-            _context.ServiceTypeDurationCosts.RemoveRange(serviceType.ServiceTypeDurationCosts);
-
-            // Pridanie nových ServiceTypeDurationCosts
-            foreach (var durationCostDto in updateServiceTypeDto.ServiceTypeDurationCosts)
+            // Add new duration costs
+            var newCosts = _mapper.Map<List<ServiceTypeDurationCost>>(updateServiceTypeDto.ServiceTypeDurationCosts);
+            foreach (var newCost in newCosts)
             {
-                serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                {
-                    DurationMinutes = durationCostDto.DurationMinutes,
-                    Cost = durationCostDto.Cost,
-                    ServiceTypeId = serviceType.Id
-                });
+                newCost.ServiceTypeId = serviceType.Id;
+                _context.ServiceTypeDurationCosts.Add(newCost);
             }
 
-            // Aktualizácia vlastností ServiceType
-            serviceType.Name = updateServiceTypeDto.Name;
-            serviceType.Description = updateServiceTypeDto.Description;
-            serviceType.HexColor = updateServiceTypeDto.HexColor;
+            // Update service type details
+            _mapper.Map(updateServiceTypeDto, serviceType);
 
-            // Uloženie zmien
             var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }

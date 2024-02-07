@@ -10,19 +10,19 @@ namespace DataAccess.Model.Entities
     {
         public int Id { get; set; }
 
-        //TODO unique
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string HexColor { get; set; }
+        public string? HexColor { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
+        public bool Active { get; set; }
 
         public List<AvailableReservation> AvailableReservations { get; } = [];
         public List<AvailableReservationServiceType> AvailableReservationServiceTypes { get; } = [];
 
 
         public ICollection<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; } = new List<ServiceTypeDurationCost>();
-        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public ICollection<BookedReservation> BookedReservations { get; set; } = new List<BookedReservation>();
     }
 }

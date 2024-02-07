@@ -15,20 +15,17 @@ namespace DataAccess
     {
         public DbSet<Address> Addresss { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<BookedReservation> BookedReservations { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<BlogKeyword> BlogKeywords { get; set; }
+        public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<Payment> Payments { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
         public DbSet<AvailableReservation> AvailableReservations { get; set; }
         public DbSet<AvailableReservationServiceType> AvailableReservationServiceTypes { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
-        public DbSet<ServiceTypeToDisplay> ServiceTypeToDisplays { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
 
 

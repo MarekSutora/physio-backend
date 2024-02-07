@@ -17,6 +17,6 @@ namespace DataAccess.Model.Entities
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
-        public ICollection<BlogKeyword> BlogKeywordss { get; } = new List<BlogKeyword>();
+        public ICollection<BlogPostKeyword> BlogPostKeywords { get; } = new List<BlogPostKeyword>();
     }
 }
