@@ -1,6 +1,6 @@
 ﻿using DataAccess.Model.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Configurations
 {
@@ -8,14 +8,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ServiceTypeDurationCost> builder)
         {
-            builder.Property(st => st.DurationMinutes)
-                 .IsRequired();
 
-            builder.Property(st => st.Cost)
-                .HasColumnType("money");
-
-            builder.Property(st => st.Active)
-                .HasDefaultValue(true);
         }
     }
 }

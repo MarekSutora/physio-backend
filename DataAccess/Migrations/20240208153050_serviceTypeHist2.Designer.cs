@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240208153050_serviceTypeHist2")]
+    partial class serviceTypeHist2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,58 +124,58 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            Id = "a9b27b68-c753-4b99-b6a3-86b58cf1d199",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f32629ba-a60c-448e-b9ce-fe59d6e007e1",
+                            ConcurrencyStamp = "a8e0485e-391b-43ca-a4fa-b3bc9101002d",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFOL7eUJ5IU990BKQIGEA3hUVI18Rax3JgAHGm7qvf7y/bNlCas6dYeYFlOjZ72x/w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHOLb5+zvtL/szElrBQCNU9odrof26sIJrSAxTcdBpV/xyFk7i+nk/8Ohx1oX/27sw==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fbb35ee1-cc47-4513-ab02-8a7eefc8b002",
+                            SecurityStamp = "543fec4c-61a0-4642-ac23-7556d7f65d4b",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "47df776e-fcc7-4842-a6f7-d9a7917c9e33",
+                            Id = "b91fc4e1-c2c7-4b00-86c3-ae01a02a5c11",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "15136962-219c-4f23-9ff5-d2458ad064be",
+                            ConcurrencyStamp = "ada305b3-15ab-4cb0-9aea-280024ba15df",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKIqf+RJTpTNRlnWJ3DJCBTiNK2aDecaW6xlhghZ+u+STpEAV5DmF06cht3bciOVig==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKBGNSX6TEtS4EusUFr5Wzp55Rq0DnDhR2viF102e2Kb1vc6NLInXxQ/9/jjMcQTWg==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f5a8e00d-25f5-4964-99e4-639b76acbb46",
+                            SecurityStamp = "c25959ba-9bd2-4a29-bdee-a3358c69e97a",
                             TwoFactorEnabled = false,
                             UserName = "physiotherapist@example.com"
                         },
                         new
                         {
-                            Id = "68021f5d-dad8-4865-b50d-87905bd24e41",
+                            Id = "faadef4d-9268-487b-b825-820c67db9404",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0e8fc89e-ea0c-43fd-b96c-876da3d67d03",
+                            ConcurrencyStamp = "29183e68-3b60-45bf-92d4-d2326dd61957",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHaI88ngPGk50kfhztkmbdt5DiyJzkiLYK6FffcFV8e2IW41HOLimVuMC1V7yxf9lw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHToPRFp6t3Vq3juLtNFhu3k2I3u+aWavG8WVB2H5ZHkL3caksyAwSkT2WZNy5xF6Q==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "72496859-f229-4000-9cca-5f6661ac70a0",
+                            SecurityStamp = "fa711b6e-0f17-450b-8bf5-9b382d30a740",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
@@ -465,16 +468,17 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Cost")
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit")
+                        .HasComment("Property for statistics in case cost or duration gets updated");
+
+                    b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBecomingInactive")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("DateInactive")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DurationMinutes")
+                    b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceTypeId")
@@ -623,22 +627,22 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            UserId = "a9b27b68-c753-4b99-b6a3-86b58cf1d199",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            UserId = "a9b27b68-c753-4b99-b6a3-86b58cf1d199",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "47df776e-fcc7-4842-a6f7-d9a7917c9e33",
+                            UserId = "b91fc4e1-c2c7-4b00-86c3-ae01a02a5c11",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "68021f5d-dad8-4865-b50d-87905bd24e41",
+                            UserId = "faadef4d-9268-487b-b825-820c67db9404",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });

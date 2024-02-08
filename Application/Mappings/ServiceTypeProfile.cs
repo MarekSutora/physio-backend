@@ -12,7 +12,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
 
             CreateMap<UpdateServiceTypeDto, ServiceType>()
-                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
+                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.Ignore());
 
             CreateMap<ServiceType, ServiceTypeDto>()
                 .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));

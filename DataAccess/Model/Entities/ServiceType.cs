@@ -16,13 +16,15 @@ namespace DataAccess.Model.Entities
 
         public string? Description { get; set; }
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
         public List<AvailableReservation> AvailableReservations { get; } = [];
-        public List<AvailableReservationServiceType> AvailableReservationServiceTypes { get; } = [];
+        public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];
+
+        public List<DurationCost> DurationCosts { get; } = [];
+        public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
 
 
-        public ICollection<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; } = new List<ServiceTypeDurationCost>();
         public ICollection<BookedReservation> BookedReservations { get; set; } = new List<BookedReservation>();
     }
 }

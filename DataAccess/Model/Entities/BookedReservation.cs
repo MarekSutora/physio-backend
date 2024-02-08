@@ -10,14 +10,13 @@ namespace DataAccess.Model.Entities
         public string Note { get; set; }
 
 
-        public int AvailableReservationId { get; set; }
-        public AvailableReservation? AvailableReservation { get; set; } = null!;
 
-        public int? ServiceTypeDurationCostId { get; set; }
-        public ServiceTypeDurationCost ServiceTypeDurationCost { get; set; }
+
+        public int AvailableReservationServiceTypeDCId { get; set; }
+        public AvailableReservationServiceTypeDc? AvailableReservationServiceTypeDc { get; set; } = null!;
+
 
         public int? PatientId { get; set; }
         public Patient? Patient { get; set; }
-
     }
 }

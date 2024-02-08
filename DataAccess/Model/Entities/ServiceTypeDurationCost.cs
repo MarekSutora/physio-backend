@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,18 +8,15 @@ namespace DataAccess.Model.Entities
 {
     public class ServiceTypeDurationCost
     {
-        public int Id { get; set; }
-
-        public int DurationMinutes { get; set; }
-
-        public decimal Cost { get; set; }
-
         public int ServiceTypeId { get; set; }
-
-        [Comment("Property for statistics in case cost or duration gets updated")]
-        public bool Active { get; set; }
-
+        public int DurationCostId { get; set; }
         public ServiceType ServiceType { get; set; } = null!;
+        public DurationCost DurationCost { get; set; } = null!;
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
 
+
+        public List<AvailableReservation> AvailableReservations { get; } = [];
+        public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];
     }
 }

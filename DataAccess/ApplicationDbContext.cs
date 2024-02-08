@@ -20,11 +20,12 @@ namespace DataAccess
         public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
+        public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
         public DbSet<AvailableReservation> AvailableReservations { get; set; }
-        public DbSet<AvailableReservationServiceType> AvailableReservationServiceTypes { get; set; }
+        public DbSet<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
 
@@ -40,16 +41,6 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
-
-            // AvailableReservation -> ServiceType many to many
-            builder.Entity<AvailableReservation>()
-            .HasMany(e => e.ServiceTypes)
-            .WithMany(e => e.AvailableReservations)
-            .UsingEntity<AvailableReservationServiceType>(
-                l => l.HasOne<ServiceType>(e => e.ServiceType).WithMany(e => e.AvailableReservationServiceTypes),
-                r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationServiceTypes));
-
-
             // patient -> diagnosis many to many
             builder.Entity<Patient>()
             .HasMany(e => e.Diagnosiss)
@@ -58,6 +49,21 @@ namespace DataAccess
                 l => l.HasOne<Diagnosis>(e => e.Diagnosis).WithMany(e => e.PatientDiagnosiss),
                 r => r.HasOne<Patient>(e => e.Patient).WithMany(e => e.PatientDiagnosiss));
 
+            //serviceType -> durationCost m:n
+            builder.Entity<ServiceType>()
+                .HasMany(e => e.DurationCosts)
+                .WithMany(e => e.ServiceTypes)
+                .UsingEntity<ServiceTypeDurationCost>(
+                                   l => l.HasOne<DurationCost>(e => e.DurationCost).WithMany(e => e.ServiceTypeDurationCosts),
+                                   r => r.HasOne<ServiceType>(e => e.ServiceType).WithMany(e => e.ServiceTypeDurationCosts));
+
+
+            builder.Entity<AvailableReservation>()
+                .HasMany(e => e.ServiceTypeDurationCosts)
+                .WithMany(e => e.AvailableReservations)
+                .UsingEntity<AvailableReservationServiceTypeDc>(
+                                                  l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AvailableReservationServiceTypeDcs),
+                                                  r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationServiceTypeDcs));
 
             // patient -> person 1:1
             builder.Entity<Patient>()
