@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.ServiceType
+namespace Shared.DTO.ServiceType.Response
 {
-    public class CreateNewServiceTypeDto
+    public class ServiceTypeDto
     {
+        public required int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
         public required string HexColor { get; set; }
-        public required List<ServiceTypeDurationCostDto> ServiceTypeDurationCosts { get; set; }
+        public required List<DurationCostDto> DurationCosts { get; set; }
     }
 }

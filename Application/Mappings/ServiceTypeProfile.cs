@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DataAccess.Model.Entities;
 using Shared.DTO.ServiceType;
+using Shared.DTO.ServiceType.Request;
+using Shared.DTO.ServiceType.Response;
 
 namespace Application.Mappings
 {
@@ -8,18 +10,13 @@ namespace Application.Mappings
     {
         public ServiceTypeProfile()
         {
-            CreateMap<CreateNewServiceTypeDto, ServiceType>()
-                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
+            CreateMap<CreateNewServiceTypeDto, ServiceType>();
 
-            CreateMap<UpdateServiceTypeDto, ServiceType>()
-                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.Ignore());
+            CreateMap<DurationCostDto, DurationCost>().ReverseMap();
 
-            CreateMap<ServiceType, ServiceTypeDto>()
-                .ForMember(dest => dest.ServiceTypeDurationCosts, opt => opt.MapFrom(src => src.ServiceTypeDurationCosts));
+            CreateMap<UpdateServiceTypeDto, ServiceType>();
 
-            CreateMap<ServiceTypeDurationCost, ServiceTypeDurationCostDto>().ReverseMap();
+            CreateMap<ServiceType, ServiceTypeDto>();
         }
     }
 }
-
-

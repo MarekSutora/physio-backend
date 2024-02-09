@@ -9,13 +9,13 @@ namespace DataAccess.Model.Entities
     public class BlogPost
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
+        public DateTime? date { get; set; }
+        public int? BlogId { get; set; }
+        public Blog? Blog { get; set; }
 
-        public int BlogId { get; set; }
-        public Blog Blog { get; set; }
-
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        //public string ApplicationUserId { get; set; }
+        //public ApplicationUser ApplicationUser { get; set; }
 
         public ICollection<BlogPostKeyword> BlogPostKeywords { get; } = new List<BlogPostKeyword>();
     }

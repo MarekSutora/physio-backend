@@ -10,18 +10,16 @@ namespace DataAccess.Model.Entities
     {
         public int Id { get; set; }
 
-        public string? Name { get; set; }
+        public required string Name { get; set; }
 
-        public string? HexColor { get; set; }
+        public required string HexColor { get; set; }
 
-        public string? Description { get; set; }
+        public required string Description { get; set; }
 
         public bool Active { get; set; } = true;
 
-        public List<AvailableReservation> AvailableReservations { get; } = [];
-        public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];
-
         public List<DurationCost> DurationCosts { get; } = [];
+
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
 
 

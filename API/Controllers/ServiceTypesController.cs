@@ -1,7 +1,7 @@
 ﻿using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Shared.DTO.ServiceType;
+using Shared.DTO.ServiceType.Request;
 using System;
 using System.Threading.Tasks;
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240208171015_servtypeHist3")]
-    partial class servtypeHist3
+    [Migration("20240209163141_newServiceTypeChanges")]
+    partial class newServiceTypeChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,58 +124,58 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            Id = "f1b49085-01d5-4462-9760-2e1e2370479e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f32629ba-a60c-448e-b9ce-fe59d6e007e1",
+                            ConcurrencyStamp = "3bcf5524-59bb-4069-87a8-9c711c8172f4",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFOL7eUJ5IU990BKQIGEA3hUVI18Rax3JgAHGm7qvf7y/bNlCas6dYeYFlOjZ72x/w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAmdTRhLU1rOU0lwWQnNdBrwDdWwnv9THIwHXO38em7bnhtFYMGcGo6Cdw/5HELRhA==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fbb35ee1-cc47-4513-ab02-8a7eefc8b002",
+                            SecurityStamp = "547f3647-0d3f-4e46-96d9-7f58ed37314d",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "47df776e-fcc7-4842-a6f7-d9a7917c9e33",
+                            Id = "bad71e53-0f89-4f98-84d0-b1c54450abb1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "15136962-219c-4f23-9ff5-d2458ad064be",
+                            ConcurrencyStamp = "53a79c5e-516e-4ccd-b09d-73750ea33005",
                             Email = "physiotherapist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PHYSIOTHERAPIST@EXAMPLE.COM",
                             NormalizedUserName = "PHYSIOTHERAPIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKIqf+RJTpTNRlnWJ3DJCBTiNK2aDecaW6xlhghZ+u+STpEAV5DmF06cht3bciOVig==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGjuWP8GGsx34F1WoYPnctrUUZVTRHU32itbJ76yE8T+Ov9MnwCiP3HjWQojgPGK2A==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f5a8e00d-25f5-4964-99e4-639b76acbb46",
+                            SecurityStamp = "a826ec23-e667-4ac3-bb0e-21097c098db4",
                             TwoFactorEnabled = false,
                             UserName = "physiotherapist@example.com"
                         },
                         new
                         {
-                            Id = "68021f5d-dad8-4865-b50d-87905bd24e41",
+                            Id = "16947b0f-5673-494f-80da-21c9c591af8e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0e8fc89e-ea0c-43fd-b96c-876da3d67d03",
+                            ConcurrencyStamp = "3556d77c-19ce-4141-871c-d790e1f01201",
                             Email = "patient@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHaI88ngPGk50kfhztkmbdt5DiyJzkiLYK6FffcFV8e2IW41HOLimVuMC1V7yxf9lw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOg4oTPN65ALuQT4E2JRSldCnl+OfAQmjF+gtgINlhb6YiJKszYQJoPnkVZR+pSUsQ==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "72496859-f229-4000-9cca-5f6661ac70a0",
+                            SecurityStamp = "75cdc2ba-9212-4dfd-a609-92b575c0f607",
                             TwoFactorEnabled = false,
                             UserName = "patient@example.com"
                         });
@@ -203,19 +203,27 @@ namespace DataAccess.Migrations
                     b.ToTable("AvailableReservations");
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceTypeDc", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("AvailableReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ServiceTypeId")
+                    b.Property<int>("ServiceTypeDurationCostId")
                         .HasColumnType("int");
 
-                    b.HasKey("AvailableReservationId", "ServiceTypeId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ServiceTypeId");
+                    b.HasIndex("AvailableReservationId");
 
-                    b.ToTable("AvailableReservationServiceTypes");
+                    b.HasIndex("ServiceTypeDurationCostId");
+
+                    b.ToTable("AvailableReservationServiceTypeDcs");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Blog", b =>
@@ -297,7 +305,10 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AvailableReservationId")
+                    b.Property<int?>("AvailableReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvailableReservationServiceTypeDCId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsCancelled")
@@ -322,6 +333,8 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvailableReservationId");
+
+                    b.HasIndex("AvailableReservationServiceTypeDCId");
 
                     b.HasIndex("PatientId");
 
@@ -352,6 +365,25 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Diagnosiss");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.DurationCost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DurationCosts");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Patient", b =>
@@ -468,22 +500,21 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("DateCreated")
+                    b.Property<DateTime>("DateFrom")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateInactive")
+                    b.Property<DateTime>("DateTo")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DurationMinutes")
+                    b.Property<int>("DurationCostId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DurationCostId");
 
                     b.HasIndex("ServiceTypeId");
 
@@ -626,22 +657,22 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            UserId = "f1b49085-01d5-4462-9760-2e1e2370479e",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "3c443c93-df53-4d5b-9a30-8eabfbf11258",
+                            UserId = "f1b49085-01d5-4462-9760-2e1e2370479e",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "47df776e-fcc7-4842-a6f7-d9a7917c9e33",
+                            UserId = "bad71e53-0f89-4f98-84d0-b1c54450abb1",
                             RoleId = "545BBA82-840A-4446-BFF6-64834A8DA52F"
                         },
                         new
                         {
-                            UserId = "68021f5d-dad8-4865-b50d-87905bd24e41",
+                            UserId = "16947b0f-5673-494f-80da-21c9c591af8e",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -676,23 +707,23 @@ namespace DataAccess.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceType", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservationServiceTypeDc", b =>
                 {
                     b.HasOne("DataAccess.Model.Entities.AvailableReservation", "AvailableReservation")
-                        .WithMany("AvailableReservationServiceTypes")
+                        .WithMany("AvailableReservationServiceTypeDcs")
                         .HasForeignKey("AvailableReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Model.Entities.ServiceType", "ServiceType")
-                        .WithMany("AvailableReservationServiceTypes")
-                        .HasForeignKey("ServiceTypeId")
+                    b.HasOne("DataAccess.Model.Entities.ServiceTypeDurationCost", "ServiceTypeDurationCost")
+                        .WithMany("AvailableReservationServiceTypeDcs")
+                        .HasForeignKey("ServiceTypeDurationCostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AvailableReservation");
 
-                    b.Navigation("ServiceType");
+                    b.Navigation("ServiceTypeDurationCost");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
@@ -727,9 +758,13 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.BookedReservation", b =>
                 {
-                    b.HasOne("DataAccess.Model.Entities.AvailableReservation", "AvailableReservation")
+                    b.HasOne("DataAccess.Model.Entities.AvailableReservation", null)
                         .WithMany("BookedReservations")
-                        .HasForeignKey("AvailableReservationId")
+                        .HasForeignKey("AvailableReservationId");
+
+                    b.HasOne("DataAccess.Model.Entities.AvailableReservationServiceTypeDc", "AvailableReservationServiceTypeDc")
+                        .WithMany()
+                        .HasForeignKey("AvailableReservationServiceTypeDCId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -741,7 +776,7 @@ namespace DataAccess.Migrations
                         .WithMany("BookedReservations")
                         .HasForeignKey("ServiceTypeId");
 
-                    b.Navigation("AvailableReservation");
+                    b.Navigation("AvailableReservationServiceTypeDc");
 
                     b.Navigation("Patient");
                 });
@@ -787,11 +822,19 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeDurationCost", b =>
                 {
+                    b.HasOne("DataAccess.Model.Entities.DurationCost", "DurationCost")
+                        .WithMany("ServiceTypeDurationCosts")
+                        .HasForeignKey("DurationCostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataAccess.Model.Entities.ServiceType", "ServiceType")
                         .WithMany("ServiceTypeDurationCosts")
                         .HasForeignKey("ServiceTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DurationCost");
 
                     b.Navigation("ServiceType");
                 });
@@ -859,7 +902,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.AvailableReservation", b =>
                 {
-                    b.Navigation("AvailableReservationServiceTypes");
+                    b.Navigation("AvailableReservationServiceTypeDcs");
 
                     b.Navigation("BookedReservations");
                 });
@@ -879,6 +922,11 @@ namespace DataAccess.Migrations
                     b.Navigation("PatientDiagnosiss");
                 });
 
+            modelBuilder.Entity("DataAccess.Model.Entities.DurationCost", b =>
+                {
+                    b.Navigation("ServiceTypeDurationCosts");
+                });
+
             modelBuilder.Entity("DataAccess.Model.Entities.Patient", b =>
                 {
                     b.Navigation("PatientDiagnosiss");
@@ -893,11 +941,14 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Model.Entities.ServiceType", b =>
                 {
-                    b.Navigation("AvailableReservationServiceTypes");
-
                     b.Navigation("BookedReservations");
 
                     b.Navigation("ServiceTypeDurationCosts");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.ServiceTypeDurationCost", b =>
+                {
+                    b.Navigation("AvailableReservationServiceTypeDcs");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,17 +15,17 @@ namespace DataAccess
     {
         public DbSet<Address> Addresss { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<BookedReservation> BookedReservations { get; set; }
+        public DbSet<AvailableReservation> AvailableReservations { get; set; }
+        public DbSet<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
+        public DbSet<BookedReservation> BookedReservations { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<Person> Persons { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
-        public DbSet<AvailableReservation> AvailableReservations { get; set; }
-        public DbSet<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; set; }
+        public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
 
@@ -82,11 +82,29 @@ namespace DataAccess
 
             builder.SeedApplicationUsers();
 
-            builder.SeedServiceTypes();
-
             builder.SeedAvailableReservations();
+        }
 
-            builder.SeedAvailableReservationServiceTypes();
+        public override int SaveChanges()
+        {
+            SetServiceTypeDurationCostDateFrom();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            SetServiceTypeDurationCostDateFrom();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetServiceTypeDurationCostDateFrom()
+        {
+            var entries = ChangeTracker.Entries().Where(e => e.Entity is ServiceTypeDurationCost && e.State == EntityState.Added);
+
+            foreach (var entry in entries)
+            {
+                ((ServiceTypeDurationCost)entry.Entity).DateFrom = DateTime.Now;
+            }
         }
     }
 }

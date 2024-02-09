@@ -9,8 +9,8 @@ namespace DataAccess.Model.Entities
     public class Diagnosis
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public string? Description { get; set; }
         public int Severity { get; set; }
 
         public List<Patient> Patients { get; } = [];

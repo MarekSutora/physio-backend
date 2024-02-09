@@ -1,5 +1,6 @@
 ﻿using DataAccess.Model.Entities;
-using Shared.DTO.ServiceType;
+using Shared.DTO.ServiceType.Request;
+using Shared.DTO.ServiceType.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
