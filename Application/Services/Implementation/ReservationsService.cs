@@ -7,6 +7,8 @@ using DataAccess.Model.Entities;
 using Application.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Reservations;
+using Shared.DTO.Reservations.Request;
+using Shared.DTO.Reservations.Response;
 
 namespace Application.Services.Implementation
 {
@@ -19,37 +21,62 @@ namespace Application.Services.Implementation
             _context = context;
         }
 
-        public Task<bool> CreateReservationAsync(CreateReservationDto createReservationDto)
+        public async Task<bool> CreateAvailableReservationAsync(CreateAvailableReservationDto createAvailableReservationDto)
+        {
+            // Create a new AvailableReservation entity from the DTO
+            var availableReservation = new AvailableReservation
+            {
+                StartTime = createAvailableReservationDto.StartTime,
+                Capacity = createAvailableReservationDto.Capacity,
+                ReservedAmount = 0, // Assuming new reservations start with 0 reserved slots
+            };
+
+            // Fetch the associated ServiceTypeDurationCost entities based on the provided IDs
+            var stdcs = await _context.ServiceTypeDurationCosts
+                                      .Where(stdc => createAvailableReservationDto.StdcIds.Contains(stdc.Id))
+                                      .ToListAsync();
+
+            // Associate the AvailableReservation with the ServiceTypeDurationCosts
+            availableReservation.ServiceTypeDurationCosts.AddRange(stdcs);
+
+            _context.AvailableReservations.Add(availableReservation);
+            var result = await _context.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+        public async Task<bool> CreateBookedReservationAsync(BookReservationDto bookedReservationDto)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<AvailableReservationDto>> GetAvailableReservationsWithServiceTypesAsync()
+        public async Task<List<AvailableReservationDto>> GetAvailableReservationsAsync()
         {
-            //var threeMonthsFromNow = DateTime.Today.AddDays(-5).AddMonths(3);
+            var availableReservations = await _context.AvailableReservations
+                .Where(ar => ar.ReservedAmount < ar.Capacity)
+                .Include(ar => ar.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.ServiceType)
+                .Include(ar => ar.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .Select(ar => new AvailableReservationDto
+                {
+                    Id = ar.Id,
+                    StartTime = ar.StartTime,
+                    Capacity = ar.Capacity,
+                    ReservedAmount = ar.ReservedAmount,
+                    ServiceTypesWithCosts = ar.ServiceTypeDurationCosts.Select(stdc => new ServiceTypeWithCostDto
+                    {
+                        arstdcId = stdc.Id, // Include the ID of AvailableReservationServiceTypeDc
+                        ServiceTypeName = stdc.ServiceType.Name,
+                        DurationMinutes = stdc.DurationCost.DurationMinutes,
+                        Cost = stdc.DurationCost.Cost,
+                        HexColor = stdc.ServiceType.HexColor
+                    }).ToList()
+                })
+                .ToListAsync();
 
-            //var availableAppointments = await _context.AvailableReservation
-            //    .Where(a => a.Date >= DateTime.Today && a.Date <= threeMonthsFromNow)
-            //    .Include(a => a.ServiceTypes)
-            //    .Select(a => new AvailableReservationDto
-            //    {
-            //        Id = a.Id,
-            //        Date = a.Date,
-            //        Capacity = a.Capacity,
-            //        ReservedAmount = a.ReservedAmount,
-            //        ServiceTypes = a.ServiceTypes.Select(at => new ServiceTypeDto
-            //        {
-            //            Id = at.Id,
-            //            Name = at.Name,
-            //            Description = at.Description,
-            //            Cost = at.Cost,
-            //            Duration = at.Duration,
-            //            HexColor = at.HexColor
-            //        }).ToList()
-            //    })
-            //    .ToListAsync();
-
-            return null;
+            return availableReservations;
         }
+
     }
 }

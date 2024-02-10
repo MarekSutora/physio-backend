@@ -10,8 +10,6 @@ namespace DataAccess.Model.Entities
         public string Note { get; set; }
 
 
-
-
         public int AvailableReservationServiceTypeDCId { get; set; }
         public AvailableReservationServiceTypeDc? AvailableReservationServiceTypeDc { get; set; } = null!;
 

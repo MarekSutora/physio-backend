@@ -11,7 +11,7 @@ namespace Application.Services.Interfaces
 {
     public interface IServiceTypeService
     {
-        Task<bool> CreateServiceTypeAsync(CreateNewServiceTypeDto createNewServiceTypeDto);
+        Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto);
         Task<bool> SoftDeleteServiceTypeAsync(int id);
         Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync();
         Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto);

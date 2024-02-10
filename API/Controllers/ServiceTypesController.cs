@@ -22,7 +22,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateServiceType([FromBody] CreateNewServiceTypeDto createNewServiceTypeDto)
+        public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
         {
             try
             {

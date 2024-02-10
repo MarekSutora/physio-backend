@@ -8,8 +8,8 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<AvailableReservation> builder)
         {
-            builder.Property(ar => ar.Date)
-                .IsRequired().HasColumnType("datetime2"); ;
+            builder.Property(ar => ar.StartTime)
+                .IsRequired().HasColumnType("datetime2");
 
             builder.Property(ar => ar.Capacity)
                 .IsRequired();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.ServiceType.Request
 {
-    public class CreateNewServiceTypeDto
+    public class CreateServiceTypeDto
     {
         [Required]
         public string Name { get; set; }

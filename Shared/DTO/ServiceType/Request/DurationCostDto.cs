@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.ServiceType
+namespace Shared.DTO.ServiceType.Request
 {
     public class DurationCostDto
     {

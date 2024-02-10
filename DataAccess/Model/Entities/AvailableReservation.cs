@@ -11,7 +11,7 @@ namespace DataAccess.Model.Entities
         public int Id { get; set; }
         public int Capacity { get; set; }
         public int ReservedAmount { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StartTime { get; set; }
 
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
         public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];

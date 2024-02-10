@@ -24,7 +24,7 @@ namespace Application.Services.Implementation
         }
 
         // Creates a new ServiceType along with associated DurationCosts and ServiceTypeDurationCosts
-        public async Task<bool> CreateServiceTypeAsync(CreateNewServiceTypeDto createNewServiceTypeDto)
+        public async Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
         {
             try
             {
@@ -87,20 +87,11 @@ namespace Application.Services.Implementation
             _logger.LogInformation("Retrieving all active ServiceTypes with current DurationCosts.");
             try
             {
-                // Retrieve all active ServiceTypes
                 var serviceTypes = await _context.ServiceTypes
                     .Where(st => st.Active)
+                    .Include(st => st.ServiceTypeDurationCosts)
+                        .ThenInclude(stdc => stdc.DurationCost)
                     .ToListAsync();
-
-                foreach (var serviceType in serviceTypes)
-                {
-                    await _context.Entry(serviceType)
-                        .Collection(st => st.ServiceTypeDurationCosts)
-                        .Query()
-                        .Where(stdc => stdc.DateTo == null)
-                        .Include(stdc => stdc.DurationCost)
-                        .LoadAsync();
-                }
 
                 _logger.LogInformation("Retrieved {Count} active ServiceTypes with current DurationCosts.", serviceTypes.Count);
                 return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
@@ -108,10 +99,13 @@ namespace Application.Services.Implementation
             catch (Exception e)
             {
                 _logger.LogError(e, "Error retrieving active ServiceTypes with current DurationCosts.");
-                throw; // It's usually better to throw the original exception rather than wrapping it in a new one, to preserve the original stack trace
+                throw; // Preserve the original stack trace
             }
         }
 
+
+
+        //Todo validacia ze dat return true ak sa updatne na uplne rovnake hodnoty (mozno aj na FE)
         public async Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
             try
@@ -127,6 +121,11 @@ namespace Application.Services.Implementation
                     return false;
                 }
 
+                // Update serviceType properties
+                serviceType.Name = updateServiceTypeDto.Name;
+                serviceType.Description = updateServiceTypeDto.Description;
+                serviceType.HexColor = updateServiceTypeDto.HexColor;
+
                 // Convert DTO list to a set for efficient lookups
                 var dtoDurations = new HashSet<(int DurationMinutes, decimal Cost)>(
                     updateServiceTypeDto.DurationCosts.Select(dto => (dto.DurationMinutes, dto.Cost))
@@ -136,7 +135,7 @@ namespace Application.Services.Implementation
                 foreach (var dto in updateServiceTypeDto.DurationCosts)
                 {
                     var existingAssociation = serviceType.ServiceTypeDurationCosts
-                        .FirstOrDefault(stdc => stdc.DurationCost.DurationMinutes == dto.DurationMinutes && stdc.DurationCost.Cost == dto.Cost);
+                        .Find(stdc => stdc.DurationCost.DurationMinutes == dto.DurationMinutes && stdc.DurationCost.Cost == dto.Cost);
 
                     if (existingAssociation == null)
                     {
@@ -171,7 +170,6 @@ namespace Application.Services.Implementation
                 return false;
             }
         }
-
 
     }
 }

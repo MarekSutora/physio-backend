@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Services.Interfaces;
 using Shared.DTO.Reservations;
+using Shared.DTO.Reservations.Request;
+using Application.Services.Implementation;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -9,45 +11,40 @@ namespace diploma_thesis_backend.Controllers
     [Route("[controller]")]
     public class ReservationsController : ControllerBase
     {
-        private readonly IReservationsService _reservationService;
+        private readonly IReservationsService _reservationsService;
+        private readonly ILogger<ReservationsController> _logger;
 
-        public ReservationsController(IReservationsService reservationService)
+        public ReservationsController(IReservationsService reservationsService, ILogger<ReservationsController> logger)
         {
-            _reservationService = reservationService;
+            _reservationsService = reservationsService;
+            _logger = logger;
         }
 
-        // GET /available-reservations
+        // GET /api/available-reservations
         [HttpGet("available-reservations")]
         public async Task<IActionResult> GetAvailableReservations()
         {
             try
             {
-                var reservationsWithActivities = await _reservationService.GetAvailableReservationsWithServiceTypesAsync();
+                var availableReservations = await _reservationsService.GetAvailableReservationsAsync();
 
-                if (reservationsWithActivities.Any())
-                {
-                    return Ok(reservationsWithActivities);
-                }
-                else
-                {
-                    return NotFound("No available reservations with service types found.");
-                }
+                // Assuming your service already returns DTOs, you can directly return the result
+                return Ok(availableReservations);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                // Log the exception details here
-
-                // Return a generic error message to the client
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                // Log the exception and return an appropriate error response
+                // This is a simple example, consider using a more detailed error handling strategy
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto createReservationDto)
+        [HttpPost("available-reservations")]
+        public async Task<IActionResult> CreateAvailableReservation([FromBody] CreateAvailableReservationDto createAvailableReservationDto)
         {
             try
             {
-                var result = await _reservationService.CreateReservationAsync(createReservationDto);
+                var result = await _reservationsService.CreateAvailableReservationAsync(createAvailableReservationDto);
                 if (result)
                 {
                     return Ok();
@@ -60,10 +57,11 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 // Log the exception details here
-
+                _logger.LogError(ex, "Error creating reservation");
                 // Return a generic error message to the client
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
     }
 }
+
