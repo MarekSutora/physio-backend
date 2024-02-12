@@ -25,6 +25,7 @@ namespace Application
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IReservationsService, ReservationsService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
+            services.AddScoped<IPatientsService, PatientsService>();
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
@@ -73,7 +74,7 @@ namespace Application
                     };
                 });
 
-            services.AddAutoMapper(typeof(ServiceTypeProfile));
+            services.AddAutoMapper(typeof(GeneralMappingProfile));
         }
     }
 }

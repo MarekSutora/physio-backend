@@ -9,50 +9,91 @@ using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Reservations;
 using Shared.DTO.Reservations.Request;
 using Shared.DTO.Reservations.Response;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace Application.Services.Implementation
 {
     public class ReservationsService : IReservationsService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ReservationsService> _logger;
+        private readonly IMapper _mapper;
 
-        public ReservationsService(ApplicationDbContext context)
+        public ReservationsService(ApplicationDbContext context, ILogger<ReservationsService> logger, IMapper mapper)
         {
             _context = context;
+            _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<bool> CreateAvailableReservationAsync(CreateAvailableReservationDto createAvailableReservationDto)
+        public async Task CreateAvailableReservationAsync(CreateAvailableReservationDto createAvailableReservationDto)
         {
-            // Create a new AvailableReservation entity from the DTO
+            // Vytvorenie novej entity AvailableReservation z DTO
             var availableReservation = new AvailableReservation
             {
                 StartTime = createAvailableReservationDto.StartTime,
                 Capacity = createAvailableReservationDto.Capacity,
-                ReservedAmount = 0, // Assuming new reservations start with 0 reserved slots
+                ReservedAmount = 0,
             };
 
-            // Fetch the associated ServiceTypeDurationCost entities based on the provided IDs
+            // Načítanie príslušných entít ServiceTypeDurationCost na základe poskytnutých ID
             var stdcs = await _context.ServiceTypeDurationCosts
                                       .Where(stdc => createAvailableReservationDto.StdcIds.Contains(stdc.Id))
                                       .ToListAsync();
 
-            // Associate the AvailableReservation with the ServiceTypeDurationCosts
+            // Asociácia AvailableReservation s ServiceTypeDurationCosts
             availableReservation.ServiceTypeDurationCosts.AddRange(stdcs);
 
             _context.AvailableReservations.Add(availableReservation);
-            var result = await _context.SaveChangesAsync();
-
-            return result > 0;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> CreateBookedReservationAsync(BookReservationDto bookedReservationDto)
+        public async Task ClientCreateBookedReservationAsync(ClientBookedReservationDto bookedReservationDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var newBookedReservation = _mapper.Map<BookedReservation>(bookedReservationDto);
+
+                var availableReservation = await _context.AvailableReservations
+                    .Include(ar => ar.ServiceTypeDurationCosts)
+                    .FirstOrDefaultAsync(ar => ar.Id == newBookedReservation.AvailableReservationServiceTypeDCId);
+
+                if (availableReservation == null)
+                {
+                    throw new Exception("The available reservation does not exist");
+                }
+
+                if (availableReservation.ReservedAmount >= availableReservation.Capacity)
+                {
+                    throw new Exception("The available reservation is full");
+                }
+                else
+                {
+                    availableReservation.ReservedAmount++;
+                }
+
+                _context.BookedReservations.Add(newBookedReservation);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Booked reservation with ID: {BookedReservationId} created successfully.", newBookedReservation.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating booked reservation");
+                throw; // Propagujte výnimku vyššie
+            }
         }
+
+
+
+
 
         public async Task<List<AvailableReservationDto>> GetAvailableReservationsAsync()
         {
-            var availableReservations = await _context.AvailableReservations
+            try
+            {
+                var availableReservations = await _context.AvailableReservations
                 .Where(ar => ar.ReservedAmount < ar.Capacity)
                 .Include(ar => ar.ServiceTypeDurationCosts)
                     .ThenInclude(stdc => stdc.ServiceType)
@@ -75,8 +116,105 @@ namespace Application.Services.Implementation
                 })
                 .ToListAsync();
 
-            return availableReservations;
+                return availableReservations;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving available reservations.");
+                throw;
+            }
         }
 
+        public async Task<List<BookedReservationDto>> GetBookedReservationsAsync() //TODO getall
+        {
+            try
+            {
+                // Query to retrieve booked reservations along with related entities
+                var bookedReservations = await _context.BookedReservations
+                    .Include(br => br.AvailableReservationServiceTypeDc)
+                        .ThenInclude(arstdc => arstdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.ServiceType)
+                    .Include(br => br.AvailableReservationServiceTypeDc)
+                        .ThenInclude(arstdc => arstdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.DurationCost)
+                    .Include(br => br.Patient)
+                        .ThenInclude(p => p.Person)
+                    .Select(br => new BookedReservationDto
+                    {
+                        Id = br.Id,
+                        StartTime = br.AvailableReservationServiceTypeDc.AvailableReservation.StartTime,
+                        Duration = br.AvailableReservationServiceTypeDc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                        ServiceTypeName = br.AvailableReservationServiceTypeDc.ServiceTypeDurationCost.ServiceType.Name,
+                        Person = br.Patient != null ? br.Patient.Person.FirstName + " " + br.Patient.Person.LastName : "-", // Handle null Patient
+                        Cost = br.AvailableReservationServiceTypeDc.ServiceTypeDurationCost.DurationCost.Cost,
+                        HexColor = br.AvailableReservationServiceTypeDc.ServiceTypeDurationCost.ServiceType.HexColor
+                    })
+                    .ToListAsync();
+
+                return bookedReservations;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving booked reservations.");
+                throw;
+            }
+        }
+
+        public async Task AdminCreateBookedReservationAsync(AdminBookedReservationDto bookedReservationDto)
+        {
+            // Start transaction to ensure atomicity
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                // Step 1: Create the AvailableReservation
+                var availableReservation = new AvailableReservation
+                {
+                    StartTime = bookedReservationDto.StartTime,
+                    Capacity = 1, // Assuming capacity of 1 for admin created reservations
+                    ReservedAmount = 1 // Since you're booking it right away
+                };
+
+                _context.AvailableReservations.Add(availableReservation);
+                await _context.SaveChangesAsync();
+
+                // Step 2: Retrieve ServiceTypeDurationCost and associate it with AvailableReservation
+                var serviceTypeDurationCost = await _context.ServiceTypeDurationCosts
+                    .FindAsync(bookedReservationDto.ServiceTypeDurationCostId);
+
+                if (serviceTypeDurationCost == null)
+                {
+                    throw new Exception("ServiceTypeDurationCost not found.");
+                }
+
+                // Link the ServiceTypeDurationCost with the AvailableReservation
+                availableReservation.ServiceTypeDurationCosts.Add(serviceTypeDurationCost);
+
+                // Step 3: Create the BookedReservation
+                var bookedReservation = new BookedReservation
+                {
+                    AvailableReservationServiceTypeDCId = serviceTypeDurationCost.Id,
+                    ReservationBookedDate = DateTime.Now,
+                    ReservationFinishedDate = availableReservation.StartTime.AddMinutes(serviceTypeDurationCost.DurationCost.DurationMinutes),
+                    PatientId = bookedReservationDto.PatientId,
+                    // Other properties if required
+                };
+
+                _context.BookedReservations.Add(bookedReservation);
+                await _context.SaveChangesAsync();
+
+                // Commit the transaction
+                await transaction.CommitAsync();
+
+                _logger.LogInformation("Admin created BookedReservation successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Rollback the transaction if any exception occurs
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error creating admin booked reservation");
+                throw;
+            }
+        }
     }
 }

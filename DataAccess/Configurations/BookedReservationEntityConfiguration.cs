@@ -22,9 +22,9 @@ namespace DataAccess.Configurations
             builder.Property(br => br.ReservationFinishedDate)
                 .HasColumnType("datetime2");
 
-            builder.Property(br => br.Note)
-                .HasMaxLength(500)
-                .IsRequired(false);
+            //builder.Property(br => br.Note)
+            //    .HasMaxLength(500)
+            //    .IsRequired(false);
         }
     }
 }

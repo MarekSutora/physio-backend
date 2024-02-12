@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Interfaces
 {
+    //TODO pluralize the name of the interface
     public interface IServiceTypeService
     {
         Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto);

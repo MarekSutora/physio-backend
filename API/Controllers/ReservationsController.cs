@@ -44,22 +44,45 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var result = await _reservationsService.CreateAvailableReservationAsync(createAvailableReservationDto);
-                if (result)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest("Failed to create reservation");
-                }
+                await _reservationsService.CreateAvailableReservationAsync(createAvailableReservationDto);
+                return Ok();
             }
             catch (Exception ex)
             {
                 // Log the exception details here
                 _logger.LogError(ex, "Error creating reservation");
                 // Return a generic error message to the client
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return BadRequest("Failed to create reservation");
+            }
+        }
+
+        [HttpGet("booked-reservations")]
+        public async Task<IActionResult> GetBookedReservations()
+        {
+            try
+            {
+                await _reservationsService.GetBookedReservationsAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating reservation");
+                return BadRequest("Failed to create reservation");
+            }
+        }
+
+        [HttpPost("admin-booked-reservations")]
+        public async Task<IActionResult> CreateBookedReservation([FromBody] BookReservationDto bookedReservationDto)
+        {
+            try
+            {
+                await _reservationsService.CreateBookedReservationAsync(bookedReservationDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating reservation");
+                return BadRequest("Failed to create reservation");
             }
         }
     }

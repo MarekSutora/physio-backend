@@ -9,5 +9,7 @@ namespace DataAccess.Model.Entities
         public int AvailableReservationId { get; set; }
         public ServiceTypeDurationCost ServiceTypeDurationCost { get; set; } = null!;
         public AvailableReservation AvailableReservation { get; set; } = null!;
+
+        public ICollection<BookedReservation> BookedReservations { get; set; } = new List<BookedReservation>();
     }
 }

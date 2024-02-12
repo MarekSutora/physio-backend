@@ -14,6 +14,5 @@ namespace DataAccess.Model.Entities
 
         public List<ServiceType> ServiceTypes { get; } = [];
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
-
     }
 }

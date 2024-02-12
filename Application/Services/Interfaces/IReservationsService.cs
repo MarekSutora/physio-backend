@@ -10,12 +10,14 @@ namespace Application.Services.Interfaces
 {
     public interface IReservationsService
     {
-        Task<bool> CreateAvailableReservationAsync(CreateAvailableReservationDto createAvailableReservationDto);
+        Task CreateAvailableReservationAsync(CreateAvailableReservationDto createAvailableReservationDto);
 
         Task<List<AvailableReservationDto>> GetAvailableReservationsAsync();
 
-        Task<bool> CreateBookedReservationAsync(BookReservationDto bookedReservationDto);
+        Task AdminCreateBookedReservationAsync(AdminBookedReservationDto bookedReservationDto);
 
-        //Task<bool> UpdateAvailableReservationAsync(int id, UpdateReservationDto updateReservationDto);
+        Task ClientCreateBookedReservationAsync(ClientBookedReservationDto bookedReservationDto);
+
+        Task<List<BookedReservationDto>> GetBookedReservationsAsync();
     }
 }

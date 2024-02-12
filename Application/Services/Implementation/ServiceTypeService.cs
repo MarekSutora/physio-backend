@@ -23,28 +23,50 @@ namespace Application.Services.Implementation
             _logger = logger;
         }
 
-        // Creates a new ServiceType along with associated DurationCosts and ServiceTypeDurationCosts
         public async Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
         {
             try
             {
-                var serviceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
-                // Log the creation attempt
-                _logger.LogInformation("Attempting to create a new ServiceType: {ServiceTypeName}", serviceType.Name);
+                var serviceType = new ServiceType
+                {
+                    Name = createNewServiceTypeDto.Name,
+                    Description = createNewServiceTypeDto.Description,
+                    HexColor = createNewServiceTypeDto.HexColor
+                };
 
+                foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+                {
+                    var existingDurationCost = await _context.DurationCosts
+                        .FirstOrDefaultAsync(dc => dc.DurationMinutes == durationCostDto.DurationMinutes && dc.Cost == durationCostDto.Cost);
 
-                await _context.ServiceTypes.AddAsync(serviceType);
-                bool result = await _context.SaveChangesAsync() > 0;
-                // Log the result
-                _logger.LogInformation("ServiceType creation {Result}", result ? "succeeded" : "failed");
+                    if (existingDurationCost == null)
+                    {
+                        existingDurationCost = new DurationCost
+                        {
+                            DurationMinutes = durationCostDto.DurationMinutes,
+                            Cost = durationCostDto.Cost
+                        };
+                        _context.DurationCosts.Add(existingDurationCost);
+                    }
 
-                return result;
+                    // EF Core will handle the initialization of the collection when adding the first item.
+                    serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                    {
+                        DurationCost = existingDurationCost
+                    });
+                }
+
+                _context.ServiceTypes.Add(serviceType);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("ServiceType with ID {ServiceTypeId} created successfully.", serviceType.Id);
+
+                return true; // Return the created ServiceType entity
             }
             catch (Exception e)
             {
-                // Log the exception
                 _logger.LogError(e, "Error creating ServiceType: {Message}", e.Message);
-                return false;
+                throw; // It's better to throw the original exception to preserve the stack trace.
             }
         }
 
@@ -103,16 +125,13 @@ namespace Application.Services.Implementation
             }
         }
 
-
-
-        //Todo validacia ze dat return true ak sa updatne na uplne rovnake hodnoty (mozno aj na FE)
         public async Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
             try
             {
                 var serviceType = await _context.ServiceTypes
                     .Include(st => st.ServiceTypeDurationCosts)
-                    .ThenInclude(stdc => stdc.DurationCost)
+                        .ThenInclude(stdc => stdc.DurationCost)
                     .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id);
 
                 if (serviceType == null)
@@ -121,47 +140,48 @@ namespace Application.Services.Implementation
                     return false;
                 }
 
-                // Update serviceType properties
                 serviceType.Name = updateServiceTypeDto.Name;
                 serviceType.Description = updateServiceTypeDto.Description;
                 serviceType.HexColor = updateServiceTypeDto.HexColor;
 
-                // Convert DTO list to a set for efficient lookups
-                var dtoDurations = new HashSet<(int DurationMinutes, decimal Cost)>(
-                    updateServiceTypeDto.DurationCosts.Select(dto => (dto.DurationMinutes, dto.Cost))
-                );
-
-                // Update and add new associations
-                foreach (var dto in updateServiceTypeDto.DurationCosts)
+                // Handle existing associations
+                var currentDurationCosts = serviceType.ServiceTypeDurationCosts.ToList();
+                foreach (var current in currentDurationCosts)
                 {
-                    var existingAssociation = serviceType.ServiceTypeDurationCosts
-                        .Find(stdc => stdc.DurationCost.DurationMinutes == dto.DurationMinutes && stdc.DurationCost.Cost == dto.Cost);
-
-                    if (existingAssociation == null)
+                    if (!updateServiceTypeDto.DurationCosts.Exists(dto => dto.DurationMinutes == current.DurationCost.DurationMinutes && dto.Cost == current.DurationCost.Cost))
                     {
-                        var durationCost = new DurationCost { DurationMinutes = dto.DurationMinutes, Cost = dto.Cost };
-                        serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                        {
-                            ServiceType = serviceType,
-                            DurationCost = durationCost
-                        });
+                        current.DateTo = DateTime.Now; // Mark the end date of the current association
                     }
-                    // No else part needed, as we keep existing matches
                 }
 
-                // Remove or deactivate old associations
-                foreach (var association in serviceType.ServiceTypeDurationCosts)
+                // Handle new associations
+                foreach (var dto in updateServiceTypeDto.DurationCosts)
                 {
-                    var durationCost = association.DurationCost;
-                    if (!dtoDurations.Contains((durationCost.DurationMinutes, durationCost.Cost)))
+                    var existingDurationCost = await _context.DurationCosts
+                        .FirstOrDefaultAsync(dc => dc.DurationMinutes == dto.DurationMinutes && dc.Cost == dto.Cost);
+
+                    if (existingDurationCost == null)
                     {
-                        association.DateTo = DateTime.Now; // Mark as inactive
+                        existingDurationCost = new DurationCost
+                        {
+                            DurationMinutes = dto.DurationMinutes,
+                            Cost = dto.Cost
+                        };
+                        _context.DurationCosts.Add(existingDurationCost);
+                    }
+
+                    if (!serviceType.ServiceTypeDurationCosts.Exists(stdc => stdc.DurationCost == existingDurationCost && stdc.DateTo == null))
+                    {
+                        serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                        {
+                            DurationCost = existingDurationCost
+                        });
                     }
                 }
 
                 bool result = await _context.SaveChangesAsync() > 0;
-
                 _logger.LogInformation("ServiceType with ID: {ServiceTypeId} updated {Result}.", updateServiceTypeDto.Id, result ? "successfully" : "unsuccessfully");
+
                 return result;
             }
             catch (Exception e)
@@ -170,6 +190,5 @@ namespace Application.Services.Implementation
                 return false;
             }
         }
-
     }
 }

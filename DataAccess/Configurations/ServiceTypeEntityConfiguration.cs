@@ -12,6 +12,9 @@ namespace DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(150);
 
+            builder.HasIndex(st => st.Name)
+                .IsUnique();
+
             builder.Property(st => st.HexColor)
                 .HasDefaultValue("#14746F");
 

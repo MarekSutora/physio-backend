@@ -36,7 +36,8 @@ namespace diploma_thesis_backend.API.Middlewares
                 var error = new
                 {
                     Id = errorId,
-                    ErrorMessage = "Niekde nastala chyba. Skuste to prosim neskor."
+                    //ErrorMessage = "Niekde nastala chyba. Skuste to prosim neskor."
+                    ErrorMessage = ex.Message
                 };
 
                 await httpContext.Response.WriteAsJsonAsync(error);

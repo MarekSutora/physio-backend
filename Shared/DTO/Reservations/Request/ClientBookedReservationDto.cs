@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Reservations.Request
 {
-    public class BookReservationDto
+    public class ClientBookedReservationDto
     {
-        public int AvailableReservationId { get; set; }
-        public bool IsCancelled { get; set; }
-        public string? Note { get; set; }
+        public int AvailableReservationServiceTypeDCId { get; set; }
         public int? PatientId { get; set; }
     }
 }
