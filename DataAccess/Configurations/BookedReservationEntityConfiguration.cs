@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    internal class BookedReservationEntityConfiguration : IEntityTypeConfiguration<BookedReservation>
+    internal class BookedAppointmentEntityConfiguration : IEntityTypeConfiguration<BookedAppointment>
     {
-        public void Configure(EntityTypeBuilder<BookedReservation> builder)
+        public void Configure(EntityTypeBuilder<BookedAppointment> builder)
         {
             builder.Property(br => br.IsCancelled)
            .HasDefaultValue(false);
 
-            builder.Property(br => br.ReservationBookedDate)
+            builder.Property(br => br.AppointmentBookedDate)
                 .HasColumnType("datetime2");
 
-            builder.Property(br => br.ReservationFinishedDate)
+            builder.Property(br => br.AppointmentFinishedDate)
                 .HasColumnType("datetime2");
 
             //builder.Property(br => br.Note)

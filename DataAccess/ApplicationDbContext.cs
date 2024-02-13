@@ -15,12 +15,12 @@ namespace DataAccess
     {
         public DbSet<Address> Addresss { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<AvailableReservation> AvailableReservations { get; set; }
-        public DbSet<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
-        public DbSet<BookedReservation> BookedReservations { get; set; }
+        public DbSet<BookedAppointment> BookedAppointments { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<Patient> Patients { get; set; }
@@ -58,12 +58,12 @@ namespace DataAccess
                                    r => r.HasOne<ServiceType>(e => e.ServiceType).WithMany(e => e.ServiceTypeDurationCosts));
 
 
-            builder.Entity<AvailableReservation>()
+            builder.Entity<Appointment>()
                 .HasMany(e => e.ServiceTypeDurationCosts)
-                .WithMany(e => e.AvailableReservations)
-                .UsingEntity<AvailableReservationServiceTypeDc>(
-                                                  l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AvailableReservationServiceTypeDcs),
-                                                  r => r.HasOne<AvailableReservation>(e => e.AvailableReservation).WithMany(e => e.AvailableReservationServiceTypeDcs));
+                .WithMany(e => e.Appointments)
+                .UsingEntity<AppointmentServiceTypeDurationCost>(
+                                                  l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AppointmentServiceTypeDurationCosts),
+                                                  r => r.HasOne<Appointment>(e => e.Appointment).WithMany(e => e.AppointmentServiceTypeDurationCosts));
 
             // patient -> person 1:1
             builder.Entity<Patient>()
@@ -82,7 +82,7 @@ namespace DataAccess
 
             builder.SeedApplicationUsers();
 
-            builder.SeedAvailableReservations();
+            builder.SeedAppointments();
         }
 
         public override int SaveChanges()

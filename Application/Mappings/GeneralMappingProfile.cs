@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Model.Entities;
 using Shared.DTO.Patients.Response;
-using Shared.DTO.Reservations.Request;
+using Shared.DTO.Appointments.Request;
 using Shared.DTO.ServiceType.Request;
 using Shared.DTO.ServiceType.Response;
 
@@ -32,9 +32,7 @@ namespace Application.Mappings
                         Cost = stdc.DurationCost.Cost
                     })));
 
-            CreateMap<BookedReservation, BookReservationDto>();
-
-            CreateMap<Patient, PatientForBookedReservationDto>()
+            CreateMap<Patient, PatientForBookedAppointmentDto>()
                .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.PersonId))
                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Person.FirstName))
                .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.Person.LastName));

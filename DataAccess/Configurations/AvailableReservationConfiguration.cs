@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Configurations
 {
-    public class AvailableReservationConfiguration : IEntityTypeConfiguration<AvailableReservation>
+    public class AvailableReservationConfiguration : IEntityTypeConfiguration<Appointment>
     {
-        public void Configure(EntityTypeBuilder<AvailableReservation> builder)
+        public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.Property(ar => ar.StartTime)
                 .IsRequired().HasColumnType("datetime2");
@@ -14,8 +14,8 @@ namespace DataAccess.Configurations
             builder.Property(ar => ar.Capacity)
                 .IsRequired();
 
-            builder.Property(ar => ar.ReservedAmount)
-                .IsRequired();
+            //builder.Property(ar => ar.ReservedAmount)
+            //    .IsRequired();
         }
     }
 }

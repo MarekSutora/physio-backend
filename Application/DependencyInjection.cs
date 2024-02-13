@@ -23,7 +23,7 @@ namespace Application
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IReservationsService, ReservationsService>();
+            services.AddScoped<IAppointmentsService, AppointmentsService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IPatientsService, PatientsService>();
 

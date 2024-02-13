@@ -17,7 +17,7 @@ namespace DataAccess.Model.Entities
         public DateTime? DateTo { get; set; }
 
 
-        public List<AvailableReservation> AvailableReservations { get; } = [];
-        public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];
+        public List<Appointment> Appointments { get; } = [];
+        public List<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; } = [];
     }
 }

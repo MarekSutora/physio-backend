@@ -4,9 +4,9 @@ using System;
 
 namespace DataAccess.DataSeeding
 {
-    public static class AvailableReservationSeeding
+    public static class AppointmentSeeding
     {
-        public static void SeedAvailableReservations(this ModelBuilder modelBuilder)
+        public static void SeedAppointments(this ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<AvailableReservation>().HasData(
             //    new AvailableReservation { Id = 1, Capacity = 1, ReservedAmount = 0, Date = new DateTime(2024, 1, 29, 8, 0, 0) },

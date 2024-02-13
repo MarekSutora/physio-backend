@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.Reservations.Request
+namespace Shared.DTO.Appointments.Request
 {
-    public class AdminBookedReservationDto
+    public class AdminBookedAppointmentDto
     {
         public int ServiceTypeDurationCostId { get; set; }
 

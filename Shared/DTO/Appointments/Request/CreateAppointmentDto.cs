@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.Reservations.Request
+namespace Shared.DTO.Appointments.Request
 {
-    public class CreateAvailableReservationDto
+    public class CreateAppointmentDto
     {
         public required List<int> StdcIds { get; set; }
 

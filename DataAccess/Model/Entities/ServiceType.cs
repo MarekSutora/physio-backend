@@ -23,6 +23,6 @@ namespace DataAccess.Model.Entities
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
 
 
-        public ICollection<BookedReservation> BookedReservations { get; set; } = new List<BookedReservation>();
+        public ICollection<BookedAppointment> BookedReservations { get; set; } = new List<BookedAppointment>();
     }
 }

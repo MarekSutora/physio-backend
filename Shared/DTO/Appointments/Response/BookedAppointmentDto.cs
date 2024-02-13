@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.Reservations.Response
+namespace Shared.DTO.Appointments.Response
 {
-    public class BookedReservationDto
+    public class BookedAppointmentDto
     {
         public int Id { get; set; }
         public DateTime StartTime { get; set; }
         public int Duration { get; set; }
         public string ServiceTypeName { get; set; }
-        public string Person { get; set; }
+        public string ClientFirstName { get; set; }
+        public string ClientSecondName { get; set; }
         public decimal Cost { get; set; }
-        public string Note { get; set; }
         public string HexColor { get; set; }
     }
 }

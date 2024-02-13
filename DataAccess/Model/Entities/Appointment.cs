@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class AvailableReservation
+    public class Appointment
     {
         public int Id { get; set; }
         public int Capacity { get; set; }
-        public int ReservedAmount { get; set; }
         public DateTime StartTime { get; set; }
 
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
-        public List<AvailableReservationServiceTypeDc> AvailableReservationServiceTypeDcs { get; } = [];
+        public List<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; } = [];
 
 
-        public ICollection<BookedReservation> BookedReservations { get; } = new List<BookedReservation>();
+        //public ICollection<BookedAppointment> BookedAppointments { get; } = new List<BookedAppointment>();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Patients.Response
 {
-    public class PatientForBookedReservationDto
+    public class PatientForBookedAppointmentDto
     {
         public int PersonId { get; set; }
         public string FirstName { get; set; }

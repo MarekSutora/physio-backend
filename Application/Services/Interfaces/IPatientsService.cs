@@ -9,6 +9,6 @@ namespace Application.Services.Interfaces
 {
     public interface IPatientsService
     {
-        Task<List<PatientForBookedReservationDto>> GetAllForBookedReservationAsync();
+        Task<List<PatientForBookedAppointmentDto>> GetAllForBookedReservationAsync();
     }
 }

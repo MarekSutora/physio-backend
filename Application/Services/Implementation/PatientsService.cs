@@ -25,7 +25,7 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<List<PatientForBookedReservationDto>> GetAllForBookedReservationAsync()
+        public async Task<List<PatientForBookedAppointmentDto>> GetAllForBookedReservationAsync()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace Application.Services.Implementation
                                              .Include(p => p.Person) // Ensure Person is included
                                              .ToListAsync();
 
-                return _mapper.Map<List<PatientForBookedReservationDto>>(patients);
+                return _mapper.Map<List<PatientForBookedAppointmentDto>>(patients);
             }
             catch (Exception e)
             {
