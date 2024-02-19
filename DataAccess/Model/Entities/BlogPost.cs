@@ -10,13 +10,11 @@ namespace DataAccess.Model.Entities
     {
         public int Id { get; set; }
         public required string Title { get; set; }
-        public DateTime? date { get; set; }
-        public int? BlogId { get; set; }
-        public Blog? Blog { get; set; }
-
-        //public string ApplicationUserId { get; set; }
-        //public ApplicationUser ApplicationUser { get; set; }
-
-        public ICollection<BlogPostKeyword> BlogPostKeywords { get; } = new List<BlogPostKeyword>();
+        public required DateTime DatePublished { get; set; }
+        public required string HTMLContent { get; set; }
+        public required string Author { get; set; }
+        public required string KeywordsString { get; set; }
+        public required string MainImageUrl { get; set; }
+        public required bool IsHidden { get; set; } = false;
     }
 }

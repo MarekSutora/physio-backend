@@ -12,6 +12,7 @@ namespace diploma_thesis_backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Produces("application/json")]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentsService _appointmentsService;
@@ -63,8 +64,8 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                await _appointmentsService.GetBookedAppointmentsAsync();
-                return Ok();
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync();
+                return Ok(bookedAppointments);
             }
             catch (Exception ex)
             {

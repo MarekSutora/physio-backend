@@ -17,9 +17,7 @@ namespace DataAccess
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; set; }
-        public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<BlogPostKeyword> BlogPostKeywords { get; set; }
         public DbSet<BookedAppointment> BookedAppointments { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }

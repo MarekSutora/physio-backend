@@ -13,18 +13,9 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BookedAppointment> builder)
         {
-            builder.Property(br => br.IsCancelled)
-           .HasDefaultValue(false);
 
             builder.Property(br => br.AppointmentBookedDate)
                 .HasColumnType("datetime2");
-
-            builder.Property(br => br.AppointmentFinishedDate)
-                .HasColumnType("datetime2");
-
-            //builder.Property(br => br.Note)
-            //    .HasMaxLength(500)
-            //    .IsRequired(false);
         }
     }
 }

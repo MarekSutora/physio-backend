@@ -26,6 +26,7 @@ namespace Application
             services.AddScoped<IAppointmentsService, AppointmentsService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IPatientsService, PatientsService>();
+            services.AddScoped<IBlogsService, BlogsService>();
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 

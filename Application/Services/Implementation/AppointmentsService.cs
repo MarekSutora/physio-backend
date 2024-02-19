@@ -103,28 +103,33 @@ namespace Application.Services.Implementation
         {
             try
             {
-                var unBookedAppointments = await _context.AppointmentServiceTypeDurationCosts
-                    .Include(astdc => astdc.BookedAppointments)
-                    .Include(astdc => astdc.ServiceTypeDurationCost)
-                        .ThenInclude(stdc => stdc.ServiceType)
-                    .Include(astdc => astdc.ServiceTypeDurationCost)
-                        .ThenInclude(stdc => stdc.DurationCost)
-                    .Where(astdc => astdc.BookedAppointments.Count(ba => ba.CancellationDate == null) < astdc.Appointment.Capacity)
-                    .Select(astdc => new UnbookedAppointmentDto
-                    {
-                        AppointmentId = astdc.Appointment.Id,
-                        StartTime = astdc.Appointment.StartTime,
-                        Capacity = astdc.Appointment.Capacity,
-                        ServiceTypeInfos = astdc.Appointment.AppointmentServiceTypeDurationCosts.Select(innerAstdc => new ServiceTypeInfoDto
-                        {
-                            AstdcId = innerAstdc.Id,
-                            Name = innerAstdc.ServiceTypeDurationCost.ServiceType.Name,
-                            DurationMinutes = innerAstdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                            Cost = innerAstdc.ServiceTypeDurationCost.DurationCost.Cost,
-                            HexColor = innerAstdc.ServiceTypeDurationCost.ServiceType.HexColor
-                        }).ToList()
-                    })
-                    .ToListAsync();
+                var unBookedAppointmentsQuery = _context.AppointmentServiceTypeDurationCosts
+            .Include(astdc => astdc.BookedAppointments)
+            .Include(astdc => astdc.ServiceTypeDurationCost)
+                .ThenInclude(stdc => stdc.ServiceType)
+            .Include(astdc => astdc.ServiceTypeDurationCost)
+                .ThenInclude(stdc => stdc.DurationCost)
+            .Where(astdc => astdc.BookedAppointments.Count(ba => ba.CancellationDate == null) < astdc.Appointment.Capacity
+                    && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1));
+
+                var groupedAppointments = from astdc in unBookedAppointmentsQuery
+                                          group astdc by astdc.Appointment into g
+                                          select new UnbookedAppointmentDto
+                                          {
+                                              AppointmentId = g.Key.Id,
+                                              StartTime = g.Key.StartTime,
+                                              Capacity = g.Key.Capacity,
+                                              ServiceTypeInfos = g.Select(astdc => new ServiceTypeInfoDto
+                                              {
+                                                  AstdcId = astdc.Id,
+                                                  Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
+                                                  DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                                                  Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
+                                                  HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
+                                              }).ToList()
+                                          };
+
+                var unBookedAppointments = await groupedAppointments.ToListAsync();
 
                 return unBookedAppointments;
             }
@@ -146,7 +151,7 @@ namespace Application.Services.Implementation
                     {
                         Id = ba.Id,
                         StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
-                        Duration = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                        DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
                         ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                         ClientFirstName = ba.Patient!.Person.FirstName, // TODO not null handle
                         ClientSecondName = ba.Patient!.Person.LastName,

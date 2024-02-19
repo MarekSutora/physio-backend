@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240214133311_isCancelledToCancellationDate")]
+    partial class isCancelledToCancellationDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,96 +124,96 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "07cd8e13-1893-40b9-87bf-697bbb69d6de",
+                            Id = "b597c871-0dd5-45f0-8683-67a66920271a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "24b6b1be-6f8d-4a43-ab1b-6311c0b1e5ef",
+                            ConcurrencyStamp = "697dcaf0-8560-4d25-a0ed-d88a1108d751",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMoLRpf0sV2YKhMifgRv4VqApzYInnzg/vjRDLXIuDOaRBzXUibyODUJiD+9tZYN1g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM0WqaFY5F9N8E6s+wERRr6ZPMBobrwBIbXs7T0yCAIJUKASqtjoANQyDnjoSfHmsg==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "769bd1ab-c4aa-4d3f-90f9-0b5013b3c9c8",
+                            SecurityStamp = "1cdfc52d-10be-4149-88c0-cea82434f624",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
                         new
                         {
-                            Id = "6586809e-3f2c-452f-b695-14f2524d34e3",
+                            Id = "132fb38f-7690-4521-a3ac-64e2bd0f680e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b87e426b-fbc8-49a4-8f5c-b7245c4a81de",
+                            ConcurrencyStamp = "b2619a63-5ea3-4633-a537-30645a7eddfd",
                             Email = "admin2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN2@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN2@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF2fAIrhJ9eX6lk9N6gXCtFHeThPZBAzXRF4tIUPpXpC3W67SySOUU3kyBhpUTqE1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDHR8SYC54Lka4k2lKb63RlRuwvgVl/HaY+/qYi+FsFknZgBLW4YwwF8V0ewYIqmfw==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "052e874a-c1bd-40fb-9c51-817c2f793b09",
+                            SecurityStamp = "20ca0dd8-e880-4d7b-aac7-eae2b3f7f84b",
                             TwoFactorEnabled = false,
                             UserName = "admin2@example.com"
                         },
                         new
                         {
-                            Id = "ff92d413-11a6-42cb-91c7-47d1406a3364",
+                            Id = "c74ccb80-ad1e-4373-a2ef-b05f428665b9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3e291bdf-6abe-4506-8bf2-4143879b3b33",
+                            ConcurrencyStamp = "d7f65e75-5110-4ba3-8d2b-356413d95178",
                             Email = "patient1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT1@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENPrD3LSXZt0PPwSM7IIJ7cShDFPtaTlu5JvQjB1qtIRC9F/kB2dY4JvV4eTGEae0Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDRQWpoSyV53Iy0ev96Fx8XHV2O791Em/8wT9UrxP/5DA/OrS7u9oVn2aBclal2w7Q==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fc20c4f7-47b1-4695-bd71-306ee038c77f",
+                            SecurityStamp = "bc36c7fb-70d2-4c6c-9691-21694c15b9a3",
                             TwoFactorEnabled = false,
                             UserName = "patient1@example.com"
                         },
                         new
                         {
-                            Id = "82451cba-985b-4cd7-94ed-36636d1147ce",
+                            Id = "5ad31b21-38f6-4159-b20f-544d45803ea8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9edf59ae-1bd1-4d54-8150-e142c114dfe4",
+                            ConcurrencyStamp = "e36d0632-20db-41dd-8a08-033a38946d60",
                             Email = "patient2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT2@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT2@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPDfY7HiKPnSSmIEG6B2/7fQQdJJgwlHYGCby7prgUFBucPL3KOYvj2hpSTg+n1Dcg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIfriJGyFcF/0/B+pPRzbMN9n5r8KAkVr+tYkVhnLu9eHkjgWTC/6ISSjM/5nUPE7w==",
                             PersonId = 4,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fb182a99-937f-4d55-9e31-5aba843173aa",
+                            SecurityStamp = "8ced15cc-88cf-411b-97a4-f8cf9fe1e257",
                             TwoFactorEnabled = false,
                             UserName = "patient2@example.com"
                         },
                         new
                         {
-                            Id = "52652a00-afbd-40aa-9030-711e1c0bc3a4",
+                            Id = "e934755e-634a-466e-ba7a-fea0c6f9ed16",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8dca9177-7ede-4b4c-b92e-316379048483",
+                            ConcurrencyStamp = "b1156dd4-f6f5-4d21-a36d-dfe8bf50829b",
                             Email = "patient3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT3@EXAMPLE.COM",
                             NormalizedUserName = "PATIENT3@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBO87qWkPvkfcyrGBon8u46rWo5aBzfnnweRNl8YKrUVfEdC0M33xs+iOe/ZnCcT6Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOnFD5XTEx9bERbQ3Fl08HNZs/qjsZv+BfVie9NlTs0RAmRJJHyoeZwUDXR3s3xq+Q==",
                             PersonId = 5,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "1545b682-0151-44c0-99cf-9da7bda9895e",
+                            SecurityStamp = "2473f8c4-192e-4ed4-8104-b3d7eebcf065",
                             TwoFactorEnabled = false,
                             UserName = "patient3@example.com"
                         });
@@ -258,7 +261,7 @@ namespace DataAccess.Migrations
                     b.ToTable("AppointmentServiceTypeDurationCosts");
                 });
 
-            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
+            modelBuilder.Entity("DataAccess.Model.Entities.Blog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,29 +269,7 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DatePublished")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HTMLContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("KeywordsString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MainImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -298,7 +279,54 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BlogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("date")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
                     b.ToTable("BlogPosts");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.BlogPostKeyword", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BlogPostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogPostId");
+
+                    b.ToTable("BlogPostKeywords");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.BookedAppointment", b =>
@@ -664,27 +692,27 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "07cd8e13-1893-40b9-87bf-697bbb69d6de",
+                            UserId = "b597c871-0dd5-45f0-8683-67a66920271a",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "6586809e-3f2c-452f-b695-14f2524d34e3",
+                            UserId = "132fb38f-7690-4521-a3ac-64e2bd0f680e",
                             RoleId = "8036F52A-701F-4AA4-8639-D9C8123FD8C6"
                         },
                         new
                         {
-                            UserId = "ff92d413-11a6-42cb-91c7-47d1406a3364",
+                            UserId = "c74ccb80-ad1e-4373-a2ef-b05f428665b9",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         },
                         new
                         {
-                            UserId = "82451cba-985b-4cd7-94ed-36636d1147ce",
+                            UserId = "5ad31b21-38f6-4159-b20f-544d45803ea8",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         },
                         new
                         {
-                            UserId = "52652a00-afbd-40aa-9030-711e1c0bc3a4",
+                            UserId = "e934755e-634a-466e-ba7a-fea0c6f9ed16",
                             RoleId = "C7D20194-9C7E-40DB-9C63-F71D20116529"
                         });
                 });
@@ -736,6 +764,26 @@ namespace DataAccess.Migrations
                     b.Navigation("Appointment");
 
                     b.Navigation("ServiceTypeDurationCost");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.Blog", "Blog")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("BlogId");
+
+                    b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.BlogPostKeyword", b =>
+                {
+                    b.HasOne("DataAccess.Model.Entities.BlogPost", "BlogPost")
+                        .WithMany("BlogPostKeywords")
+                        .HasForeignKey("BlogPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BlogPost");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.BookedAppointment", b =>
@@ -881,6 +929,16 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Model.Entities.AppointmentServiceTypeDurationCost", b =>
                 {
                     b.Navigation("BookedAppointments");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.Blog", b =>
+                {
+                    b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("DataAccess.Model.Entities.BlogPost", b =>
+                {
+                    b.Navigation("BlogPostKeywords");
                 });
 
             modelBuilder.Entity("DataAccess.Model.Entities.Diagnosis", b =>

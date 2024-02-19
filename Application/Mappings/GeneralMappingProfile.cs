@@ -4,6 +4,8 @@ using Shared.DTO.Patients.Response;
 using Shared.DTO.Appointments.Request;
 using Shared.DTO.ServiceType.Request;
 using Shared.DTO.ServiceType.Response;
+using Shared.DTO.Blog.Request;
+using Shared.DTO.Blog.Response;
 
 namespace Application.Mappings
 {
@@ -36,6 +38,11 @@ namespace Application.Mappings
                .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.PersonId))
                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Person.FirstName))
                .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.Person.LastName));
+
+            CreateMap<CreateBlogPostDto, BlogPost>();
+
+            CreateMap<BlogPost, BlogPostDto>();
+
         }
     }
 }
