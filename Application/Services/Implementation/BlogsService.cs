@@ -76,6 +76,21 @@ namespace Application.Services.Implementation
             }
         }
 
+        public async Task<BlogPostDto> GetBlogPostBySlugAsync(string slug)
+        {
+            try
+            {
+                var blogPost = await _context.BlogPosts.Where(x => x.Slug == slug).FirstOrDefaultAsync();
+                if (blogPost == null) throw new KeyNotFoundException($"Blog post with title {slug} not found");
+
+                return _mapper.Map<BlogPostDto>(blogPost);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving blog post with title {slug}");
+                throw;
+            }
+        }
 
         public async Task<IEnumerable<BlogPostDto>> GetBlogPostsAsync()
         {
@@ -87,6 +102,21 @@ namespace Application.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving blog posts");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync()
+        {
+
+            try
+            {
+                var blogPosts = await _context.BlogPosts.Where(x => x.IsHidden == false).ToListAsync();
+                return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving non-hidden blog posts");
                 throw;
             }
         }

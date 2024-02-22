@@ -10,6 +10,7 @@ namespace DataAccess.Model.Entities
     {
         public int Id { get; set; }
         public required string Title { get; set; }
+        public required string Slug { get; set; }
         public required DateTime DatePublished { get; set; }
         public required string HTMLContent { get; set; }
         public required string Author { get; set; }

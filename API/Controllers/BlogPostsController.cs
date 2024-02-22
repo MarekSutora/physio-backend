@@ -123,5 +123,41 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [HttpGet("by-slug/{slug}")]
+        public async Task<IActionResult> GetBlogPostBySlugAsync(string slug)
+        {
+            try
+            {
+                var blogPost = await _blogService.GetBlogPostBySlugAsync(slug);
+                if (blogPost != null)
+                {
+                    return Ok(blogPost);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving blog post with title {BlogPostTitle}", slug);
+                return StatusCode(500, "An error occurred while retrieving the blog post");
+            }
+        }
+
+        [HttpGet("non-hidden")]
+        public async Task<IActionResult> GetNonHiddenBlogPosts()
+        {
+            try
+            {
+                IEnumerable<BlogPostDto> blogPosts = await _blogService.GetNonHiddenBlogPostsAsync();
+                return Ok(blogPosts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving non-hidden blog posts");
+                return StatusCode(500, "An error occurred while retrieving the non-hidden blog posts");
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace Shared.DTO.Blog.Response
         public string Author { get; set; }
         public string MainImageUrl { get; set; }
         public bool IsHidden { get; set; } = false;
+        public string Slug { get; set; }
     }
 }

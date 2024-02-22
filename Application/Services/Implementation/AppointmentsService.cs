@@ -153,7 +153,7 @@ namespace Application.Services.Implementation
                         StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
                         DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
                         ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                        ClientFirstName = ba.Patient!.Person.FirstName, // TODO not null handle
+                        ClientFirstName = ba.Patient.Person.FirstName ?? "-", // TODO not null handle
                         ClientSecondName = ba.Patient!.Person.LastName,
                         Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                         HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor
