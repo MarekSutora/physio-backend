@@ -147,20 +147,41 @@ namespace Application.Services.Implementation
             {
                 var bookedAppointments = await _context.BookedAppointments
                     .Where(ba => ba.CancellationDate == null) // Filter out canceled appointments
-                    .Select(ba => new BookedAppointmentDto
+                    .Select(ba => new
                     {
-                        Id = ba.Id,
-                        StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                        ba.Id,
+                        AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
+                        ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
                         DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
                         ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                        ClientFirstName = ba.Patient.Person.FirstName ?? "-", // TODO not null handle
-                        ClientSecondName = ba.Patient!.Person.LastName,
+                        HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
+                        Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                        ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
+                        ClientLastName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
                         Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
-                        HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor
+                        AppointmentBookedDate = ba.AppointmentBookedDate
                     })
                     .ToListAsync();
 
-                return bookedAppointments;
+                var groupedAppointments = bookedAppointments
+                    .GroupBy(ba => ba.AppointmentId)
+                    .Select(g => new BookedAppointmentDto
+                    {
+                        Id = g.First().Id,
+                        AppointmentId = g.Key,
+                        StartTime = g.First().StartTime,
+                        DurationMinutes = g.First().DurationMinutes,
+                        ServiceTypeName = g.First().ServiceTypeName,
+                        HexColor = g.First().HexColor,
+                        Capacity = g.First().Capacity,
+                        Cost = g.First().Cost,
+                        ClientFirstName = g.First().ClientFirstName,
+                        ClientSecondName = g.First().ClientLastName,
+                        AppointmentBookedDate = g.First().AppointmentBookedDate
+                    })
+                    .ToList();
+
+                return groupedAppointments;
             }
             catch (Exception ex)
             {
@@ -168,6 +189,7 @@ namespace Application.Services.Implementation
                 throw;
             }
         }
+
 
 
         public async Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto)

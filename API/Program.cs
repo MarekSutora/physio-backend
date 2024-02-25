@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOriginDev",
                       policy =>
                       {
-                          policy.WithOrigins("https://localhost:3000")
+                          policy.WithOrigins("http://localhost:3000")
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
@@ -67,6 +67,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseCors("AllowedOriginProd");
+    app.UseHttpsRedirection();
 }
 
 app.UseAuthentication();

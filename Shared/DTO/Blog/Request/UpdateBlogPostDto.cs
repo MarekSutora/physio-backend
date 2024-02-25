@@ -12,10 +12,10 @@ namespace Shared.DTO.Blog.Request
         public string Title { get; set; }
         public DateTime DatePublished { get; set; }
         public string HTMLContent { get; set; }
-        public string Description { get; set; }
         public string KeywordsString { get; set; }
         public string Author { get; set; }
         public string MainImageUrl { get; set; }
-        public bool IsHidden { get; set; } = false;
+        public string Slug { get; set; }
+        public bool IsHidden { get; set; }
     }
 }
