@@ -24,7 +24,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [HttpGet("unbooked-appointments")]
+        [HttpGet("unbooked")]
         public async Task<IActionResult> GetUnbookedAppointmentsAsync()
         {
             try
@@ -42,7 +42,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPost("unbooked-appointments")]
+        [HttpPost("unbooked")]
         public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
         {
             try
@@ -59,7 +59,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("booked-appointments")]
+        [HttpGet("booked")]
         public async Task<IActionResult> GetBookedAppointmentsAsync()
         {
             try
@@ -107,20 +107,12 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPut("booked-appointments/{bookedAppointmentId}")]
-        public async Task<IActionResult> CancelAppointmentAsync(int bookedAppointmentId)
+        [HttpDelete("booked/{bookedAppointmentId}")]
+        public async Task<IActionResult> DeleteBookedAppointmentAsync(int bookedAppointmentId)
         {
             try
             {
-                CancelBookedAppointmentDto cancelBookedAppointmentDto = new CancelBookedAppointmentDto
-                {
-                    BookedAppointmentId = bookedAppointmentId
-                };
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get userId from claims
-                var isAdmin = User.IsInRole("Admin"); // Check if user is in Admin role
-
-                await _appointmentsService.CancelAppointmentAsync(cancelBookedAppointmentDto, userId, isAdmin);
+                await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
                 return Ok("Appointment cancelled successfully.");
             }
             catch (UnauthorizedAccessException ex)
@@ -135,18 +127,40 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAppointmentAsync([FromBody] DeleteAppointmentDto deleteAppointmentDto)
+        [HttpDelete("{appointmentId}")]
+        public async Task<IActionResult> DeleteAppointmentAsync(int appointmentId)
         {
             try
             {
-                await _appointmentsService.DeleteAppointmentAsync(deleteAppointmentDto);
+                await _appointmentsService.DeleteAppointmentAsync(appointmentId);
                 return Ok("Appointment deleted successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting appointment.");
                 return StatusCode(500, "Failed to delete appointment.");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAppointmentById(int id)
+        {
+            try
+            {
+                var appointment = await _appointmentsService.GetAppointmentByIdAsync(id);
+                if (appointment != null)
+                {
+                    return Ok(appointment);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving appointment with ID {AppointmentId}", id);
+                return StatusCode(500, "An error occurred while retrieving the appointment");
             }
         }
     }

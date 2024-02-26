@@ -47,6 +47,7 @@ namespace Application.Mappings
             CreateMap<BlogPost, BlogPostDto>();
 
             CreateMap<UpdateBlogPostDto, BlogPost>();
+
         }
 
         private string GenerateSlug(string title)

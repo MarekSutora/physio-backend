@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace DataAccess.Model.Entities
     {
         public int Id { get; set; }
         public int DurationMinutes { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Cost { get; set; }
 
         public List<ServiceType> ServiceTypes { get; } = [];

@@ -73,7 +73,7 @@ namespace Application.Services.Implementation
                 };
 
                 var existingBookingsCount = await _context.BookedAppointments
-                            .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == clientBookedAppointmentDto.astdcId && ba.CancellationDate == null);
+                            .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == clientBookedAppointmentDto.astdcId);
 
                 var capacity = await _context.AppointmentServiceTypeDurationCosts
                     .Where(astdc => astdc.Id == clientBookedAppointmentDto.astdcId)
@@ -109,7 +109,7 @@ namespace Application.Services.Implementation
                 .ThenInclude(stdc => stdc.ServiceType)
             .Include(astdc => astdc.ServiceTypeDurationCost)
                 .ThenInclude(stdc => stdc.DurationCost)
-            .Where(astdc => astdc.BookedAppointments.Count(ba => ba.CancellationDate == null) < astdc.Appointment.Capacity
+            .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
                     && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1));
 
                 var groupedAppointments = from astdc in unBookedAppointmentsQuery
@@ -146,7 +146,7 @@ namespace Application.Services.Implementation
             try
             {
                 var bookedAppointments = await _context.BookedAppointments
-                    .Where(ba => ba.CancellationDate == null) // Filter out canceled appointments
+                    .Where(ba => !ba.IsFinished)
                     .Select(ba => new
                     {
                         ba.Id,
@@ -156,6 +156,7 @@ namespace Application.Services.Implementation
                         ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                         HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                         Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                        ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
                         ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
                         ClientLastName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
                         Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
@@ -177,7 +178,8 @@ namespace Application.Services.Implementation
                         Cost = g.First().Cost,
                         ClientFirstName = g.First().ClientFirstName,
                         ClientSecondName = g.First().ClientLastName,
-                        AppointmentBookedDate = g.First().AppointmentBookedDate
+                        AppointmentBookedDate = g.First().AppointmentBookedDate,
+                        ClientId = g.First().ClientId
                     })
                     .ToList();
 
@@ -246,50 +248,13 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task CancelAppointmentAsync(CancelBookedAppointmentDto cancelBookedAppointmentDto, string userId, bool isAdmin)
-        {
-            try
-            {
-                var bookedAppointment = await _context.BookedAppointments
-                    .Include(ba => ba.Patient)
-                    .ThenInclude(p => p.Person) // Assuming Patient is linked to Person, which contains UserId
-                    .FirstOrDefaultAsync(ba => ba.Id == cancelBookedAppointmentDto.BookedAppointmentId);
-
-                if (bookedAppointment == null)
-                {
-                    throw new Exception("Appointment not found.");
-                }
-
-                // If the user is not an admin, verify the appointment belongs to them
-                if (!isAdmin)
-                {
-                    if (bookedAppointment!.Patient!.Person!.ApplicationUser!.Id != userId)
-                    {
-                        throw new UnauthorizedAccessException("You do not have permission to cancel this appointment.");
-                    }
-                }
-
-                // Proceed to cancel the appointment
-                bookedAppointment.CancellationDate = DateTime.UtcNow.AddHours(1); // Set the cancellation date to now
-
-                // Save the changes in the database
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error cancelling the appointment.");
-                throw;
-            }
-        }
-
-
-        public async Task DeleteAppointmentAsync(DeleteAppointmentDto deleteAppointmentDto)
+        public async Task DeleteAppointmentAsync(int appointmentId)
         {
             try
             {
                 var appointment = await _context.Appointments
                     .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .FirstOrDefaultAsync(a => a.Id == deleteAppointmentDto.AppointmentId);
+                    .FirstOrDefaultAsync(a => a.Id == appointmentId);
 
                 if (appointment == null)
                 {
@@ -310,6 +275,34 @@ namespace Application.Services.Implementation
                 _logger.LogError(ex, "Error deleting the appointment.");
                 throw;
             }
+        }
+
+        public async Task DeleteBookedAppointmentAsync(int bookedAppointmentId)
+        {
+            try
+            {
+                var bookedAppointment = await _context.BookedAppointments
+                    .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                    .FirstOrDefaultAsync(ba => ba.Id == bookedAppointmentId);
+
+                if (bookedAppointment == null)
+                {
+                    throw new Exception("BookedAppointment not found.");
+                }
+
+                _context.BookedAppointments.Remove(bookedAppointment);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                _logger.LogError("Error deleting the booked appointment.");
+                throw;
+            }
+        }
+
+        public Task<AppointmentInfoDto> GetAppointmentByIdAsync(int appointmentId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

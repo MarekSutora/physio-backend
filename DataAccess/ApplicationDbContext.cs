@@ -17,10 +17,13 @@ namespace DataAccess
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; set; }
+        public DbSet<AppointmentExerciseDetail> bA_ExerciseDetails { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<BookedAppointment> BookedAppointments { get; set; }
+        public DbSet<AppointmentDetail> appointmentDetails { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
+        public DbSet<ExerciseType> ExerciseTypes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
         public DbSet<Person> Persons { get; set; }
@@ -69,7 +72,16 @@ namespace DataAccess
 
             builder.Entity<Patient>()
                        .HasOne<Person>(p => p.Person)
-                       .WithOne(s => s.Patient);
+                       .WithOne(s => s.Patient)
+                       .HasForeignKey<Patient>(pa => pa.PersonId);
+
+            // Appointment -> AppointmentDetail 1:1
+            builder.Entity<AppointmentDetail>().HasKey(ad => ad.AppointmentId);
+
+            builder.Entity<AppointmentDetail>()
+                .HasOne<Appointment>(ad => ad.Appointment)
+                .WithOne(a => a.AppointmentDetail)
+                .HasForeignKey<AppointmentDetail>(ad => ad.AppointmentId);
 
 
             // ApplicationUser -> person 1:1

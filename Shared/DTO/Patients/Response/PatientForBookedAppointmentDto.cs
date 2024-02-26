@@ -11,6 +11,5 @@ namespace Shared.DTO.Patients.Response
         public int PersonId { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
-
     }
 }

@@ -16,14 +16,14 @@ namespace Application.Services.Interfaces
 
         Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync();
 
-        Task CancelAppointmentAsync(CancelBookedAppointmentDto cancelBookedAppointmentDto, string userId, bool isAdmin);
-
-        Task DeleteAppointmentAsync(DeleteAppointmentDto deleteAppointmentDto);
+        Task DeleteAppointmentAsync(int appointmentId);
 
         Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto);
 
         Task ClientCreateBookedAppointmentAsync(ClientBookedAppointmentDto clientBookedAppointmentDto, string userId);
 
+        Task DeleteBookedAppointmentAsync(int bookedAppointmentId);
 
+        Task<AppointmentInfoDto> GetAppointmentByIdAsync(int appointmentId);
     }
 }

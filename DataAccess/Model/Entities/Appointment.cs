@@ -15,7 +15,6 @@ namespace DataAccess.Model.Entities
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
         public List<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; } = [];
 
-
-        //public ICollection<BookedAppointment> BookedAppointments { get; } = new List<BookedAppointment>();
+        public AppointmentDetail? AppointmentDetail { get; set; }
     }
 }
