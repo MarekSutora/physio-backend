@@ -11,6 +11,7 @@ using Shared.DTO.Appointments.Request;
 using Shared.DTO.Appointments.Response;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Services.Implementation
 {
@@ -300,9 +301,37 @@ namespace Application.Services.Implementation
             }
         }
 
-        public Task<AppointmentInfoDto> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var appointment = await _context.Appointments
+                    .Include(a => a.AppointmentServiceTypeDurationCosts)
+                        .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(ba => ba.Patient).ThenInclude(p => p.Person)
+                    .Include(a => a.AppointmentServiceTypeDurationCosts)
+                        .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                            .ThenInclude(stdc => stdc.ServiceType)
+                    .Include(a => a.AppointmentServiceTypeDurationCosts)
+                        .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                            .ThenInclude(stdc => stdc.DurationCost)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(a => a.Id == appointmentId);
+
+                if (appointment == null)
+                {
+                    _logger.LogWarning("Appointment not found for ID {AppointmentId}.", appointmentId);
+                    throw new Exception("Appointment not found.");
+                }
+
+                var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
+
+                return appointmentDto;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving the appointment with ID {AppointmentId}.", appointmentId);
+                throw;
+            }
         }
     }
 }

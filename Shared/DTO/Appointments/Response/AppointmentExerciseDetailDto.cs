@@ -8,17 +8,13 @@ namespace Shared.DTO.Appointments.Response
 {
     public class AppointmentExerciseDetailDto
     {
-        public string? ExerciseName { get; set; }
-        public int? PlannedNumberOfRepetitions { get; set; }
-        public int? PlannedExpectedNumberOfSets { get; set; }
-        public int? PlannedExpectedDurationInMinutes { get; set; }
-        public int? PlannedRestAfterExerciseInMinutes { get; set; }
-        public int? PlannedRestBetweenSetsInMinutes { get; set; }
-        public int? ActualNumberOfRepetitions { get; set; }
-        public int? ActualNumberOfSets { get; set; }
-        public int? ActualDurationInMinutes { get; set; }
-        public int? ActualRestAfterExerciseInMinutes { get; set; }
-        public int? ActualRestBetweenSetsInMinutes { get; set; }
+        public string ExerciseName { get; set; }
+        public int? NumberOfRepetitions { get; set; }
+        public int? ExpectedNumberOfSets { get; set; }
+        public int? ExpectedDurationInMinutes { get; set; }
+        public int? RestAfterExerciseInMinutes { get; set; }
+        public int? RestBetweenSetsInMinutes { get; set; }
         public int Order { get; set; }
+        public bool SuccessfulyPerformed { get; set; }
     }
 }

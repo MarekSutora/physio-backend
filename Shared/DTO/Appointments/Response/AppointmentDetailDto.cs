@@ -9,6 +9,6 @@ namespace Shared.DTO.Appointments.Response
     public class AppointmentDetailDto
     {
         public string Notes { get; set; }
-        public List<AppointmentExerciseDetailDto> appointmentExerciseDetailDtos { get; set; } = new List<AppointmentExerciseDetailDto>();
+        public List<AppointmentExerciseDetailDto> AppointmentExerciseDetails { get; set; } = new List<AppointmentExerciseDetailDto>();
     }
 }

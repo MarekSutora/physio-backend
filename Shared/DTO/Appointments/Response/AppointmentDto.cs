@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Appointments.Response
 {
-    public class AppointmentInfoDto
+    public class AppointmentDto
     {
         public int Id { get; set; }
         public int Capacity { get; set; }
         public DateTime StartTime { get; set; }
-        public List<BookedAppointmentDto> BookedAppointmentDtos { get; set; } = new List<BookedAppointmentDto>();
-        public List<AppointmentDetailDto> AppointmentDetailDtos { get; set; } = new List<AppointmentDetailDto>();
-
+        public List<BookedAppointmentDto> BookedAppointments { get; set; } = new List<BookedAppointmentDto>();
+        public AppointmentDetailDto AppointmentDetail { get; set; }
     }
 }

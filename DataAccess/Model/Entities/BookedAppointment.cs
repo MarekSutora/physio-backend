@@ -11,8 +11,6 @@ namespace DataAccess.Model.Entities
         public int AppointmentServiceTypeDurationCostId { get; set; }
         public AppointmentServiceTypeDurationCost AppointmentServiceTypeDurationCost { get; set; } = null!;
 
-        public AppointmentDetail? BookedAppointmentDetail { get; set; }
-
         public int? PatientId { get; set; }
         public Patient? Patient { get; set; }
     }

@@ -9,6 +9,7 @@ using Shared.DTO.Blog.Response;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
+using Shared.DTO.Appointments.Response;
 
 namespace Application.Mappings
 {
@@ -48,6 +49,33 @@ namespace Application.Mappings
 
             CreateMap<UpdateBlogPostDto, BlogPost>();
 
+
+            // Mapping from Appointment entity to AppointmentDto
+            CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.BookedAppointments, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCosts.SelectMany(astdc => astdc.BookedAppointments)))
+                .ForMember(dest => dest.AppointmentDetail, opt => opt.MapFrom(src => src.AppointmentDetail));
+
+            // Mapping from AppointmentDetail entity to AppointmentDetailDto
+            CreateMap<AppointmentDetail, AppointmentDetailDto>()
+                .ForMember(dest => dest.AppointmentExerciseDetails, opt => opt.MapFrom(src => src.AppointmentExerciseDetails));
+
+            // Mapping from AppointmentExerciseDetail entity to AppointmentExerciseDetailDto
+            CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>();
+
+            // Mapping from BookedAppointment entity to BookedAppointmentDto
+            CreateMap<BookedAppointment, BookedAppointmentDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.AppointmentId))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.StartTime)) // Assuming the start time of the booked appointment is the same as the appointment start time
+                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes)) // Adjust this based on your actual entity structure
+                .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name))
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.PatientId))
+                .ForMember(dest => dest.ClientFirstName, opt => opt.MapFrom(src => src.Patient == null ? "-" : src.Patient.Person.FirstName)) // Assuming your Patient entity has a FirstName property
+                .ForMember(dest => dest.ClientSecondName, opt => opt.MapFrom(src => src.Patient == null ? "-" : src.Patient.Person.LastName)) // Adjust according to your Patient entity
+                .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost))
+                .ForMember(dest => dest.HexColor, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor))
+                .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.Capacity))
+                .ForMember(dest => dest.AppointmentBookedDate, opt => opt.MapFrom(src => src.AppointmentBookedDate));
         }
 
         private string GenerateSlug(string title)

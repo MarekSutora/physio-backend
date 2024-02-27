@@ -143,7 +143,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAppointmentById(int id)
+        public async Task<IActionResult> GetAppointmentByIdAsync(int id)
         {
             try
             {
