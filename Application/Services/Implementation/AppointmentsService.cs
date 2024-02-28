@@ -333,6 +333,57 @@ namespace Application.Services.Implementation
                 throw;
             }
         }
+
+        public async Task UpdateAppointmentExerciseDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails)
+        {
+            try
+            {
+                var appointment = await _context.Appointments
+                    .Include(a => a.AppointmentDetail)
+                        .ThenInclude(ad => ad.AppointmentExerciseDetails)
+                    .FirstOrDefaultAsync(a => a.Id == appointmentId);
+
+                if (appointment == null)
+                {
+                    _logger.LogWarning("Appointment not found for ID {AppointmentId}.", appointmentId);
+                    throw new Exception($"Appointment not found for ID {appointmentId}.");
+                }
+
+                if (appointment.AppointmentDetail == null)
+                {
+                    appointment.AppointmentDetail = new AppointmentDetail
+                    {
+                        AppointmentId = appointmentId,
+                        Note = appointmentExerciseDetails.Note
+                    };
+                }
+                else
+                {
+                    // Update the note if provided
+                    appointment.AppointmentDetail.Note = appointmentExerciseDetails.Note;
+
+                    // Clear existing exercise details
+                    _context.AppointmentExerciseDetails.RemoveRange(appointment.AppointmentDetail.AppointmentExerciseDetails);
+                }
+
+                // Map and add new exercise details
+                var exerciseDetails = _mapper.Map<ICollection<AppointmentExerciseDetail>>(appointmentExerciseDetails.AppointmentExerciseDetails);
+                foreach (var detail in exerciseDetails)
+                {
+                    detail.AppointmentId = appointmentId; // Ensure the relationship is established
+                    appointment.AppointmentDetail.AppointmentExerciseDetails.Add(detail);
+                }
+
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Updated exercise details for appointment ID {AppointmentId}.", appointmentId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating exercise details for appointment ID {AppointmentId}.", appointmentId);
+                throw;
+            }
+        }
+
     }
 }
 

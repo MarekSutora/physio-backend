@@ -163,6 +163,21 @@ namespace diploma_thesis_backend.Controllers
                 return StatusCode(500, "An error occurred while retrieving the appointment");
             }
         }
+
+        [HttpPut("{id}/exercise-details")]
+        public async Task<IActionResult> UpdateAppointmentExerciseDetailsAsync(int id, [FromBody] AppointmentDetailDto updateAppointmentExerciseDetailsDto)
+        {
+            try
+            {
+                await _appointmentsService.UpdateAppointmentExerciseDetailsAsync(id, updateAppointmentExerciseDetailsDto);
+                return Ok("Appointment exercise details updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating appointment exercise details.");
+                return StatusCode(500, "Failed to update appointment exercise details.");
+            }
+        }
     }
 }
 

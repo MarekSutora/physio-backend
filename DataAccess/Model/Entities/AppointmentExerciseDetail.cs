@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace DataAccess.Model.Entities
         public ExerciseType ExerciseType { get; set; } = null!;
         public int AppointmentId { get; set; }
         public Appointment Appointment { get; set; } = null!;
+        [Column(TypeName = "decimal(18,4)")]
+        public decimal Weight { get; set; }
         public int? NumberOfRepetitions { get; set; }
         public int? ExpectedNumberOfSets { get; set; }
         public int? ExpectedDurationInMinutes { get; set; }

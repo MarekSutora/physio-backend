@@ -56,11 +56,10 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AppointmentDetail, opt => opt.MapFrom(src => src.AppointmentDetail));
 
             // Mapping from AppointmentDetail entity to AppointmentDetailDto
-            CreateMap<AppointmentDetail, AppointmentDetailDto>()
-                .ForMember(dest => dest.AppointmentExerciseDetails, opt => opt.MapFrom(src => src.AppointmentExerciseDetails));
+            CreateMap<AppointmentDetail, AppointmentDetailDto>().ReverseMap();
 
             // Mapping from AppointmentExerciseDetail entity to AppointmentExerciseDetailDto
-            CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>();
+            CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>().ReverseMap();
 
             // Mapping from BookedAppointment entity to BookedAppointmentDto
             CreateMap<BookedAppointment, BookedAppointmentDto>()

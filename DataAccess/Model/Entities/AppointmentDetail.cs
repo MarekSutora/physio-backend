@@ -11,6 +11,6 @@ namespace DataAccess.Model.Entities
         public int AppointmentId { get; set; }
         public Appointment Appointment { get; set; } = null!;
         public ICollection<AppointmentExerciseDetail> AppointmentExerciseDetails { get; } = new List<AppointmentExerciseDetail>();
-        public string? Notes { get; set; }
+        public string? Note { get; set; }
     }
 }

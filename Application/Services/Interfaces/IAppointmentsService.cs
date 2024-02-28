@@ -25,5 +25,7 @@ namespace Application.Services.Interfaces
         Task DeleteBookedAppointmentAsync(int bookedAppointmentId);
 
         Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId);
+
+        Task UpdateAppointmentExerciseDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails);
     }
 }
