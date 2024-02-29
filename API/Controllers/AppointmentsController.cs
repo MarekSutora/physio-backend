@@ -164,18 +164,80 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPut("{id}/exercise-details")]
-        public async Task<IActionResult> UpdateAppointmentExerciseDetailsAsync(int id, [FromBody] AppointmentDetailDto updateAppointmentExerciseDetailsDto)
+        [HttpPut("{id}/details")]
+        public async Task<IActionResult> UpdateAppointmentDetailsAsync(int id, [FromBody] AppointmentDetailDto updateAppointmentExerciseDetailsDto)
         {
             try
             {
-                await _appointmentsService.UpdateAppointmentExerciseDetailsAsync(id, updateAppointmentExerciseDetailsDto);
+                await _appointmentsService.UpdateAppointmentDetailsAsync(id, updateAppointmentExerciseDetailsDto);
                 return Ok("Appointment exercise details updated successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating appointment exercise details.");
                 return StatusCode(500, "Failed to update appointment exercise details.");
+            }
+        }
+
+        [HttpPut("/booked/{id}/finished")]
+        public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
+        {
+            try
+            {
+                await _appointmentsService.FinishBookedAppointmentAsync(id);
+                return Ok("Appointment finished successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error finishing appointment.");
+                return StatusCode(500, "Failed to finish appointment.");
+            }
+        }
+
+        [HttpGet("client")]
+        public async Task<IActionResult> GetBookedAppointmentsByUserIdAsync()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var appointments = await _appointmentsService.GetBookedAppointmentsByUserIdAsync(userId);
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving client booked appointments.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("finished")]
+        public async Task<IActionResult> GetAllFinishedAppointmentsAsync()
+        {
+            try
+            {
+                var appointments = await _appointmentsService.GetAllFinishedAppointmentsAsync();
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving finished appointments.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("client/finished")]
+        public async Task<IActionResult> GetFinishedAppointmentsByUserId()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var appointments = await _appointmentsService.GetFinishedAppointmentsByUserIdAsync(userId);
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving finished appointments.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }

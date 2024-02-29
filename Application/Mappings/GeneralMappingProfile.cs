@@ -61,6 +61,8 @@ namespace Application.Mappings
             // Mapping from AppointmentExerciseDetail entity to AppointmentExerciseDetailDto
             CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>().ReverseMap();
 
+            CreateMap<ExerciseTypeDto, ExerciseType>().ReverseMap();
+
             // Mapping from BookedAppointment entity to BookedAppointmentDto
             CreateMap<BookedAppointment, BookedAppointmentDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

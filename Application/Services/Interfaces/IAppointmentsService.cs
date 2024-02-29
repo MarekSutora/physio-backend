@@ -26,6 +26,14 @@ namespace Application.Services.Interfaces
 
         Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId);
 
-        Task UpdateAppointmentExerciseDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails);
+        Task UpdateAppointmentDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails);
+
+        Task FinishBookedAppointmentAsync(int bookedAppointmentId);
+
+        Task<List<BookedAppointmentDto>> GetBookedAppointmentsByUserIdAsync(string userId);
+
+        Task<List<BookedAppointmentDto>> GetAllFinishedAppointmentsAsync();
+
+        Task<List<BookedAppointmentDto>> GetFinishedAppointmentsByUserIdAsync(string userId);
     }
 }

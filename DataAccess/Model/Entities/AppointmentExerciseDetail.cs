@@ -17,8 +17,8 @@ namespace DataAccess.Model.Entities
         [Column(TypeName = "decimal(18,4)")]
         public decimal Weight { get; set; }
         public int? NumberOfRepetitions { get; set; }
-        public int? ExpectedNumberOfSets { get; set; }
-        public int? ExpectedDurationInMinutes { get; set; }
+        public int? NumberOfSets { get; set; }
+        public int? DurationInMinutes { get; set; }
         public int? RestAfterExerciseInMinutes { get; set; }
         public int? RestBetweenSetsInMinutes { get; set; }
         public int Order { get; set; }

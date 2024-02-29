@@ -105,34 +105,39 @@ namespace Application.Services.Implementation
             try
             {
                 var unBookedAppointmentsQuery = _context.AppointmentServiceTypeDurationCosts
-            .Include(astdc => astdc.BookedAppointments)
-            .Include(astdc => astdc.ServiceTypeDurationCost)
-                .ThenInclude(stdc => stdc.ServiceType)
-            .Include(astdc => astdc.ServiceTypeDurationCost)
-                .ThenInclude(stdc => stdc.DurationCost)
-            .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
-                    && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1));
+                    .Include(astdc => astdc.BookedAppointments)
+                    .Include(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.ServiceType)
+                    .Include(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.DurationCost)
+                    .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
+                            && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1))
+                    .Select(astdc => new
+                    {
+                        astdc.Appointment,
+                        BookedCount = astdc.BookedAppointments.Count, // Use Count() method here
+                        ServiceTypeInfo = new ServiceTypeInfoDto
+                        {
+                            AstdcId = astdc.Id,
+                            Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
+                            DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                            Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
+                            HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
+                        }
+                    });
 
-                var groupedAppointments = from astdc in unBookedAppointmentsQuery
-                                          group astdc by astdc.Appointment into g
-                                          select new UnbookedAppointmentDto
-                                          {
-                                              AppointmentId = g.Key.Id,
-                                              StartTime = g.Key.StartTime,
-                                              Capacity = g.Key.Capacity,
-                                              ServiceTypeInfos = g.Select(astdc => new ServiceTypeInfoDto
-                                              {
-                                                  AstdcId = astdc.Id,
-                                                  Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
-                                                  DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                                                  Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
-                                                  HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
-                                              }).ToList()
-                                          };
+                var groupedAppointments = (await unBookedAppointmentsQuery.ToListAsync())
+                    .GroupBy(x => x.Appointment)
+                    .Select(g => new UnbookedAppointmentDto
+                    {
+                        AppointmentId = g.Key.Id,
+                        StartTime = g.Key.StartTime,
+                        Capacity = g.Key.Capacity,
+                        ReservedCount = g.Sum(x => x.BookedCount), // Aggregate the count here
+                        ServiceTypeInfos = g.Select(x => x.ServiceTypeInfo).ToList()
+                    });
 
-                var unBookedAppointments = await groupedAppointments.ToListAsync();
-
-                return unBookedAppointments;
+                return groupedAppointments.ToList();
             }
             catch (Exception ex)
             {
@@ -142,49 +147,31 @@ namespace Application.Services.Implementation
         }
 
 
+
         public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync()
         {
             try
             {
                 var bookedAppointments = await _context.BookedAppointments
                     .Where(ba => !ba.IsFinished)
-                    .Select(ba => new
+                    .Select(ba => new BookedAppointmentDto
                     {
-                        ba.Id,
+                        Id = ba.Id,
                         AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
-                        ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                        StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
                         DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
                         ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                         HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                         Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
                         ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
                         ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
-                        ClientLastName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
+                        ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
                         Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                         AppointmentBookedDate = ba.AppointmentBookedDate
                     })
                     .ToListAsync();
 
-                var groupedAppointments = bookedAppointments
-                    .GroupBy(ba => ba.AppointmentId)
-                    .Select(g => new BookedAppointmentDto
-                    {
-                        Id = g.First().Id,
-                        AppointmentId = g.Key,
-                        StartTime = g.First().StartTime,
-                        DurationMinutes = g.First().DurationMinutes,
-                        ServiceTypeName = g.First().ServiceTypeName,
-                        HexColor = g.First().HexColor,
-                        Capacity = g.First().Capacity,
-                        Cost = g.First().Cost,
-                        ClientFirstName = g.First().ClientFirstName,
-                        ClientSecondName = g.First().ClientLastName,
-                        AppointmentBookedDate = g.First().AppointmentBookedDate,
-                        ClientId = g.First().ClientId
-                    })
-                    .ToList();
-
-                return groupedAppointments;
+                return bookedAppointments;
             }
             catch (Exception ex)
             {
@@ -314,6 +301,7 @@ namespace Application.Services.Implementation
                     .Include(a => a.AppointmentServiceTypeDurationCosts)
                         .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
                             .ThenInclude(stdc => stdc.DurationCost)
+                            .Include(a => a.AppointmentDetail).ThenInclude(ad => ad.AppointmentExerciseDetails).ThenInclude(aed => aed.ExerciseType)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(a => a.Id == appointmentId);
 
@@ -334,7 +322,7 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task UpdateAppointmentExerciseDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails)
+        public async Task UpdateAppointmentDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails)
         {
             try
             {
@@ -366,11 +354,21 @@ namespace Application.Services.Implementation
                     _context.AppointmentExerciseDetails.RemoveRange(appointment.AppointmentDetail.AppointmentExerciseDetails);
                 }
 
-                // Map and add new exercise details
-                var exerciseDetails = _mapper.Map<ICollection<AppointmentExerciseDetail>>(appointmentExerciseDetails.AppointmentExerciseDetails);
-                foreach (var detail in exerciseDetails)
+                foreach (var detailDto in appointmentExerciseDetails.AppointmentExerciseDetails)
                 {
-                    detail.AppointmentId = appointmentId; // Ensure the relationship is established
+                    var existingExerciseType = await _context.ExerciseTypes
+                        .FindAsync(detailDto.ExerciseType.Id);
+
+                    if (existingExerciseType == null)
+                    {
+                        _logger.LogError("ExerciseType not found for ID {ExerciseTypeId}.", detailDto.ExerciseType.Id);
+                        throw new Exception($"ExerciseType not found for ID {detailDto.ExerciseType.Id}.");
+                    }
+
+                    var detail = _mapper.Map<AppointmentExerciseDetail>(detailDto);
+                    detail.ExerciseType = existingExerciseType; // Use the existing instance
+                    detail.AppointmentId = appointmentId;
+
                     appointment.AppointmentDetail.AppointmentExerciseDetails.Add(detail);
                 }
 
@@ -380,6 +378,100 @@ namespace Application.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating exercise details for appointment ID {AppointmentId}.", appointmentId);
+                throw;
+            }
+        }
+
+        public async Task FinishBookedAppointmentAsync(int bookedAppointmentId)
+        {
+            try
+            {
+                var bookedAppointment = await _context.BookedAppointments.FindAsync(bookedAppointmentId);
+                bookedAppointment.IsFinished = true;
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                _logger.LogError("Error finishing the booked appointment.");
+                throw;
+            }
+        }
+
+        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsByUserIdAsync(string userId)
+        {
+            try
+            {
+                var user = await _context.ApplicationUsers
+                    .Include(u => u.Person)
+                    .ThenInclude(p => p.Patient)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user?.Person?.Patient == null)
+                {
+                    throw new Exception($"Patient associated with User ID {userId} not found.");
+                }
+
+                var patientId = user.Person.Patient.PersonId;
+
+                var clientBookedAppointments = await _context.BookedAppointments
+                    .Where(ba => ba.PatientId == patientId && !ba.IsFinished)
+                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                return clientBookedAppointments;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving client booked appointments.");
+                throw;
+            }
+        }
+
+
+        public async Task<List<BookedAppointmentDto>> GetAllFinishedAppointmentsAsync()
+        {
+            try
+            {
+                var finishedAppointments = await _context.BookedAppointments
+                    .Where(ba => ba.IsFinished)
+                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                return finishedAppointments;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving all finished appointments.");
+                throw;
+            }
+        }
+
+        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsByUserIdAsync(string userId)
+        {
+            try
+            {
+                var user = await _context.ApplicationUsers
+                    .Include(u => u.Person)
+                    .ThenInclude(p => p.Patient)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user?.Person?.Patient == null)
+                {
+                    throw new Exception($"Patient associated with User ID {userId} not found.");
+                }
+
+                var patientId = user.Person.Patient.PersonId;
+
+                var finishedAppointmentsByUser = await _context.BookedAppointments
+                    .Where(ba => ba.PatientId == patientId && ba.IsFinished)
+                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                return finishedAppointmentsByUser;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving finished appointments by user.");
                 throw;
             }
         }
