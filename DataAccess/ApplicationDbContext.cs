@@ -34,8 +34,8 @@ namespace DataAccess
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
         {
-            this.Database.Migrate();
-            this.Database.EnsureCreated();
+            //this.Database.Migrate();
+            //this.Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
