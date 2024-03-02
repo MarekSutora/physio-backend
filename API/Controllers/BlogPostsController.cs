@@ -159,5 +159,26 @@ namespace diploma_thesis_backend.Controllers
                 return StatusCode(500, "An error occurred while retrieving the non-hidden blog posts");
             }
         }
+
+        [HttpPut("{slug}/increment-view-count")]
+        public async Task<IActionResult> IncrementBlogPostViewCount(string slug)
+        {
+            try
+            {
+                await _blogService.IncrementBlogPostViewCountAsync(slug);
+                return Ok("Blog post view count incremented successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Blog post not found for slug: {Slug}", slug);
+                return NotFound("Blog post not found.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error incrementing blog post view count for slug: {Slug}", slug);
+                return StatusCode(500, "An error occurred while incrementing the blog post view count");
+            }
+        }
+
     }
 }

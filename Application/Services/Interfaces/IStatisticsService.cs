@@ -10,7 +10,11 @@ namespace Application.Services.Interfaces
     public interface IStatisticsService
     {
 
-        Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypeMonthlyFinishedAppointmentsCountsAsync(int year);
+        Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypesFinishedAppointmentsCountsAsync(int year);
+
+        Task<IEnumerable<RevenueStatisticsDto>> GetTotalRevenueStatisticsAsync();
+
+        Task<IEnumerable<NewClientsStatisticsDto>> GetNewClientsTrendAsync();
 
     }
 }

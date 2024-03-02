@@ -130,7 +130,8 @@ namespace Application.Services.Implementation
                 UserName = registerRequestDto.Email,
                 Email = registerRequestDto.Email,
                 EmailConfirmed = true,
-                PersonId = person.Id
+                PersonId = person.Id,
+                RegisteredDate = DateTime.Now
             };
 
 

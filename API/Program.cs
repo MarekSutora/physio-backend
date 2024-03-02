@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOriginDev",
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000")
+                          policy.WithOrigins("https://localhost:3000")
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
@@ -56,7 +56,7 @@ app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseSerilogRequestLogging();
 

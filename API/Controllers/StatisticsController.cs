@@ -19,13 +19,13 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [HttpGet("service-types/monthly")]
-        public async Task<IActionResult> GetServiceTypeMonthlyFinishedAppointmentsCountsAsync([FromQuery] int startYear = 2024)
+        [HttpGet("appointments-service-types")]
+        public async Task<IActionResult> GetServiceTypesFinishedAppointmentsCountsAsync([FromQuery] int startYear = 2024)
         {
             try
             {
                 _logger.LogInformation($"Fetching service type monthly finished appointments counts starting from the year {startYear}.");
-                var statistics = await _statisticsService.GetServiceTypeMonthlyFinishedAppointmentsCountsAsync(startYear);
+                var statistics = await _statisticsService.GetServiceTypesFinishedAppointmentsCountsAsync(startYear);
                 return Ok(statistics);
             }
             catch (Exception ex)
@@ -35,5 +35,36 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [HttpGet("revenue")]
+        public async Task<IActionResult> GetTotalRevenueStatisticsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching total revenue statistics for all finished appointments.");
+                var revenueStatistics = await _statisticsService.GetTotalRevenueStatisticsAsync();
+                return Ok(revenueStatistics);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching total revenue statistics.");
+                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+            }
+        }
+
+        [HttpGet("new-clients-trend")]
+        public async Task<IActionResult> GetNewClientsTrendAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching new clients trend.");
+                var newClientsTrend = await _statisticsService.GetNewClientsTrendAsync();
+                return Ok(newClientsTrend);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching new clients trend.");
+                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+            }
+        }
     }
 }

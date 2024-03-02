@@ -156,5 +156,24 @@ namespace Application.Services.Implementation
                 throw;
             }
         }
+
+        public async Task IncrementBlogPostViewCountAsync(string slug)
+        {
+            try
+            {
+                var blogPost = await _context.BlogPosts.FirstOrDefaultAsync(bp => bp.Slug == slug);
+                if (blogPost == null) throw new KeyNotFoundException($"Blog post with slug {slug} not found");
+
+                blogPost.ViewCount += 1;
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Incremented view count for blog post with slug: {slug}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error incrementing view count for blog post with slug {slug}");
+                throw;
+            }
+        }
+
     }
 }

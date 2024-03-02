@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Statistics.Response
 {
-    public class ServiceTypeAppointmentsCountDto
+    public class RevenueStatisticsDto
     {
-        public string ServiceTypeName { get; set; }
-        public int FinishedAppointmentsCount { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public decimal TotalRevenue { get; set; }
     }
 }

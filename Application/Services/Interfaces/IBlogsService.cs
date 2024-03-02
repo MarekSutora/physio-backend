@@ -13,5 +13,6 @@ namespace Application.Services.Interfaces
         Task<BlogPostDto> GetBlogPostByIdAsync(int id);
         Task<BlogPostDto> GetBlogPostBySlugAsync(string slug);
         Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync();
+        Task IncrementBlogPostViewCountAsync(string slug);
     }
 }

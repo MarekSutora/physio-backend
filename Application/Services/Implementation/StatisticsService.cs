@@ -23,7 +23,7 @@ namespace Application.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypeMonthlyFinishedAppointmentsCountsAsync(int startYear)
+        public async Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypesFinishedAppointmentsCountsAsync(int startYear)
         {
             var currentYear = DateTime.Now.Year;
             return await _context.BookedAppointments
@@ -44,6 +44,47 @@ namespace Application.Services.Implementation
                     HexColor = g.Key.HexColor
                 })
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<RevenueStatisticsDto>> GetTotalRevenueStatisticsAsync()
+        {
+            var revenueStats = await _context.BookedAppointments
+                .Where(ba => ba.IsFinished)
+                .GroupBy(ba => new
+                {
+                    Year = ba.AppointmentBookedDate.Year,
+                    Month = ba.AppointmentBookedDate.Month
+                })
+                .Select(g => new RevenueStatisticsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalRevenue = g.Sum(ba => ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost)
+                })
+                .OrderBy(rs => rs.Year).ThenBy(rs => rs.Month)
+                .ToListAsync();
+
+            return revenueStats;
+        }
+
+        public async Task<IEnumerable<NewClientsStatisticsDto>> GetNewClientsTrendAsync()
+        {
+            var newClientsTrend = await _context.ApplicationUsers // Use ApplicationUser entity
+                .GroupBy(u => new
+                {
+                    Year = u.RegisteredDate.Year, // Directly use RegisteredDate.Year
+                    Month = u.RegisteredDate.Month // Directly use RegisteredDate.Month
+                })
+                .Select(g => new NewClientsStatisticsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    NewClientsCount = g.Count()
+                })
+                .OrderBy(n => n.Year).ThenBy(n => n.Month)
+                .ToListAsync();
+
+            return newClientsTrend;
         }
     }
 }

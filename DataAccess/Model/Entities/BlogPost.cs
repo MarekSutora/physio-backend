@@ -17,5 +17,6 @@ namespace DataAccess.Model.Entities
         public required string KeywordsString { get; set; }
         public required string MainImageUrl { get; set; }
         public required bool IsHidden { get; set; } = false;
+        public int ViewCount { get; set; } = 0;
     }
 }
