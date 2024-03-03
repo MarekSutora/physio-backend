@@ -59,20 +59,6 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("booked")]
-        public async Task<IActionResult> GetBookedAppointmentsAsync()
-        {
-            try
-            {
-                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync();
-                return Ok(bookedAppointments);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating Appointment");
-                return BadRequest("Failed to create Appointment");
-            }
-        }
 
         [HttpPost("client-booked-appointments")]
         public async Task<IActionResult> CreateClientBookedAppointmentAsync([FromBody] ClientBookedAppointmentDto clientBookedAppointmentDto)
@@ -179,7 +165,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPut("/booked/{id}/finished")]
+        [HttpPut("/booked/{id}/finish")]
         public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
         {
             try
@@ -194,50 +180,106 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("client")]
-        public async Task<IActionResult> GetBookedAppointmentsByUserIdAsync()
+        [HttpGet("booked")]
+        public async Task<IActionResult> GetBookedAppointmentsAsync([FromQuery] string? userId = null)
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var appointments = await _appointmentsService.GetBookedAppointmentsByUserIdAsync(userId);
-                return Ok(appointments);
+                var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+                string userIdToUse = null;
+                if (userId != null)
+                {
+                    if (jwtUserId != userId && !userRoles.Contains("Admin"))
+                    {
+                        return Unauthorized("You are not authorized to view these appointments.");
+                    }
+
+                    if (userRoles.Contains("Admin"))
+                    {
+                        userIdToUse = null;
+                    }
+                    else
+                    {
+                        userIdToUse = jwtUserId;
+                    }
+                }
+                else
+                {
+                    if (userRoles.Contains("Admin"))
+                    {
+                        userIdToUse = null;
+                    }
+                    else if (jwtUserId == userId)
+                    {
+                        userIdToUse = jwtUserId;
+                    }
+                    else
+                    {
+                        return Unauthorized("You are not authorized to view these appointments.");
+                    }
+                }
+
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(userIdToUse);
+                return Ok(bookedAppointments);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving client booked appointments.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving booked appointments");
+                return BadRequest("Failed to retrieve booked appointments");
             }
         }
 
         [HttpGet("finished")]
-        public async Task<IActionResult> GetAllFinishedAppointmentsAsync()
+        public async Task<IActionResult> GetFinishedAppointmentsAsync([FromQuery] string? userId = null)
         {
             try
             {
-                var appointments = await _appointmentsService.GetAllFinishedAppointmentsAsync();
-                return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving finished appointments.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
 
-        [HttpGet("client/finished")]
-        public async Task<IActionResult> GetFinishedAppointmentsByUserId()
-        {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var appointments = await _appointmentsService.GetFinishedAppointmentsByUserIdAsync(userId);
-                return Ok(appointments);
+                var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+                string userIdToUse = null;
+                if (userId != null)
+                {
+                    if (jwtUserId != userId && !userRoles.Contains("Admin"))
+                    {
+                        return Unauthorized("You are not authorized to view these appointments.");
+                    }
+
+                    if (userRoles.Contains("Admin"))
+                    {
+                        userIdToUse = null;
+                    }
+                    else
+                    {
+                        userIdToUse = jwtUserId;
+                    }
+                }
+                else
+                {
+                    if (userRoles.Contains("Admin"))
+                    {
+                        userIdToUse = null;
+                    }
+                    else if (jwtUserId == userId)
+                    {
+                        userIdToUse = jwtUserId;
+                    }
+                    else
+                    {
+                        return Unauthorized("You are not authorized to view these appointments.");
+                    }
+                }
+
+                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(userIdToUse);
+                return Ok(finishedAppointments);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving finished appointments.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving finished appointments");
+                return BadRequest("Failed to retrieve finished appointments");
             }
         }
     }

@@ -12,6 +12,7 @@ using Shared.DTO.Appointments.Response;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services.Implementation
 {
@@ -148,28 +149,48 @@ namespace Application.Services.Implementation
 
 
 
-        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync()
+        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(string? userId = null)
         {
             try
             {
-                var bookedAppointments = await _context.BookedAppointments
-                    .Where(ba => !ba.IsFinished)
-                    .Select(ba => new BookedAppointmentDto
+                // Start with the entity query
+                IQueryable<BookedAppointment> query = _context.BookedAppointments
+                    .Include(ba => ba.Patient)
+                        .ThenInclude(p => p.Person)
+                            .ThenInclude(p => p.ApplicationUser)
+                    .Where(ba => !ba.IsFinished);
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    // Check if a user with the given ID exists and has a Patient record
+                    var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+                    if (userExists)
                     {
-                        Id = ba.Id,
-                        AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
-                        StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
-                        DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                        ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                        HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
-                        Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                        ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
-                        ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
-                        ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
-                        Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
-                        AppointmentBookedDate = ba.AppointmentBookedDate
-                    })
-                    .ToListAsync();
+                        query = query.Where(ba => ba.Patient.Person.ApplicationUser.Id == userId);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"User with ID {userId} not found or not associated with a patient.");
+                        return new List<BookedAppointmentDto>();
+                    }
+                }
+
+                // Now project to the DTO
+                var bookedAppointments = await query.Select(ba => new BookedAppointmentDto
+                {
+                    Id = ba.Id,
+                    AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
+                    StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                    DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                    ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
+                    HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
+                    Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                    ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
+                    ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
+                    ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
+                    Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
+                    AppointmentBookedDate = ba.AppointmentBookedDate
+                }).ToListAsync();
 
                 return bookedAppointments;
             }
@@ -179,8 +200,6 @@ namespace Application.Services.Implementation
                 throw;
             }
         }
-
-
 
         public async Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto)
         {
@@ -397,81 +416,65 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsByUserIdAsync(string userId)
+        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(string? userId = null)
         {
             try
             {
-                var user = await _context.ApplicationUsers
-                    .Include(u => u.Person)
-                    .ThenInclude(p => p.Patient)
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                IQueryable<BookedAppointment> query = _context.BookedAppointments
+                    .Include(ba => ba.Patient)
+                        .ThenInclude(p => p.Person)
+                            .ThenInclude(p => p.ApplicationUser)
+                    .Where(ba => ba.IsFinished);
 
-                if (user?.Person?.Patient == null)
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    throw new Exception($"Patient associated with User ID {userId} not found.");
+                    bool userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+                    if (userExists)
+                    {
+                        var patientId = await _context.Patients
+                            .Where(p => p.Person.ApplicationUser.Id == userId)
+                            .Select(p => p.PersonId)
+                            .FirstOrDefaultAsync();
+
+                        if (patientId != default)
+                        {
+                            query = query.Where(ba => ba.PatientId == patientId);
+                        }
+                        else
+                        {
+                            // The user exists but does not have a patient record
+                            _logger.LogWarning($"User with ID {userId} exists but is not associated with a patient.");
+                            return new List<BookedAppointmentDto>(); // Return an empty list or handle as needed
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"User with ID {userId} not found.");
+                        return new List<BookedAppointmentDto>(); // Return an empty list or handle as needed
+                    }
                 }
 
-                var patientId = user.Person.Patient.PersonId;
-
-                var clientBookedAppointments = await _context.BookedAppointments
-                    .Where(ba => ba.PatientId == patientId && !ba.IsFinished)
-                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
-
-                return clientBookedAppointments;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving client booked appointments.");
-                throw;
-            }
-        }
-
-
-        public async Task<List<BookedAppointmentDto>> GetAllFinishedAppointmentsAsync()
-        {
-            try
-            {
-                var finishedAppointments = await _context.BookedAppointments
-                    .Where(ba => ba.IsFinished)
-                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
+                var finishedAppointments = await query.Select(ba => new BookedAppointmentDto
+                {
+                    Id = ba.Id,
+                    AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
+                    StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                    DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                    ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
+                    HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
+                    Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                    ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
+                    ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
+                    ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
+                    Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
+                    AppointmentBookedDate = ba.AppointmentBookedDate
+                }).ToListAsync();
 
                 return finishedAppointments;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving all finished appointments.");
-                throw;
-            }
-        }
-
-        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsByUserIdAsync(string userId)
-        {
-            try
-            {
-                var user = await _context.ApplicationUsers
-                    .Include(u => u.Person)
-                    .ThenInclude(p => p.Patient)
-                    .FirstOrDefaultAsync(u => u.Id == userId);
-
-                if (user?.Person?.Patient == null)
-                {
-                    throw new Exception($"Patient associated with User ID {userId} not found.");
-                }
-
-                var patientId = user.Person.Patient.PersonId;
-
-                var finishedAppointmentsByUser = await _context.BookedAppointments
-                    .Where(ba => ba.PatientId == patientId && ba.IsFinished)
-                    .ProjectTo<BookedAppointmentDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
-
-                return finishedAppointmentsByUser;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving finished appointments by user.");
+                _logger.LogError(ex, "Error retrieving finished appointments.");
                 throw;
             }
         }
