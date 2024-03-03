@@ -6,30 +6,31 @@ namespace diploma_thesis_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Produces("application/json")]
     //[Authorize(Roles = "Admin")]
     public class PatientsController : Controller
     {
         private readonly IPatientsService _patientService;
+        public readonly ILogger<PatientsController> _logger;
 
-        public PatientsController(IPatientsService patientService)
+        public PatientsController(IPatientsService patientService, ILogger<PatientsController> logger)
         {
             _patientService = patientService;
+            _logger = logger;
         }
 
-        // GET: api/patients/patients-for-booked-reservation
-        [HttpGet("patients-for-booked-reservation")]
-        public async Task<IActionResult> GetPatientsForBookedReservation()
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatientsAsync()
         {
             try
             {
-                var patients = await _patientService.GetAllForBookedReservationAsync();
+                var patients = await _patientService.GetAllPatientsAsync();
                 return Ok(patients);
             }
             catch (Exception ex)
             {
-                // Log the exception details
-                // Return an appropriate error response
-                return StatusCode(500, "Internal server error: " + ex.Message);
+                _logger.LogError(ex, "Error while getting all patients");
+                return StatusCode(500, "Internal server error");
             }
         }
     }

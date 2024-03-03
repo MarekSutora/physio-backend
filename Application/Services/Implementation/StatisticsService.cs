@@ -23,28 +23,30 @@ namespace Application.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypesFinishedAppointmentsCountsAsync(int startYear)
+        public async Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypesFinishedAppointmentsCountsAsync()
         {
-            var currentYear = DateTime.Now.Year;
             return await _context.BookedAppointments
-                .Where(ba => ba.IsFinished && ba.AppointmentBookedDate.Year >= startYear && ba.AppointmentBookedDate.Year <= currentYear)
+                .Where(ba => ba.IsFinished)
                 .GroupBy(ba => new
                 {
                     Year = ba.AppointmentBookedDate.Year,
                     Month = ba.AppointmentBookedDate.Month,
-                    ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                    ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor
+                    ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
+                    HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor
                 })
                 .Select(g => new ServiceTypeMonthlyStatisticsDto
                 {
                     Year = g.Key.Year,
                     Month = g.Key.Month,
-                    ServiceTypeName = g.Key.Name,
+                    ServiceTypeName = g.Key.ServiceTypeName,
                     FinishedAppointmentsCount = g.Count(),
                     HexColor = g.Key.HexColor
                 })
+                .OrderByDescending(x => x.Year)
+                .ThenByDescending(x => x.Month)
                 .ToListAsync();
         }
+
 
         public async Task<IEnumerable<RevenueStatisticsDto>> GetTotalRevenueStatisticsAsync()
         {
@@ -85,6 +87,27 @@ namespace Application.Services.Implementation
                 .ToListAsync();
 
             return newClientsTrend;
+        }
+
+        public async Task<IEnumerable<BlogPostViewsStatsDto>> GetBlogPostViewsStatsAsync()
+        {
+            var blogPostViewsStats = await _context.BlogPosts
+                .GroupBy(bp => new
+                {
+                    Year = bp.DatePublished.Year,
+                    Month = bp.DatePublished.Month
+                })
+                .Select(g => new BlogPostViewsStatsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalViews = g.Sum(bp => bp.ViewCount)
+                })
+                .OrderByDescending(stats => stats.Year)
+                .ThenByDescending(stats => stats.Month)
+                .ToListAsync();
+
+            return blogPostViewsStats;
         }
     }
 }

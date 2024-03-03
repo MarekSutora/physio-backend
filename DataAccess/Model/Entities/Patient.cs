@@ -14,5 +14,7 @@ namespace DataAccess.Model.Entities
 
         public List<Diagnosis> Diagnosiss { get; } = [];
         public List<PatientDiagnosis> PatientDiagnosiss { get; } = [];
+
+        public ICollection<PatientNote> PatientNotes { get; } = [];
     }
 }

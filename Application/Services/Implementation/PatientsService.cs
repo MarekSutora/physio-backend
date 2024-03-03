@@ -25,19 +25,23 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<List<PatientForBookedAppointmentDto>> GetAllForBookedReservationAsync()
+        public async Task<IEnumerable<PatientDto>> GetAllPatientsAsync()
         {
             try
             {
-                var patients = await _context.Patients
-                                             .Include(p => p.Person) // Ensure Person is included
-                                             .ToListAsync();
+                var patients = await _context.ApplicationUsers
+                    .Include(u => u.Person)
+                    .ThenInclude(p => p.Patient)
+                    .Where(u => u.Person.Patient != null) // Ensure there is a Patient record
+                    .ToListAsync();
 
-                return _mapper.Map<List<PatientForBookedAppointmentDto>>(patients);
+                _logger.LogInformation("Successfully retrieved all patients");
+
+                return _mapper.Map<IEnumerable<PatientDto>>(patients);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError(e, "Error getting all patients for booked reservations: {Message}", e.Message);
+                _logger.LogError(ex, "Error while getting all patients");
                 throw;
             }
         }

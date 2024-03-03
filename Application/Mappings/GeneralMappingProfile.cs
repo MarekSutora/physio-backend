@@ -38,11 +38,6 @@ namespace Application.Mappings
                         Cost = stdc.DurationCost.Cost
                     })));
 
-            CreateMap<Patient, PatientForBookedAppointmentDto>()
-               .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.PersonId))
-               .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Person.FirstName))
-               .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.Person.LastName));
-
             CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Title)));
 
             CreateMap<BlogPost, BlogPostDto>();
@@ -77,6 +72,10 @@ namespace Application.Mappings
                 .ForMember(dest => dest.HexColor, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor))
                 .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.Capacity))
                 .ForMember(dest => dest.AppointmentBookedDate, opt => opt.MapFrom(src => src.AppointmentBookedDate));
+
+            CreateMap<ApplicationUser, PatientDto>()
+            .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
+            .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
         }
 
         private string GenerateSlug(string title)

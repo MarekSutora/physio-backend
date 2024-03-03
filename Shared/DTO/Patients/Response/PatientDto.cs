@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Patients.Response
 {
-    public class PatientForBookedAppointmentDto
+    public class PatientDto
     {
         public int PersonId { get; set; }
+        public DateTime RegisteredDate { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
         public string FirstName { get; set; }
-        public string SecondName { get; set; }
+        public string LastName { get; set; }
     }
 }

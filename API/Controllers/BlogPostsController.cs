@@ -161,7 +161,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPut("{slug}/increment-view-count")]
-        public async Task<IActionResult> IncrementBlogPostViewCount(string slug)
+        public async Task<IActionResult> IncrementBlogPostViewCountAsync(string slug)
         {
             try
             {

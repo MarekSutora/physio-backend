@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class Address
+    public class PatientNote
     {
         public int Id { get; set; }
-        public string TempAddress { get; set; }
-        public ICollection<Person> ApplicationUsers { get; } = new List<Person>();
+        public string Note { get; set; } = null!;
+
+        public int? PatientId { get; set; }
+        public Patient Patient { get; set; } = null!;
     }
 }

@@ -23,7 +23,7 @@ namespace diploma_thesis_backend.Controllers
 
         [HttpPost]
         [Route("RegisterPatient")]
-        public async Task<IActionResult> RegisterPatient([FromBody] RegisterRequestDto registerRequestDto)
+        public async Task<IActionResult> RegisterPatientAsync([FromBody] RegisterRequestDto registerRequestDto)
         {
             var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto);
 
@@ -37,7 +37,7 @@ namespace diploma_thesis_backend.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginRequestDto)
         {
             var result = await _authService.LoginUserAsync(loginRequestDto);
 
@@ -66,7 +66,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto refreshTokenRequest)
+        public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequestDto refreshTokenRequest)
         {
             var result = await _authService.RefreshTokenAsync(refreshTokenRequest.RefreshToken);
 
