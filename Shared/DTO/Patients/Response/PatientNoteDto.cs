@@ -4,15 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Model.Entities
+namespace Shared.DTO.Patients.Response
 {
-    public class PatientNote
+    public class PatientNoteDto
     {
         public int Id { get; set; }
         public string Note { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
-
-        public int? PatientId { get; set; }
-        public Patient Patient { get; set; } = null!;
     }
 }

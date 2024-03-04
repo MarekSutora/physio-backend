@@ -25,7 +25,8 @@ namespace DataAccess
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<ExerciseType> ExerciseTypes { get; set; }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
+        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }\
+        public DbSet<PatientNote> PatientNotes { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }

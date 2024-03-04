@@ -162,17 +162,7 @@ namespace Application.Services.Implementation
 
                 if (!string.IsNullOrEmpty(userId))
                 {
-                    // Check if a user with the given ID exists and has a Patient record
-                    var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
-                    if (userExists)
-                    {
-                        query = query.Where(ba => ba.Patient.Person.ApplicationUser.Id == userId);
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"User with ID {userId} not found or not associated with a patient.");
-                        return new List<BookedAppointmentDto>();
-                    }
+                    query = query.Where(ba => ba.Patient.Person.ApplicationUser.Id == userId);
                 }
 
                 // Now project to the DTO

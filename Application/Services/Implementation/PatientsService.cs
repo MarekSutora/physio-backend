@@ -1,8 +1,10 @@
 ﻿using Application.Services.Interfaces;
 using AutoMapper;
 using DataAccess;
+using DataAccess.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shared.DTO.Patients.Request;
 using Shared.DTO.Patients.Response;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,44 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
+        public async Task AddNoteToPatientAsync(CreatePatientNoteDto createPatientNoteDto)
+        {
+            try
+            {
+                var patientNote = _mapper.Map<PatientNote>(createPatientNoteDto);
+
+
+                _context.PatientNotes.Add(patientNote);
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding note to patient");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<PatientNoteDto>> GetAllNotesForPatient(int patientId)
+        {
+            try
+            {
+                var patientNotes = await _context.PatientNotes
+                    .Where(n => n.PatientId == patientId)
+                    .ToListAsync();
+
+                _logger.LogInformation($"Retrieved all notes for patient ID {patientId}");
+
+                return _mapper.Map<IEnumerable<PatientNoteDto>>(patientNotes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting all notes for patient");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<PatientDto>> GetAllPatientsAsync()
         {
             try
@@ -42,6 +82,26 @@ namespace Application.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while getting all patients");
+                throw;
+            }
+        }
+
+        public async Task<PatientDto> GetPatientByIdAsync(int patientId)
+        {
+            try
+            {
+                var patient = await _context.ApplicationUsers
+                    .Include(u => u.Person)
+                    .ThenInclude(p => p.Patient)
+                    .FirstOrDefaultAsync(u => u.Person.Id == patientId);
+
+                _logger.LogInformation("Successfully retrieved patient by id");
+
+                return _mapper.Map<PatientDto>(patient);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting patient by id");
                 throw;
             }
         }

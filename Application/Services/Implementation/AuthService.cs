@@ -162,10 +162,11 @@ namespace Application.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public bool VerifyUser(int uid)
+        public Task<bool> VerifyClientById(int clientId, string userId, string[] roles)
         {
-            return true;
+
         }
+
 
         private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)
         {
@@ -211,6 +212,5 @@ namespace Application.Services.Implementation
                 .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
 
         }
-
     }
 }

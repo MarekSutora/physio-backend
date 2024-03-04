@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
 using Shared.DTO.Appointments.Response;
+using Shared.DTO.Patients.Request;
 
 namespace Application.Mappings
 {
@@ -76,6 +77,9 @@ namespace Application.Mappings
             CreateMap<ApplicationUser, PatientDto>()
             .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
             .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
+
+            CreateMap<CreatePatientNoteDto, PatientNoteDto>();
+
         }
 
         private string GenerateSlug(string title)
