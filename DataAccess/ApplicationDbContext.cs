@@ -20,12 +20,12 @@ namespace DataAccess
         public DbSet<AppointmentExerciseDetail> AppointmentExerciseDetails { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<BookedAppointment> BookedAppointments { get; set; }
-        public DbSet<AppointmentDetail> appointmentDetails { get; set; }
+        public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<ExerciseType> ExerciseTypes { get; set; }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }\
+        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
         public DbSet<PatientNote> PatientNotes { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }

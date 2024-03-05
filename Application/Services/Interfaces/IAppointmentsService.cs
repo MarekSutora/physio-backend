@@ -14,8 +14,6 @@ namespace Application.Services.Interfaces
 
         Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync();
 
-        Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(string? userId = null);
-
         Task DeleteAppointmentAsync(int appointmentId);
 
         Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto);
@@ -30,6 +28,8 @@ namespace Application.Services.Interfaces
 
         Task FinishBookedAppointmentAsync(int bookedAppointmentId);
 
-        Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(string? userId = null);
+        Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null);
+
+        Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null);
     }
 }

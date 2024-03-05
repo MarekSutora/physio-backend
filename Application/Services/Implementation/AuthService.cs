@@ -162,9 +162,20 @@ namespace Application.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<bool> VerifyClientById(int clientId, string userId, string[] roles)
+        public async Task<bool> VerifyClientById(int clientId, string userId)
         {
 
+            var patient = await _context.Patients
+                                .Include(p => p.Person)
+                                .ThenInclude(p => p.ApplicationUser)
+                                .FirstOrDefaultAsync(p => p.PersonId == clientId);
+
+            if (patient != null && patient.Person.ApplicationUser.Id == userId)
+            {
+                return true;
+            }
+
+            return false;
         }
 
 

@@ -16,9 +16,10 @@ namespace diploma_thesis_backend.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentsService _appointmentsService;
+        private readonly IAuthService _authService;
         private readonly ILogger<AppointmentsController> _logger;
 
-        public AppointmentsController(IAppointmentsService appointmentsService, ILogger<AppointmentsController> logger)
+        public AppointmentsController(IAppointmentsService appointmentsService, IAuthService authService, ILogger<AppointmentsController> logger)
         {
             _appointmentsService = appointmentsService;
             _logger = logger;
@@ -181,47 +182,33 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet("booked")]
-        public async Task<IActionResult> GetBookedAppointmentsAsync([FromQuery] string? userId = null)
+        public async Task<IActionResult> GetBookedAppointmentsAsync([FromQuery] int? clientId = null)
         {
             try
             {
+                int? clientIdToUse = null;
+
                 var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-                string userIdToUse = null;
-                if (userId != null)
+                if (userRoles.Contains("Admin") && clientId != null)
                 {
-                    if (jwtUserId != userId && !userRoles.Contains("Admin"))
+                    clientIdToUse = clientId;
+                }
+                else if (clientId != null && jwtUserId != null)
+                {
+                    if (!await _authService.VerifyClientById((int)clientId, jwtUserId))
                     {
                         return Unauthorized("You are not authorized to view these appointments.");
                     }
-
-                    if (userRoles.Contains("Admin"))
-                    {
-                        userIdToUse = null;
-                    }
-                    else
-                    {
-                        userIdToUse = jwtUserId;
-                    }
+                    clientIdToUse = clientId;
                 }
                 else
                 {
-                    if (userRoles.Contains("Admin"))
-                    {
-                        userIdToUse = null;
-                    }
-                    else if (jwtUserId == userId)
-                    {
-                        userIdToUse = jwtUserId;
-                    }
-                    else
-                    {
-                        return Unauthorized("You are not authorized to view these appointments.");
-                    }
+                    return BadRequest("You are not authorized to view these appointments.");
                 }
 
-                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(userIdToUse);
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(clientIdToUse);
                 return Ok(bookedAppointments);
             }
             catch (Exception ex)
@@ -232,48 +219,33 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet("finished")]
-        public async Task<IActionResult> GetFinishedAppointmentsAsync([FromQuery] string? userId = null)
+        public async Task<IActionResult> GetFinishedAppointmentsAsync([FromQuery] int? clientId = null)
         {
             try
             {
+                int? clientIdToUse = null;
 
                 var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-                string userIdToUse = null;
-                if (userId != null)
+                if (userRoles.Contains("Admin") && clientId != null)
                 {
-                    if (jwtUserId != userId && !userRoles.Contains("Admin"))
+                    clientIdToUse = clientId;
+                }
+                else if (clientId != null && jwtUserId != null)
+                {
+                    if (!await _authService.VerifyClientById((int)clientId, jwtUserId))
                     {
                         return Unauthorized("You are not authorized to view these appointments.");
                     }
-
-                    if (userRoles.Contains("Admin"))
-                    {
-                        userIdToUse = null;
-                    }
-                    else
-                    {
-                        userIdToUse = jwtUserId;
-                    }
+                    clientIdToUse = clientId;
                 }
                 else
                 {
-                    if (userRoles.Contains("Admin"))
-                    {
-                        userIdToUse = null;
-                    }
-                    else if (jwtUserId == userId)
-                    {
-                        userIdToUse = jwtUserId;
-                    }
-                    else
-                    {
-                        return Unauthorized("You are not authorized to view these appointments.");
-                    }
+                    return BadRequest("You are not authorized to view these appointments.");
                 }
 
-                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(userIdToUse);
+                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(clientIdToUse);
                 return Ok(finishedAppointments);
             }
             catch (Exception ex)

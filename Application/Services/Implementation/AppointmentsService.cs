@@ -149,20 +149,19 @@ namespace Application.Services.Implementation
 
 
 
-        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(string? userId = null)
+        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null)
         {
             try
             {
-                // Start with the entity query
                 IQueryable<BookedAppointment> query = _context.BookedAppointments
                     .Include(ba => ba.Patient)
                         .ThenInclude(p => p.Person)
-                            .ThenInclude(p => p.ApplicationUser)
-                    .Where(ba => !ba.IsFinished);
+                    .Where(ba => !ba.IsFinished); // Filter for non-finished appointments
 
-                if (!string.IsNullOrEmpty(userId))
+                // Filter by client ID if provided
+                if (clientId.HasValue)
                 {
-                    query = query.Where(ba => ba.Patient.Person.ApplicationUser.Id == userId);
+                    query = query.Where(ba => ba.PatientId == clientId.Value);
                 }
 
                 // Now project to the DTO
@@ -406,42 +405,20 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(string? userId = null)
+        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null)
         {
             try
             {
                 IQueryable<BookedAppointment> query = _context.BookedAppointments
                     .Include(ba => ba.Patient)
                         .ThenInclude(p => p.Person)
-                            .ThenInclude(p => p.ApplicationUser)
                     .Where(ba => ba.IsFinished);
 
-                if (!string.IsNullOrEmpty(userId))
+                // Filter by client ID if provided
+                if (clientId.HasValue)
                 {
-                    bool userExists = await _context.Users.AnyAsync(u => u.Id == userId);
-                    if (userExists)
-                    {
-                        var patientId = await _context.Patients
-                            .Where(p => p.Person.ApplicationUser.Id == userId)
-                            .Select(p => p.PersonId)
-                            .FirstOrDefaultAsync();
 
-                        if (patientId != default)
-                        {
-                            query = query.Where(ba => ba.PatientId == patientId);
-                        }
-                        else
-                        {
-                            // The user exists but does not have a patient record
-                            _logger.LogWarning($"User with ID {userId} exists but is not associated with a patient.");
-                            return new List<BookedAppointmentDto>(); // Return an empty list or handle as needed
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"User with ID {userId} not found.");
-                        return new List<BookedAppointmentDto>(); // Return an empty list or handle as needed
-                    }
+                    query = query.Where(ba => ba.PatientId == clientId.Value);
                 }
 
                 var finishedAppointments = await query.Select(ba => new BookedAppointmentDto

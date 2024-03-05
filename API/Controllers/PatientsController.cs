@@ -76,22 +76,36 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet("{patientId}")]
-        public async Task<IActionResult> GetPatientById(int patientId)
+        public async Task<IActionResult> GetPatientById(int clientId)
         {
             try
             {
+                int? clientIdToUse = null;
+
                 var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-                if (_authService.VerifyClientById(patientId, jwtUserId, userRoles))
+                if (userRoles.Contains("Admin") && clientId != null)
                 {
-                    return Unauthorized("You are not authorized to view these appointments.");
+                    clientIdToUse = clientId;
+                }
+                else if (clientId != null && jwtUserId != null)
+                {
+                    if (!await _authService.VerifyClientById(clientId, jwtUserId))
+                    {
+                        return Unauthorized("You are not authorized to view these appointments.");
+                    }
+                    clientIdToUse = clientId;
+                }
+                else
+                {
+                    return BadRequest("You are not authorized to view these appointments.");
                 }
 
-                var patient = await _patientsService.GetPatientByIdAsync(patientId);
+                var patient = await _patientsService.GetPatientByIdAsync(clientId);
                 if (patient == null)
                 {
-                    return NotFound($"Patient with ID {patientId} not found.");
+                    return NotFound($"Patient with ID {clientId} not found.");
                 }
                 return Ok(patient);
             }
