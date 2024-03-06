@@ -76,7 +76,7 @@ namespace Application.Services.Implementation
             {
                 roles = roles,
                 FullName = $"{person.FirstName} {person.LastName}",
-                //FullName = "test meno",
+                ClientId = person.Id,
                 UserId = user.Id,
                 Outcome = LoginUserOutcome.Success,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
@@ -187,12 +187,12 @@ namespace Application.Services.Implementation
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
 
             var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim(ClaimTypes.NameIdentifier, user.Id)
-    }
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim("userId", user.Id)
+                }
             .Union(userClaims)
             .Union(roleClaims);
 

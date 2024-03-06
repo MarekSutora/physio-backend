@@ -25,12 +25,12 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [HttpPost("{patientId}/notes")]
-        public async Task<IActionResult> AddNoteToPatient(int patientId, [FromBody] CreatePatientNoteDto createPatientNoteDto)
+        [HttpPost("{clientId}/notes")]
+        public async Task<IActionResult> AddNoteToPatient(int clientId, [FromBody] CreatePatientNoteDto createPatientNoteDto)
         {
             try
             {
-                if (patientId != createPatientNoteDto.PatientId)
+                if (clientId != createPatientNoteDto.ClientId)
                 {
                     return BadRequest("Mismatched patient ID.");
                 }
@@ -75,31 +75,16 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("{patientId}")]
+        [HttpGet("{clientId}")]
         public async Task<IActionResult> GetPatientById(int clientId)
         {
             try
             {
-                int? clientIdToUse = null;
-
-                var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                var jwtUserId = User.FindFirstValue("userId");
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-
-                if (userRoles.Contains("Admin") && clientId != null)
+                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientById(clientId, jwtUserId))
                 {
-                    clientIdToUse = clientId;
-                }
-                else if (clientId != null && jwtUserId != null)
-                {
-                    if (!await _authService.VerifyClientById(clientId, jwtUserId))
-                    {
-                        return Unauthorized("You are not authorized to view these appointments.");
-                    }
-                    clientIdToUse = clientId;
-                }
-                else
-                {
-                    return BadRequest("You are not authorized to view these appointments.");
+                    return Unauthorized("You are not authorized to view these appointments.");
                 }
 
                 var patient = await _patientsService.GetPatientByIdAsync(clientId);

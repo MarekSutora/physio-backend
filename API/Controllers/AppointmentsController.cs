@@ -22,6 +22,7 @@ namespace diploma_thesis_backend.Controllers
         public AppointmentsController(IAppointmentsService appointmentsService, IAuthService authService, ILogger<AppointmentsController> logger)
         {
             _appointmentsService = appointmentsService;
+            _authService = authService;
             _logger = logger;
         }
 
@@ -181,34 +182,12 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("booked")]
-        public async Task<IActionResult> GetBookedAppointmentsAsync([FromQuery] int? clientId = null)
+        [HttpGet("booked")] //todo admin only
+        public async Task<IActionResult> GetBookedAppointmentsAsync()
         {
             try
             {
-                int? clientIdToUse = null;
-
-                var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
-                var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-
-                if (userRoles.Contains("Admin") && clientId != null)
-                {
-                    clientIdToUse = clientId;
-                }
-                else if (clientId != null && jwtUserId != null)
-                {
-                    if (!await _authService.VerifyClientById((int)clientId, jwtUserId))
-                    {
-                        return Unauthorized("You are not authorized to view these appointments.");
-                    }
-                    clientIdToUse = clientId;
-                }
-                else
-                {
-                    return BadRequest("You are not authorized to view these appointments.");
-                }
-
-                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(clientIdToUse);
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync();
                 return Ok(bookedAppointments);
             }
             catch (Exception ex)
@@ -218,34 +197,61 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpGet("finished")]
-        public async Task<IActionResult> GetFinishedAppointmentsAsync([FromQuery] int? clientId = null)
+        [HttpGet("client/{clientId}/booked")]
+        public async Task<IActionResult> GetClientBookedAppointmentsAsync(int clientId)
         {
             try
             {
-                int? clientIdToUse = null;
+                var jwtUserId = User.FindFirstValue("userId");
+                var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientById(clientId, jwtUserId))
+                {
+                    return Unauthorized("You are not authorized to view these appointments.");
+                }
 
-                var jwtUserId = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(clientId);
+                return Ok(bookedAppointments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving booked appointments");
+                return BadRequest("Failed to retrieve booked appointments");
+            }
+        }
+
+
+        [HttpGet("finished")] //todo admin only
+        public async Task<IActionResult> GetAllFinishedAppointmentsAsync()
+        {
+            try
+            {
+                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync();
+                return Ok(finishedAppointments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving finished appointments");
+                return BadRequest("Failed to retrieve finished appointments");
+            }
+        }
+
+        [HttpGet("client/{clientId}/finished")]
+        public async Task<IActionResult> GetClientFinishedAppointmentsAsync(int clientId)
+        {
+            try
+            {
+                var jwtUserId = User.FindFirstValue("userId");
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-                if (userRoles.Contains("Admin") && clientId != null)
+                var isAdmin = userRoles.Contains("Admin");
+                var isClientVerified = await _authService.VerifyClientById(clientId, jwtUserId);
+
+                if (!isAdmin && !isClientVerified)
                 {
-                    clientIdToUse = clientId;
-                }
-                else if (clientId != null && jwtUserId != null)
-                {
-                    if (!await _authService.VerifyClientById((int)clientId, jwtUserId))
-                    {
-                        return Unauthorized("You are not authorized to view these appointments.");
-                    }
-                    clientIdToUse = clientId;
-                }
-                else
-                {
-                    return BadRequest("You are not authorized to view these appointments.");
+                    return Unauthorized("You are not authorized to view these appointments.");
                 }
 
-                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(clientIdToUse);
+                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(clientId);
                 return Ok(finishedAppointments);
             }
             catch (Exception ex)

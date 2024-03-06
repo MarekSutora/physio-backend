@@ -47,15 +47,16 @@ namespace diploma_thesis_backend.Controllers
                 {
                     User = new
                     {
-                        Id = result.UserId,
+                        UserId = result.UserId,
                         FullName = result.FullName,
                         Roles = result.roles,
+                        ClientId = result.ClientId
                     },
                     BackendTokens = new
                     {
-                        accessToken = result.AccessToken,
-                        refreshToken = result.RefreshToken,
-                        expirationDate = result.ExpiryDate
+                        AccessToken = result.AccessToken,
+                        RefreshToken = result.RefreshToken,
+                        ExpirationDate = result.ExpiryDate
                     }
                 });
             }

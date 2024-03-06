@@ -78,7 +78,8 @@ namespace Application.Mappings
             .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
             .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
 
-            CreateMap<CreatePatientNoteDto, PatientNoteDto>();
+            CreateMap<CreatePatientNoteDto, PatientNote>().ForMember(pn => pn.PatientId, dto => dto.MapFrom(cpn => cpn.ClientId));
+            CreateMap<PatientNote, PatientNoteDto>();
 
         }
 

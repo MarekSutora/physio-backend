@@ -12,6 +12,7 @@ namespace Application.Common.Auth
         [JsonIgnore]
         public string FullName { get; set; }
         public string UserId { get; set; }
+        public int ClientId { get; set; }
         public LoginUserOutcome Outcome { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }

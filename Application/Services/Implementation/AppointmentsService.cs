@@ -129,6 +129,7 @@ namespace Application.Services.Implementation
 
                 var groupedAppointments = (await unBookedAppointmentsQuery.ToListAsync())
                     .GroupBy(x => x.Appointment)
+                    .OrderBy(g => g.Key.StartTime)
                     .Select(g => new UnbookedAppointmentDto
                     {
                         AppointmentId = g.Key.Id,

@@ -8,8 +8,7 @@ namespace Shared.DTO.Patients.Request
 {
     public class CreatePatientNoteDto
     {
-        public int PatientId { get; set; }
+        public int ClientId { get; set; }
         public string Note { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }

@@ -31,15 +31,22 @@ namespace Application.Services.Implementation
         {
             try
             {
-                var patientNote = _mapper.Map<PatientNote>(createPatientNoteDto);
+                var patientExists = await _context.Patients.AnyAsync(p => p.PersonId == createPatientNoteDto.ClientId);
 
+                if (!patientExists)
+                {
+                    throw new InvalidOperationException($"No patient found with ID {createPatientNoteDto.ClientId}.");
+                }
+
+                var patientNote = _mapper.Map<PatientNote>(createPatientNoteDto);
+                patientNote.CreatedAt = DateTime.UtcNow.AddHours(1);
+
+                patientNote.PatientId = createPatientNoteDto.ClientId;
 
                 _context.PatientNotes.Add(patientNote);
-
                 await _context.SaveChangesAsync();
             }
-            catch
-            (Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while adding note to patient");
                 throw;
