@@ -167,7 +167,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPut("/booked/{id}/finish")]
+        [HttpPut("booked/{id}/finish")]
         public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
         {
             try

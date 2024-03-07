@@ -6,8 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.Common.Auth
 {
-    public class ConfirmEmailResult
-    {
 
-    }
 }

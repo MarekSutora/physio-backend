@@ -17,5 +17,7 @@ namespace Application.Services.Interfaces
         Task<IEnumerable<PatientNoteDto>> GetAllNotesForPatient(int patientId);
 
         Task AddNoteToPatientAsync(CreatePatientNoteDto createPatientNoteDto);
+
+        Task DeleteNoteAsync(int noteId);
     }
 }

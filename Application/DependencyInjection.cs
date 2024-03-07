@@ -11,6 +11,7 @@ using Application.Services.Implementation;
 using DataAccess;
 using AutoMapper;
 using Application.Mappings;
+using Application.Common.Email;
 
 namespace Application
 {
@@ -20,7 +21,7 @@ namespace Application
         {
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppointmentsService, AppointmentsService>();
@@ -29,8 +30,10 @@ namespace Application
             services.AddScoped<IBlogsService, BlogsService>();
             services.AddScoped<IExerciseTypesService, ExerciseTypesService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
             //add authorization policies for admin and physiotherapist and patient
 
@@ -43,6 +46,7 @@ namespace Application
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
+                options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.AddAuthorization(options =>

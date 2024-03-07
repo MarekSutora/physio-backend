@@ -25,7 +25,7 @@ namespace diploma_thesis_backend.Controllers
         [Route("RegisterPatient")]
         public async Task<IActionResult> RegisterPatientAsync([FromBody] RegisterRequestDto registerRequestDto)
         {
-            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto);
+            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto, GetUrl());
 
             return registrationResult switch
             {
@@ -82,6 +82,34 @@ namespace diploma_thesis_backend.Controllers
                 refreshToken = result.RefreshToken,
                 expiryDate = result.ExpiryDate
             });
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        {
+            try
+            {
+                var result = await _authService.ConfirmEmailAsync(userId, code);
+                if (result)
+                {
+                    var loginUrl = "http://localhost:3000/prihlasenie";
+                    return Redirect(loginUrl);
+                }
+                else
+                {
+                    return BadRequest(new { message = "Email sa nepodarilo potvrdiť." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+        }
+
+        private string GetUrl()
+        {
+            return Request.Scheme + "://" + Request.Host.Value;
         }
     }
 }

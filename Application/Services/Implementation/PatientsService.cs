@@ -53,6 +53,29 @@ namespace Application.Services.Implementation
             }
         }
 
+        public async Task DeleteNoteAsync(int noteId)
+        {
+            try
+            {
+                var note = await _context.PatientNotes.FirstOrDefaultAsync(n => n.Id == noteId);
+
+                if (note == null)
+                {
+                    throw new InvalidOperationException($"No note found with ID {noteId}.");
+                }
+
+                _context.PatientNotes.Remove(note);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Deleted note with ID {noteId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while deleting note");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<PatientNoteDto>> GetAllNotesForPatient(int patientId)
         {
             try

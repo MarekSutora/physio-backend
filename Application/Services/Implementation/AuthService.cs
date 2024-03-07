@@ -1,5 +1,4 @@
 ﻿using Application.Services.Interfaces;
-using Azure;
 using DataAccess.Model.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +12,9 @@ using static Application.Common.Auth.LoginUserResult;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
+using Application.Common.Email;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Services.Implementation
 {
@@ -22,21 +24,22 @@ namespace Application.Services.Implementation
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
         public AuthService(UserManager<ApplicationUser> userManager,
                 IOptions<JwtSettings> jwtSettings,
                 SignInManager<ApplicationUser> signInManager,
-                ApplicationDbContext dbContext)
+                ApplicationDbContext dbContext,
+                IEmailService emailService,
+                IConfiguration configuration)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
             _context = dbContext;
-        }
-
-        public Task<ConfirmEmailResult> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto)
-        {
-            throw new NotImplementedException();
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         public Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
@@ -105,56 +108,115 @@ namespace Application.Services.Implementation
             };
         }
 
-        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto)
+        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto, string url)
         {
-            var userWithSameEmail = await _userManager.FindByEmailAsync(registerRequestDto.Email);
-            if (userWithSameEmail != null)
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                return RegisterUserResult.EmailAlreadyInUse;
-            }
+                try
+                {
+                    var userWithSameEmail = await _userManager.FindByEmailAsync(registerRequestDto.Email);
+                    if (userWithSameEmail != null)
+                    {
+                        return RegisterUserResult.EmailAlreadyInUse;
+                    }
 
-            // Create a new Person entity
-            var person = new Person
-            {
-                FirstName = registerRequestDto.FirstName,
-                LastName = registerRequestDto.LastName,
-                PhoneNumber = registerRequestDto.PhoneNumber
-            };
+                    // Create a new Person entity
+                    var person = new Person
+                    {
+                        FirstName = registerRequestDto.FirstName,
+                        LastName = registerRequestDto.LastName,
+                        PhoneNumber = registerRequestDto.PhoneNumber
+                    };
 
-            await _context.Persons.AddAsync(person);
+                    await _context.Persons.AddAsync(person);
+                    await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
+                    var user = new ApplicationUser
+                    {
+                        UserName = registerRequestDto.Email,
+                        Email = registerRequestDto.Email,
+                        PersonId = person.Id,
+                        RegisteredDate = DateTime.Now
+                    };
 
-            var user = new ApplicationUser
-            {
-                UserName = registerRequestDto.Email,
-                Email = registerRequestDto.Email,
-                EmailConfirmed = true,
-                PersonId = person.Id,
-                RegisteredDate = DateTime.Now
-            };
+                    var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);
+                    if (!userCreationResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return RegisterUserResult.Failure;
+                    }
 
+                    var emailSent = await SendVerificationEmail(user);
+                    if (!emailSent)
+                    {
+                        await transaction.RollbackAsync();
+                        return RegisterUserResult.Failure;
+                    }
 
-            var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);
+                    var addToRoleResult = await _userManager.AddToRoleAsync(user, "Patient");
+                    if (!addToRoleResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return RegisterUserResult.Failure;
+                    }
 
-            if (userCreationResult.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, "Patient");
-
-                await _context.SaveChangesAsync();
-
-                return RegisterUserResult.Success;
-            }
-            else
-            {
-                return RegisterUserResult.Failure;
+                    // If all operations succeeded, commit the transaction
+                    await transaction.CommitAsync();
+                    return RegisterUserResult.Success;
+                }
+                catch (Exception ex)
+                {
+                    // If an exception is thrown, roll back all database operations
+                    await transaction.RollbackAsync();
+                    throw new Exception(ex.Message);
+                }
             }
         }
 
-
-        public Task<Response<string>> ResetPassword(ResetPasswordRequestDto resetPasswordRequestDto)
+        private async Task<bool> SendVerificationEmail(ApplicationUser user, string origin = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                origin ??= _configuration["Cors:AllowedOrigin"];
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var route = "apinet/auth/confirmEmail";
+                var _enpointUri = new Uri(string.Concat($"{origin}/", route));
+                var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
+                verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+
+                var emailRequest = new EmailRequest
+                {
+                    ToEmail = user.Email,
+                    Subject = "Potvrdenie registrácie",
+                    Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
+                };
+
+                await _emailService.SendEmailAsync(emailRequest);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<bool> ConfirmEmailAsync(string userId, string code)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                var result = await _userManager.ConfirmEmailAsync(user, code);
+
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Task<ResetPasswordResult> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
@@ -221,7 +283,6 @@ namespace Application.Services.Implementation
         {
             return await _userManager.Users
                 .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
-
         }
     }
 }

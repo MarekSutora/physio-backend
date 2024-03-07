@@ -60,6 +60,21 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [HttpDelete("notes/{noteId}")]
+        public async Task<IActionResult> DeleteNoteAsync(int noteId)
+        {
+            try
+            {
+                await _patientsService.DeleteNoteAsync(noteId);
+                return Ok("Note deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting note");
+                return StatusCode(500, "Error deleting note");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllPatients()
         {

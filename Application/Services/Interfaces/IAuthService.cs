@@ -6,11 +6,11 @@ namespace Application.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto);
+        Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto, string Url);
 
         Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto);
 
-        Task<ConfirmEmailResult> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto);
+        Task<bool> ConfirmEmailAsync(string userId, string code);
 
         Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
 
