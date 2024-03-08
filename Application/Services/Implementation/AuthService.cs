@@ -15,6 +15,9 @@ using DataAccess;
 using Application.Common.Email;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using AutoMapper.Internal;
+using Microsoft.Extensions.Logging;
+using Azure;
 
 namespace Application.Services.Implementation
 {
@@ -26,13 +29,15 @@ namespace Application.Services.Implementation
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthService> _logger;
 
         public AuthService(UserManager<ApplicationUser> userManager,
                 IOptions<JwtSettings> jwtSettings,
                 SignInManager<ApplicationUser> signInManager,
                 ApplicationDbContext dbContext,
                 IEmailService emailService,
-                IConfiguration configuration)
+                IConfiguration configuration,
+                ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
@@ -40,11 +45,7 @@ namespace Application.Services.Implementation
             _context = dbContext;
             _emailService = emailService;
             _configuration = configuration;
-        }
-
-        public Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
-        {
-            throw new NotImplementedException();
+            _logger = logger;
         }
 
         public async Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto)
@@ -108,7 +109,7 @@ namespace Application.Services.Implementation
             };
         }
 
-        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto, string url)
+        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -173,11 +174,11 @@ namespace Application.Services.Implementation
             }
         }
 
-        private async Task<bool> SendVerificationEmail(ApplicationUser user, string origin = null)
+        private async Task<bool> SendVerificationEmail(ApplicationUser user)
         {
             try
             {
-                origin ??= _configuration["Cors:AllowedOrigin"];
+                var origin = _configuration["Cors:AllowedOrigin"];
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var route = "apinet/auth/confirmEmail";
@@ -217,11 +218,6 @@ namespace Application.Services.Implementation
             {
                 throw new Exception(ex.Message);
             }
-        }
-
-        public Task<ResetPasswordResult> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<bool> VerifyClientById(int clientId, string userId)
@@ -283,6 +279,60 @@ namespace Application.Services.Implementation
         {
             return await _userManager.Users
                 .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
+        }
+
+        public async Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(forgotPasswordRequestDto.Email);
+
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    return;
+                }
+
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                var origin = _configuration["Cors:AllowedOrigin"];
+                var route = "obnovenie-hesla"; // This should match the client-side route
+                var endpointUri = new Uri(string.Concat($"{origin}/", route));
+                var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", encodedToken);
+
+                // Add email to the query string
+                passwordResetUrl = QueryHelpers.AddQueryString(passwordResetUrl, "email", forgotPasswordRequestDto.Email);
+
+                var emailRequest = new EmailRequest()
+                {
+                    Body = $"If you requested a password reset for {origin}, please follow the link below: <a href='{passwordResetUrl}'>Reset Password</a>",
+                    ToEmail = forgotPasswordRequestDto.Email,
+                    Subject = "Password Reset Request",
+                };
+
+                await _emailService.SendEmailAsync(emailRequest);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(resetPasswordRequestDto.Email);
+                if (user == null) throw new Exception($"No Accounts Registered with {resetPasswordRequestDto.Email}.");
+                var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequestDto.Token)), resetPasswordRequestDto.Password);
+
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                throw;
+            }
         }
     }
 }

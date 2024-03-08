@@ -6,7 +6,7 @@ namespace Application.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto, string Url);
+        Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto);
 
         Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto);
 
@@ -14,7 +14,7 @@ namespace Application.Services.Interfaces
 
         Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
 
-        Task<ResetPasswordResult> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
+        Task<bool> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
 
         Task<LoginUserResult> RefreshTokenAsync(string refreshToken);
 

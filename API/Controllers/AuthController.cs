@@ -13,19 +13,23 @@ namespace diploma_thesis_backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthController> _logger;
 
         public AuthController(
-                       IAuthService authService
+                       IAuthService authService, IConfiguration configuration, ILogger<AuthController> logger
                    )
         {
             _authService = authService;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost]
         [Route("RegisterPatient")]
         public async Task<IActionResult> RegisterPatientAsync([FromBody] RegisterRequestDto registerRequestDto)
         {
-            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto, GetUrl());
+            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto);
 
             return registrationResult switch
             {
@@ -92,7 +96,9 @@ namespace diploma_thesis_backend.Controllers
                 var result = await _authService.ConfirmEmailAsync(userId, code);
                 if (result)
                 {
-                    var loginUrl = "http://localhost:3000/prihlasenie";
+                    var frontendUrl = _configuration["Cors:AllowedOrigin"];
+
+                    var loginUrl = $"{frontendUrl}/prihlasenie?emailConfirmed=success";
                     return Redirect(loginUrl);
                 }
                 else
@@ -107,9 +113,32 @@ namespace diploma_thesis_backend.Controllers
 
         }
 
-        private string GetUrl()
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
         {
-            return Request.Scheme + "://" + Request.Host.Value;
+            var result = await _authService.ResetPasswordAsync(resetPasswordRequestDto);
+            if (result)
+            {
+                return Ok(new { message = "Heslo bolo úspešne zmenené." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Heslo sa nepodarilo zmeniť." });
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordRequestDto forgotPasswordRequestDto)
+        {
+            try
+            {
+                await _authService.ForgotPasswordAsync(forgotPasswordRequestDto);
+                return Ok(new { message = "Email s inštrukciami na resetovanie hesla bol odoslaný." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
