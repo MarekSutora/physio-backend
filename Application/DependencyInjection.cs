@@ -46,7 +46,7 @@ namespace Application
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true; //TODO: change to true
+                options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 7;
                 options.Password.RequiredUniqueChars = 1;

@@ -23,10 +23,10 @@ namespace DataAccess.Seeding
             ApplicationUser admin1 = new ApplicationUser
             {
                 Id = "4ab97c50-052f-44af-8516-3a27e4ec3d72",
-                UserName = "admin@example.com",
-                NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                Email = "admin@example.com",
-                NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                UserName = "admin1@example.com",
+                NormalizedUserName = "ADMIN1@EXAMPLE.COM",
+                Email = "admin1@example.com",
+                NormalizedEmail = "ADMIN1@EXAMPLE.COM",
                 EmailConfirmed = true,
                 PersonId = 1
             };

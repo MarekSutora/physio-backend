@@ -32,15 +32,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 var appointments = await _appointmentsService.GetUnbookedAppointmentsAsync();
-
-                // Assuming your service already returns DTOs, you can directly return the result
                 return Ok(appointments);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                // Log the exception and return an appropriate error response
-                // This is a simple example, consider using a more detailed error handling strategy
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Chyba pri získavaní neobsadených termínov.");
+                return BadRequest("Chyba pri získavaní neobsadených termínov.");
             }
         }
 
@@ -50,14 +47,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.CreateAppointmentAsync(createAppointmentDto);
-                return Ok();
+                return Ok("Termín úspešne vytvorený.");
             }
             catch (Exception ex)
             {
-                // Log the exception details here
-                _logger.LogError(ex, "Error creating Appointment.");
-                // Return a generic error message to the client
-                return BadRequest("Failed to create Appointment.");
+                _logger.LogError(ex, "Chyba pri vytváraní nového termínu.");
+                return BadRequest("Chyba pri vytváraní nového termínu.");
             }
         }
 
@@ -65,18 +60,16 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("client-booked-appointments")]
         public async Task<IActionResult> CreateClientBookedAppointmentAsync([FromBody] ClientBookedAppointmentDto clientBookedAppointmentDto)
         {
-
             try
             {
-                var User = HttpContext.User;
                 var userId = User.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
                 await _appointmentsService.ClientCreateBookedAppointmentAsync(clientBookedAppointmentDto, userId);
-                return Ok();
+                return Ok("Termín úspešne rezervovaný klientom.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating Appointment");
-                return BadRequest("Failed to create Appointment");
+                _logger.LogError(ex, "Chyba pri vytváraní rezervácie klientom.");
+                return BadRequest("Chyba pri vytváraní rezervácie klientom.");
             }
         }
 
@@ -86,12 +79,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.AdminCreateBookedAppointmentAsync(adminBookedAppointmentDto);
-                return Ok("Admin booked appointment successfully.");
+                return Ok("Termín úspešne rezervovaný adminom.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error booking appointment by admin.");
-                return StatusCode(500, "Failed to book appointment by admin.");
+                _logger.LogError(ex, "Chyba pri rezervácii termínu adminom.");
+                return StatusCode(500, "Chyba pri rezervácii termínu adminom.");
             }
         }
 
@@ -101,17 +94,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
-                return Ok("Appointment cancelled successfully.");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.LogWarning(ex, "Unauthorized attempt to cancel appointment.");
-                return Unauthorized("You are not authorized to cancel this appointment.");
+                return Ok("Termín úspešne zrušený.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error cancelling appointment.");
-                return StatusCode(500, "Failed to cancel appointment.");
+                _logger.LogError(ex, "Chyba pri zrušení termínu.");
+                return StatusCode(500, "Chyba pri zrušení termínu.");
             }
         }
 
@@ -121,12 +109,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.DeleteAppointmentAsync(appointmentId);
-                return Ok("Appointment deleted successfully.");
+                return Ok("Termín úspešne vymazaný.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting appointment.");
-                return StatusCode(500, "Failed to delete appointment.");
+                _logger.LogError(ex, "Chyba pri vymazávaní termínu s Id.");
+                return StatusCode(500, "Chyba pri vymazávaní termínu.");
             }
         }
 
@@ -142,13 +130,13 @@ namespace diploma_thesis_backend.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound("Termín nebol nájdený.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving appointment with ID {AppointmentId}", id);
-                return StatusCode(500, "An error occurred while retrieving the appointment");
+                _logger.LogError(ex, "Chyba pri získavaní termínu s ID {AppointmentId}", id);
+                return StatusCode(500, "Chyba pri získavaní termínu.");
             }
         }
 
@@ -204,7 +192,7 @@ namespace diploma_thesis_backend.Controllers
             {
                 var jwtUserId = User.FindFirstValue("userId");
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientById(clientId, jwtUserId))
+                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientByIdAsync(clientId, jwtUserId))
                 {
                     return Unauthorized("You are not authorized to view these appointments.");
                 }
@@ -244,7 +232,7 @@ namespace diploma_thesis_backend.Controllers
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
                 var isAdmin = userRoles.Contains("Admin");
-                var isClientVerified = await _authService.VerifyClientById(clientId, jwtUserId);
+                var isClientVerified = await _authService.VerifyClientByIdAsync(clientId, jwtUserId);
 
                 if (!isAdmin && !isClientVerified)
                 {

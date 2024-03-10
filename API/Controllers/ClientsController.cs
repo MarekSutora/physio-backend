@@ -21,22 +21,22 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPost("{clientId}/notes")]
-        public async Task<IActionResult> AddNoteToClient(int clientId, [FromBody] CreateClientNoteDto createClientNoteDto)
+        public async Task<IActionResult> AddNoteToClientAsync(int clientId, [FromBody] CreateClientNoteDto createClientNoteDto)
         {
             try
             {
                 if (clientId != createClientNoteDto.ClientId)
                 {
-                    return BadRequest("Mismatched Client Id.");
+                    return BadRequest("Nesúlad Id klienta.");
                 }
 
                 await _clientsService.AddNoteToClientAsync(createClientNoteDto);
-                return Ok("Note added successfully.");
+                return Ok("Poznámka úspešne pridaná.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adding note to Client.");
-                return StatusCode(500, "Error adding note to Client.");
+                _logger.LogError(ex, "Chyba pri pridávaní poznámky klientovi.");
+                return BadRequest("Chyba pri pridávaní poznámky klientovi.");
             }
         }
 
@@ -50,10 +50,11 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving notes for Client");
-                return StatusCode(500, "Error retrieving notes for Client");
+                _logger.LogError(ex, "Chyba pri získavaní poznámok klienta.");
+                return BadRequest("Chyba pri získavaní poznámok klienta.");
             }
         }
+
 
         [HttpDelete("notes/{noteId}")]
         public async Task<IActionResult> DeleteNoteAsync(int noteId)
@@ -61,12 +62,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _clientsService.DeleteNoteAsync(noteId);
-                return Ok("Note deleted successfully.");
+                return Ok("Poznámka úspešne vymazaná.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting note.");
-                return StatusCode(500, "Error deleting note.");
+                _logger.LogError(ex, "Chyba pri mazaní poznámky.");
+                return BadRequest("Chyba pri mazaní poznámky.");
             }
         }
 
@@ -80,11 +81,10 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving all Clients.");
-                return StatusCode(500, "Error retrieving all Clients.");
+                _logger.LogError(ex, "Chyba pri získavaní všetkých klientov.");
+                return BadRequest("Chyba pri získavaní všetkých klientov.");
             }
         }
-
         [HttpGet("{clientId}")]
         public async Task<IActionResult> GetClientByIdAsync(int clientId)
         {
@@ -92,22 +92,22 @@ namespace diploma_thesis_backend.Controllers
             {
                 var jwtUserId = User.FindFirstValue("userId");
                 var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientById(clientId, jwtUserId))
+                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientByIdAsync(clientId, jwtUserId))
                 {
-                    return Unauthorized("You are not authorized to view these appointments.");
+                    return Unauthorized("Nemáte oprávnenie na zobrazenie týchto údajov.");
                 }
 
                 var client = await _clientsService.GetClientByIdAsync(clientId);
                 if (client == null)
                 {
-                    return NotFound($"Client with ID {clientId} not found.");
+                    return NotFound($"Klient s ID {clientId} nebol nájdený.");
                 }
                 return Ok(client);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving Client by Id.");
-                return StatusCode(500, "Error retrieving Client by Id.");
+                _logger.LogError(ex, "Chyba pri získavaní klienta podľa ID.");
+                return BadRequest("Chyba pri získavaní klienta podľa ID.");
             }
         }
     }
