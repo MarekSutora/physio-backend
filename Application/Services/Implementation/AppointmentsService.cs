@@ -56,21 +56,21 @@ namespace Application.Services.Implementation
             {
                 var user = await _context.ApplicationUsers
                     .Include(u => u.Person)
-                    .ThenInclude(p => p.Patient)
+                    .ThenInclude(p => p.Client)
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
-                if (user?.Person?.Patient == null)
+                if (user?.Person?.Client == null)
                 {
-                    throw new Exception($"Patient associated with User ID {userId} not found.");
+                    throw new Exception($"Client associated with User ID {userId} not found.");
                 }
 
-                var patientId = user.Person.Patient.PersonId;
+                var clientId = user.Person.Client.PersonId;
 
                 var bookedAppointment = new BookedAppointment
                 {
                     AppointmentServiceTypeDurationCostId = clientBookedAppointmentDto.astdcId,
                     AppointmentBookedDate = DateTime.Now,
-                    PatientId = patientId,
+                    ClientId = clientId,
                     // Other properties if required
                 };
 
@@ -155,14 +155,14 @@ namespace Application.Services.Implementation
             try
             {
                 IQueryable<BookedAppointment> query = _context.BookedAppointments
-                    .Include(ba => ba.Patient)
+                    .Include(ba => ba.Client)
                         .ThenInclude(p => p.Person)
                     .Where(ba => !ba.IsFinished); // Filter for non-finished appointments
 
                 // Filter by client ID if provided
                 if (clientId.HasValue)
                 {
-                    query = query.Where(ba => ba.PatientId == clientId.Value);
+                    query = query.Where(ba => ba.ClientId == clientId.Value);
                 }
 
                 // Now project to the DTO
@@ -175,9 +175,9 @@ namespace Application.Services.Implementation
                     ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                     HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                     Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                    ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
-                    ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
-                    ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
+                    ClientId = ba.Client == null ? -1 : ba.Client.PersonId,
+                    ClientFirstName = ba.Client == null ? "-" : ba.Client.Person.FirstName,
+                    ClientSecondName = ba.Client == null ? "-" : ba.Client.Person.LastName,
                     Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                     AppointmentBookedDate = ba.AppointmentBookedDate
                 }).ToListAsync();
@@ -224,7 +224,7 @@ namespace Application.Services.Implementation
                 {
                     AppointmentServiceTypeDurationCostId = serviceTypeDurationCost.Id,
                     AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
-                    PatientId = bookedAppointmentDto.PatientId,
+                    ClientId = bookedAppointmentDto.ClientId,
                     // Other properties if required
                 };
 
@@ -303,7 +303,7 @@ namespace Application.Services.Implementation
             {
                 var appointment = await _context.Appointments
                     .Include(a => a.AppointmentServiceTypeDurationCosts)
-                        .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(ba => ba.Patient).ThenInclude(p => p.Person)
+                        .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(ba => ba.Client).ThenInclude(p => p.Person)
                     .Include(a => a.AppointmentServiceTypeDurationCosts)
                         .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
                             .ThenInclude(stdc => stdc.ServiceType)
@@ -411,7 +411,7 @@ namespace Application.Services.Implementation
             try
             {
                 IQueryable<BookedAppointment> query = _context.BookedAppointments
-                    .Include(ba => ba.Patient)
+                    .Include(ba => ba.Client)
                         .ThenInclude(p => p.Person)
                     .Where(ba => ba.IsFinished);
 
@@ -419,7 +419,7 @@ namespace Application.Services.Implementation
                 if (clientId.HasValue)
                 {
 
-                    query = query.Where(ba => ba.PatientId == clientId.Value);
+                    query = query.Where(ba => ba.ClientId == clientId.Value);
                 }
 
                 var finishedAppointments = await query.Select(ba => new BookedAppointmentDto
@@ -431,9 +431,9 @@ namespace Application.Services.Implementation
                     ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                     HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                     Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                    ClientId = ba.Patient == null ? -1 : ba.Patient.PersonId,
-                    ClientFirstName = ba.Patient == null ? "-" : ba.Patient.Person.FirstName,
-                    ClientSecondName = ba.Patient == null ? "-" : ba.Patient.Person.LastName,
+                    ClientId = ba.Client == null ? -1 : ba.Client.PersonId,
+                    ClientFirstName = ba.Client == null ? "-" : ba.Client.Person.FirstName,
+                    ClientSecondName = ba.Client == null ? "-" : ba.Client.Person.LastName,
                     Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                     AppointmentBookedDate = ba.AppointmentBookedDate
                 }).ToListAsync();

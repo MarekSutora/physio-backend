@@ -20,13 +20,19 @@ namespace Application
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(
+                    options =>
+                    {
+                        options.Lockout.MaxFailedAccessAttempts = 5;
+                        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                    }
+                )
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppointmentsService, AppointmentsService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
-            services.AddScoped<IPatientsService, PatientsService>();
+            services.AddScoped<IClientsService, ClientsService>();
             services.AddScoped<IBlogsService, BlogsService>();
             services.AddScoped<IExerciseTypesService, ExerciseTypesService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
@@ -35,16 +41,14 @@ namespace Application
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
-            //add authorization policies for admin and physiotherapist and patient
 
             services.Configure<IdentityOptions>(options =>
             {
-                // Default Password settings.
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false; //TODO: change to true
+                options.Password.RequireNonAlphanumeric = true; //TODO: change to true
                 options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 7;
                 options.Password.RequiredUniqueChars = 1;
                 options.SignIn.RequireConfirmedEmail = true;
             });
@@ -52,9 +56,7 @@ namespace Application
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("Physiotherapist", policy =>
-                                   policy.RequireRole("Physiotherapist"));
-                options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("Client", policy => policy.RequireRole("Client"));
             }
             );
 
@@ -66,15 +68,11 @@ namespace Application
             })
                 .AddJwtBearer(o =>
                 {
-                    //o.RequireHttpsMetadata = false;
-                    //o.SaveToken = false;
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        //ValidateLifetime = true,
-                        //ClockSkew = TimeSpan.Zero,
                         ValidIssuer = configuration["JwtSettings:Issuer"],
                         ValidAudience = configuration["JwtSettings:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shared.DTO.Patients.Response
+﻿
+namespace Shared.DTO.Clients.Response
 {
-    public class PatientDto
+    public class ClientDto
     {
         public int PersonId { get; set; }
         public DateTime RegisteredDate { get; set; }

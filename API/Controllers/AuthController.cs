@@ -25,70 +25,92 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        [Route("RegisterPatient")]
-        public async Task<IActionResult> RegisterPatientAsync([FromBody] RegisterRequestDto registerRequestDto)
+        [HttpPost("register-client")]
+        public async Task<IActionResult> RegisterClientAsync([FromBody] RegisterRequestDto registerRequestDto)
         {
-            var registrationResult = await _authService.RegisterPatientAsync(registerRequestDto);
-
-            return registrationResult switch
+            try
             {
-                RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
-                RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email je už použítý." }),
-                _ => BadRequest(new { message = "Registrácia zlyhala." }),
-            };
+                var registrationResult = await _authService.RegisterClientAsync(registerRequestDto);
+
+                return registrationResult switch
+                {
+                    RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
+                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email je už použítý." }),
+                    _ => BadRequest(new { message = "Nastala chyba počas registrácie." }),
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nastala chyba počas registrácie.");
+                return BadRequest(new { message = "Nastala chyba počas registrácie." });
+            }
         }
 
-        [HttpPost]
-        [Route("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginRequestDto)
         {
-            var result = await _authService.LoginUserAsync(loginRequestDto);
+            try
+            {
+                var result = await _authService.LoginUserAsync(loginRequestDto);
 
-            if (result.Outcome == LoginUserResult.LoginUserOutcome.Success)
-            {
-                return Ok(new
+                if (result.Outcome == LoginUserResult.LoginUserOutcome.Success)
                 {
-                    User = new
+                    return Ok(new
                     {
-                        UserId = result.UserId,
-                        FullName = result.FullName,
-                        Roles = result.roles,
-                        ClientId = result.ClientId
-                    },
-                    BackendTokens = new
-                    {
-                        AccessToken = result.AccessToken,
-                        RefreshToken = result.RefreshToken,
-                        ExpirationDate = result.ExpiryDate
-                    }
-                });
+                        User = new
+                        {
+                            UserId = result.UserId,
+                            FullName = result.FullName,
+                            Roles = result.roles,
+                            ClientId = result.ClientId
+                        },
+                        BackendTokens = new
+                        {
+                            AccessToken = result.AccessToken,
+                            RefreshToken = result.RefreshToken,
+                            ExpirationDate = result.ExpiryDate
+                        }
+                    });
+                }
+                else
+                {
+                    return BadRequest("Nesprávne prihlasovacie údaje.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Nesprávne prihlasovacie údaje.");
+                _logger.LogError(ex, "Nastala chyba pri prihlasovaní.");
+                return BadRequest(new { message = "Nastala chyba pri prihlasovaní." });
             }
         }
 
-        [HttpPost("RefreshToken")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequestDto refreshTokenRequest)
         {
-            var result = await _authService.RefreshTokenAsync(refreshTokenRequest.RefreshToken);
-
-            if (result is null)
+            try
             {
-                return Unauthorized("Invalid refresh token.");
+                var result = await _authService.RefreshTokenAsync(refreshTokenRequest.RefreshToken);
+
+                if (result is null)
+                {
+                    return Unauthorized("Nevalídny refresh token.");
+                }
+
+                return Ok(new
+                {
+                    jwtToken = result.AccessToken,
+                    refreshToken = result.RefreshToken,
+                    expiryDate = result.ExpiryDate
+                });
             }
-
-            return Ok(new
+            catch (Exception ex)
             {
-                jwtToken = result.AccessToken,
-                refreshToken = result.RefreshToken,
-                expiryDate = result.ExpiryDate
-            });
+                _logger.LogError(ex, "Nastala chyba pri získavaní refresh tokenu.");
+                return BadRequest(new { message = "Nastala chyba pri získavaní refresh tokenu." });
+            }
         }
 
-        [HttpGet("ConfirmEmail")]
+        [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
         {
             try
@@ -103,12 +125,13 @@ namespace diploma_thesis_backend.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { message = "Email sa nepodarilo potvrdiť." });
+                    return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "Nastala chyba pri potvrdzovaní emailu.");
+                return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
             }
 
         }
@@ -116,14 +139,22 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
         {
-            var result = await _authService.ResetPasswordAsync(resetPasswordRequestDto);
-            if (result)
+            try
             {
-                return Ok(new { message = "Heslo bolo úspešne zmenené." });
+                var result = await _authService.ResetPasswordAsync(resetPasswordRequestDto);
+                if (result)
+                {
+                    return Ok(new { message = "Heslo bolo úspešne zmenené." });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Nastala chyba pri zmene hesla." });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Heslo sa nepodarilo zmeniť." });
+                _logger.LogError(ex, "Nastala chyba pri zmene hesla.");
+                return BadRequest(new { message = "Nastala chyba pri zmene hesla." });
             }
         }
 
@@ -133,11 +164,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _authService.ForgotPasswordAsync(forgotPasswordRequestDto);
-                return Ok(new { message = "Email s inštrukciami na resetovanie hesla bol odoslaný." });
+                return Ok(new { message = "Email s inštrukciami na obnovenie hesla bol odoslaný." });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "Nastala chyba pri odosielaní emailu na obnovenie hesla.");
+                return BadRequest(new { message = "Nastala chyba pri odosielaní emailu na obnovenie hesla." });
             }
         }
     }

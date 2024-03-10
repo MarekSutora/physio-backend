@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Model.Entities;
-using Shared.DTO.Patients.Response;
-using Shared.DTO.Appointments.Request;
+using Shared.DTO.Clients.Response;
 using Shared.DTO.ServiceType.Request;
 using Shared.DTO.ServiceType.Response;
 using Shared.DTO.Blog.Request;
@@ -10,7 +9,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
 using Shared.DTO.Appointments.Response;
-using Shared.DTO.Patients.Request;
+using Shared.DTO.Clients.Request;
 
 namespace Application.Mappings
 {
@@ -31,7 +30,7 @@ namespace Application.Mappings
 
             CreateMap<ServiceType, ServiceTypeDto>()
                 .ForMember(dto => dto.Stdcs, conf => conf.MapFrom(st => st.ServiceTypeDurationCosts
-                    .Where(stdc => stdc.DateTo == null) // Optional: filter out inactive STDCs
+                    .Where(stdc => stdc.DateTo == null)
                     .Select(stdc => new ServiceTypeDurationCostDto
                     {
                         Id = stdc.Id,
@@ -66,20 +65,20 @@ namespace Application.Mappings
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.StartTime)) // Assuming the start time of the booked appointment is the same as the appointment start time
                 .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes)) // Adjust this based on your actual entity structure
                 .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name))
-                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.PatientId))
-                .ForMember(dest => dest.ClientFirstName, opt => opt.MapFrom(src => src.Patient == null ? "-" : src.Patient.Person.FirstName)) // Assuming your Patient entity has a FirstName property
-                .ForMember(dest => dest.ClientSecondName, opt => opt.MapFrom(src => src.Patient == null ? "-" : src.Patient.Person.LastName)) // Adjust according to your Patient entity
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.ClientFirstName, opt => opt.MapFrom(src => src.Client == null ? "-" : src.Client.Person.FirstName)) // Assuming your Client entity has a FirstName property
+                .ForMember(dest => dest.ClientSecondName, opt => opt.MapFrom(src => src.Client == null ? "-" : src.Client.Person.LastName)) // Adjust according to your Client entity
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost))
                 .ForMember(dest => dest.HexColor, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor))
                 .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.Capacity))
                 .ForMember(dest => dest.AppointmentBookedDate, opt => opt.MapFrom(src => src.AppointmentBookedDate));
 
-            CreateMap<ApplicationUser, PatientDto>()
+            CreateMap<ApplicationUser, ClientDto>()
             .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
             .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
 
-            CreateMap<CreatePatientNoteDto, PatientNote>().ForMember(pn => pn.PatientId, dto => dto.MapFrom(cpn => cpn.ClientId));
-            CreateMap<PatientNote, PatientNoteDto>();
+            CreateMap<CreateClientNoteDto, ClientNote>().ForMember(pn => pn.ClientId, dto => dto.MapFrom(cpn => cpn.ClientId));
+            CreateMap<ClientNote, ClientNoteDto>();
 
         }
 

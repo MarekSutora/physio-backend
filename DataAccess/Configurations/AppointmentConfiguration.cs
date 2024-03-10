@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Configurations
 {
-    public class AvailableReservationConfiguration : IEntityTypeConfiguration<Appointment>
+    public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
@@ -13,9 +13,6 @@ namespace DataAccess.Configurations
 
             builder.Property(ar => ar.Capacity)
                 .IsRequired();
-
-            //builder.Property(ar => ar.ReservedAmount)
-            //    .IsRequired();
         }
     }
 }

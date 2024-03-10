@@ -10,7 +10,7 @@ namespace Shared.DTO.Appointments.Request
     {
         public int ServiceTypeDurationCostId { get; set; }
 
-        public int? PatientId { get; set; }
+        public int? ClientId { get; set; }
 
         public DateTime StartTime { get; set; }
     }

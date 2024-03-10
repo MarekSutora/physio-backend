@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO.Patients.Request
+namespace Shared.DTO.Clients.Request
 {
-    public class CreatePatientNoteDto
+    public class CreateClientNoteDto
     {
         public int ClientId { get; set; }
         public string Note { get; set; }

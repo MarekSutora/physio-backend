@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model.Entities
 {
-    public class Patient
+    public class Client
     {
         public int PersonId { get; set; }
         public Person Person { get; set; } = null!;
 
-        public List<Diagnosis> Diagnosiss { get; } = [];
-        public List<PatientDiagnosis> PatientDiagnosiss { get; } = [];
-
-        public ICollection<PatientNote> PatientNotes { get; } = [];
+        public ICollection<ClientNote> ClientNotes { get; } = [];
     }
 }

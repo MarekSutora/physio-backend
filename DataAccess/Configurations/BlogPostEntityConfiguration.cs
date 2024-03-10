@@ -9,7 +9,7 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<BlogPost> builder)
         {
             builder.HasIndex(st => st.Slug)
-    .IsUnique();
+                .IsUnique();
 
             builder.HasIndex(st => st.Title)
                 .IsUnique();

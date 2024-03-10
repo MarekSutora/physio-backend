@@ -21,12 +21,10 @@ namespace DataAccess
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<BookedAppointment> BookedAppointments { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
-        public DbSet<Diagnosis> Diagnosiss { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<ExerciseType> ExerciseTypes { get; set; }
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<PatientDiagnosis> PatientDiagnosiss { get; set; }
-        public DbSet<PatientNote> PatientNotes { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientNote> ClientNotes { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
@@ -42,14 +40,6 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            // patient -> diagnosis many to many
-            builder.Entity<Patient>()
-            .HasMany(e => e.Diagnosiss)
-            .WithMany(e => e.Patients)
-            .UsingEntity<PatientDiagnosis>(
-                l => l.HasOne<Diagnosis>(e => e.Diagnosis).WithMany(e => e.PatientDiagnosiss),
-                r => r.HasOne<Patient>(e => e.Patient).WithMany(e => e.PatientDiagnosiss));
 
             //serviceType -> durationCost m:n
             builder.Entity<ServiceType>()
@@ -67,14 +57,14 @@ namespace DataAccess
                                                   l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AppointmentServiceTypeDurationCosts),
                                                   r => r.HasOne<Appointment>(e => e.Appointment).WithMany(e => e.AppointmentServiceTypeDurationCosts));
 
-            // patient -> person 1:1
-            builder.Entity<Patient>()
+            // client -> person 1:1
+            builder.Entity<Client>()
            .HasKey(s => s.PersonId);
 
-            builder.Entity<Patient>()
+            builder.Entity<Client>()
                        .HasOne<Person>(p => p.Person)
-                       .WithOne(s => s.Patient)
-                       .HasForeignKey<Patient>(pa => pa.PersonId);
+                       .WithOne(s => s.Client)
+                       .HasForeignKey<Client>(pa => pa.PersonId);
 
             // Appointment -> AppointmentDetail 1:1
             builder.Entity<AppointmentDetail>().HasKey(ad => ad.AppointmentId);

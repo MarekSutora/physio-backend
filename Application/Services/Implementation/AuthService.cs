@@ -109,7 +109,7 @@ namespace Application.Services.Implementation
             };
         }
 
-        public async Task<RegisterUserResult> RegisterPatientAsync(RegisterRequestDto registerRequestDto)
+        public async Task<RegisterUserResult> RegisterClientAsync(RegisterRequestDto registerRequestDto)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -154,7 +154,7 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.Failure;
                     }
 
-                    var addToRoleResult = await _userManager.AddToRoleAsync(user, "Patient");
+                    var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
                     if (!addToRoleResult.Succeeded)
                     {
                         await transaction.RollbackAsync();
@@ -223,12 +223,12 @@ namespace Application.Services.Implementation
         public async Task<bool> VerifyClientById(int clientId, string userId)
         {
 
-            var patient = await _context.Patients
+            var client = await _context.Clients
                                 .Include(p => p.Person)
                                 .ThenInclude(p => p.ApplicationUser)
                                 .FirstOrDefaultAsync(p => p.PersonId == clientId);
 
-            if (patient != null && patient.Person.ApplicationUser.Id == userId)
+            if (client != null && client.Person.ApplicationUser.Id == userId)
             {
                 return true;
             }
