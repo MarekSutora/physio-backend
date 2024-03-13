@@ -21,5 +21,9 @@ namespace DataAccess.Model.Entities
         public List<DurationCost> DurationCosts { get; } = [];
 
         public List<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; } = [];
+
+        public required string IconName { get; set; }
+
+        public required string ImageUrl { get; set; }
     }
 }

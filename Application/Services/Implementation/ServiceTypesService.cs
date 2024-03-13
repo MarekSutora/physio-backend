@@ -31,7 +31,9 @@ namespace Application.Services.Implementation
                 {
                     Name = createNewServiceTypeDto.Name,
                     Description = createNewServiceTypeDto.Description,
-                    HexColor = createNewServiceTypeDto.HexColor
+                    HexColor = createNewServiceTypeDto.HexColor,
+                    IconName = createNewServiceTypeDto.IconName,
+                    ImageUrl = createNewServiceTypeDto.ImageUrl
                 };
 
                 foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
@@ -143,6 +145,9 @@ namespace Application.Services.Implementation
                 serviceType.Name = updateServiceTypeDto.Name;
                 serviceType.Description = updateServiceTypeDto.Description;
                 serviceType.HexColor = updateServiceTypeDto.HexColor;
+                serviceType.IconName = updateServiceTypeDto.IconName;
+                serviceType.ImageUrl = updateServiceTypeDto.ImageUrl;
+
 
                 // Handle existing associations
                 var currentDurationCosts = serviceType.ServiceTypeDurationCosts.ToList();
