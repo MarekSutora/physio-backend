@@ -8,7 +8,7 @@ namespace Shared.DTO.Appointments.Response
 {
     public class UnbookedAppointmentDto
     {
-        public int AppointmentId { get; set; }
+        public int Id { get; set; }
         public DateTime StartTime { get; set; }
         public int Capacity { get; set; }
         public int ReservedCount { get; set; }

@@ -112,11 +112,11 @@ namespace Application.Services.Implementation
                     .Include(astdc => astdc.ServiceTypeDurationCost)
                         .ThenInclude(stdc => stdc.DurationCost)
                     .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
-                            && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1))
+                            && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1) && astdc.ServiceTypeDurationCost.DateTo == null)
                     .Select(astdc => new
                     {
                         astdc.Appointment,
-                        BookedCount = astdc.BookedAppointments.Count, // Use Count() method here
+                        BookedCount = astdc.BookedAppointments.Count,
                         ServiceTypeInfo = new ServiceTypeInfoDto
                         {
                             AstdcId = astdc.Id,
@@ -132,7 +132,7 @@ namespace Application.Services.Implementation
                     .OrderBy(g => g.Key.StartTime)
                     .Select(g => new UnbookedAppointmentDto
                     {
-                        AppointmentId = g.Key.Id,
+                        Id = g.Key.Id,
                         StartTime = g.Key.StartTime,
                         Capacity = g.Key.Capacity,
                         ReservedCount = g.Sum(x => x.BookedCount), // Aggregate the count here
