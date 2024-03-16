@@ -40,6 +40,8 @@ namespace Application.Mappings
 
             CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Title)));
 
+            CreateMap<CreateServiceTypeDto, ServiceType>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Name)));
+
             CreateMap<BlogPost, BlogPostDto>();
 
             CreateMap<UpdateBlogPostDto, BlogPost>();

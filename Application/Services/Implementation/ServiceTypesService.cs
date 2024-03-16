@@ -27,50 +27,58 @@ namespace Application.Services.Implementation
         {
             try
             {
-                var serviceType = new ServiceType
-                {
-                    Name = createNewServiceTypeDto.Name,
-                    Description = createNewServiceTypeDto.Description,
-                    HexColor = createNewServiceTypeDto.HexColor,
-                    IconName = createNewServiceTypeDto.IconName,
-                    ImageUrl = createNewServiceTypeDto.ImageUrl
-                };
+                var existingServiceType = await _context.ServiceTypes
+                    .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                    .FirstOrDefaultAsync(st => st.Name.Equals(createNewServiceTypeDto.Name, StringComparison.OrdinalIgnoreCase));
 
-                foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+                if (existingServiceType != null && !existingServiceType.Active)
                 {
-                    var existingDurationCost = await _context.DurationCosts
-                        .FirstOrDefaultAsync(dc => dc.DurationMinutes == durationCostDto.DurationMinutes && dc.Cost == durationCostDto.Cost);
+                    // If it exists and is not active, reactivate it
+                    existingServiceType.Active = true;
 
-                    if (existingDurationCost == null)
+                    // Update the existing ServiceTypeDurationCosts to set DateTo to Now + 1 hour
+                    foreach (var stdc in existingServiceType.ServiceTypeDurationCosts)
                     {
-                        existingDurationCost = new DurationCost
+                        stdc.DateTo = DateTime.UtcNow.AddHours(1);
+                    }
+
+                    // Add new ServiceTypeDurationCosts based on the DTO
+                    foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+                    {
+                        var durationCost = new DurationCost
                         {
                             DurationMinutes = durationCostDto.DurationMinutes,
                             Cost = durationCostDto.Cost
                         };
-                        _context.DurationCosts.Add(existingDurationCost);
-                    }
+                        _context.DurationCosts.Add(durationCost);
 
-                    // EF Core will handle the initialization of the collection when adding the first item.
-                    serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                    {
-                        DurationCost = existingDurationCost
-                    });
+                        existingServiceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                        {
+                            DurationCost = durationCost
+                        });
+                    }
+                }
+                else
+                {
+                    // If it does not exist, create a new ServiceType as usual
+                    var newServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
+                    _context.ServiceTypes.Add(newServiceType);
                 }
 
-                _context.ServiceTypes.Add(serviceType);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("ServiceType with ID {ServiceTypeId} created successfully.", serviceType.Id);
+                _logger.LogInformation("ServiceType created or reactivated successfully.");
 
-                return true; // Return the created ServiceType entity
+                return true;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error creating ServiceType: {Message}", e.Message);
-                throw; // It's better to throw the original exception to preserve the stack trace.
+                _logger.LogError(e, "Error creating or reactivating ServiceType: {Message}", e.Message);
+                throw;
             }
         }
+
 
         public async Task<bool> SoftDeleteServiceTypeAsync(int id)
         {

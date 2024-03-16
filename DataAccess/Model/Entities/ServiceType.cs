@@ -25,5 +25,7 @@ namespace DataAccess.Model.Entities
         public required string IconName { get; set; }
 
         public required string ImageUrl { get; set; }
+
+        public required string Slug { get; set; }
     }
 }

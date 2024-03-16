@@ -16,5 +16,6 @@ namespace Shared.DTO.ServiceType.Response
         public required string IconName { get; set; }
         public required string ImageUrl { get; set; }
         public required List<ServiceTypeDurationCostDto> Stdcs { get; set; }
+        public required string Slug { get; set; }
     }
 }
