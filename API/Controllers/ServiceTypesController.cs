@@ -12,12 +12,12 @@ namespace diploma_thesis_backend.Controllers
     [Produces("application/json")]
     public class ServiceTypesController : Controller
     {
-        private readonly IServiceTypeService _serviceTypeService;
+        private readonly IServiceTypesService _serviceTypesService;
         private readonly ILogger<ServiceTypesController> _logger;
 
-        public ServiceTypesController(IServiceTypeService serviceTypeService, ILogger<ServiceTypesController> logger)
+        public ServiceTypesController(IServiceTypesService serviceTypeService, ILogger<ServiceTypesController> logger)
         {
-            _serviceTypeService = serviceTypeService;
+            _serviceTypesService = serviceTypeService;
             _logger = logger;
         }
 
@@ -26,7 +26,7 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var result = await _serviceTypeService.CreateServiceTypeAsync(createNewServiceTypeDto);
+                var result = await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
                 if (result)
                 {
                     return Ok();
@@ -48,7 +48,7 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var result = await _serviceTypeService.UpdateServiceTypeAsync(updateServiceTypeDto);
+                var result = await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
                 if (result)
                 {
                     return Ok("Successfully updated ServiceType.");
@@ -70,7 +70,7 @@ namespace diploma_thesis_backend.Controllers
         {
             try
             {
-                var serviceTypes = await _serviceTypeService.GetAllActiveServiceTypesAsync();
+                var serviceTypes = await _serviceTypesService.GetAllActiveServiceTypesAsync();
                 return Ok(serviceTypes); // Always return OK with the list (even if it's empty)
             }
             catch (Exception ex)
@@ -80,12 +80,31 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [HttpGet("{slug}")]
+        public async Task<IActionResult> GetServiceTypeBySlug(string slug)
+        {
+            try
+            {
+                var serviceType = await _serviceTypesService.GetServiceTypeBySlugAsync(slug);
+                if (serviceType == null)
+                {
+                    return NotFound("Service type not found");
+                }
+                return Ok(serviceType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving service type by slug");
+                return StatusCode(500, "An error occurred while retrieving service type by slug");
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServiceType(int id)
         {
             try
             {
-                var success = await _serviceTypeService.SoftDeleteServiceTypeAsync(id);
+                var success = await _serviceTypesService.SoftDeleteServiceTypeAsync(id);
                 if (success)
                 {
                     return Ok("Success");

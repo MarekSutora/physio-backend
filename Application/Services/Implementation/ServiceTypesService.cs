@@ -10,7 +10,7 @@ using Shared.DTO.ServiceType.Response;
 
 namespace Application.Services.Implementation
 {
-    public class ServiceTypeService : IServiceTypeService
+    public class ServiceTypeService : IServiceTypesService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Application.Services.Implementation
                 var existingServiceType = await _context.ServiceTypes
                     .Include(st => st.ServiceTypeDurationCosts)
                     .ThenInclude(stdc => stdc.DurationCost)
-                    .FirstOrDefaultAsync(st => st.Name.Equals(createNewServiceTypeDto.Name, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefaultAsync(st => EF.Functions.Like(st.Name, createNewServiceTypeDto.Name));
 
                 if (existingServiceType != null && !existingServiceType.Active)
                 {
@@ -201,6 +201,30 @@ namespace Application.Services.Implementation
             {
                 _logger.LogError(e, "Error updating ServiceType with ID: {ServiceTypeId}. Exception: {ExceptionMessage}", updateServiceTypeDto.Id, e.Message);
                 return false;
+            }
+        }
+
+        public async Task<ServiceTypeDto> GetServiceTypeBySlugAsync(string slug)
+        {
+            try
+            {
+                var serviceType = await _context.ServiceTypes
+                    .Include(st => st.ServiceTypeDurationCosts)
+                        .ThenInclude(stdc => stdc.DurationCost)
+                    .Where(x => x.Slug == slug).FirstOrDefaultAsync();
+
+                if (serviceType == null)
+                {
+                    _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
+                    throw new KeyNotFoundException("ServiceType not found");
+                }
+
+                return _mapper.Map<ServiceTypeDto>(serviceType);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting ServiceType by slug: {Slug}. Exception: {ExceptionMessage}", slug, e.Message);
+                throw;
             }
         }
     }

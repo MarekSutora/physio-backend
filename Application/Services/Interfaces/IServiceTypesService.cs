@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Interfaces
 {
-    //TODO pluralize the name of the interface
-    public interface IServiceTypeService
+    public interface IServiceTypesService
     {
         Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto);
         Task<bool> SoftDeleteServiceTypeAsync(int id);
         Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync();
         Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto);
+        Task<ServiceTypeDto> GetServiceTypeBySlugAsync(string slug);
     }
 }

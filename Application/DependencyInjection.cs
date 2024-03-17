@@ -31,7 +31,7 @@ namespace Application
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppointmentsService, AppointmentsService>();
-            services.AddScoped<IServiceTypeService, ServiceTypeService>();
+            services.AddScoped<IServiceTypesService, ServiceTypeService>();
             services.AddScoped<IClientsService, ClientsService>();
             services.AddScoped<IBlogsService, BlogsService>();
             services.AddScoped<IExerciseTypesService, ExerciseTypesService>();
