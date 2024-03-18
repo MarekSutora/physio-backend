@@ -57,34 +57,26 @@ namespace diploma_thesis_backend.Controllers
         }
 
 
-        [HttpPost("client-booked-appointments")]
-        public async Task<IActionResult> CreateClientBookedAppointmentAsync([FromBody] ClientBookedAppointmentDto clientBookedAppointmentDto)
+        [HttpPost("booked/{clientId}")]
+        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int clientId, [FromBody] CreateBookedAppointmentDto clientBookedAppointmentDto)
         {
             try
             {
+                var jwtUserId = User.FindFirstValue("userId");
+                var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+                if (!userRoles.Contains("Admin") && !await _authService.VerifyClientByIdAsync(clientId, jwtUserId))
+                {
+                    return Unauthorized("You are not authorized to view these appointments.");
+                }
+
                 var userId = User.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
-                await _appointmentsService.ClientCreateBookedAppointmentAsync(clientBookedAppointmentDto, userId);
+                await _appointmentsService.CreateBookedAppointmentAsync(clientBookedAppointmentDto, userId);
                 return Ok("Termín úspešne rezervovaný klientom.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Chyba pri vytváraní rezervácie klientom.");
                 return BadRequest("Chyba pri vytváraní rezervácie klientom.");
-            }
-        }
-
-        [HttpPost("admin-booked-appointments")]
-        public async Task<IActionResult> CreateAdminBookedAppointmentAsync([FromBody] AdminBookedAppointmentDto adminBookedAppointmentDto)
-        {
-            try
-            {
-                await _appointmentsService.AdminCreateBookedAppointmentAsync(adminBookedAppointmentDto);
-                return Ok("Termín úspešne rezervovaný adminom.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Chyba pri rezervácii termínu adminom.");
-                return StatusCode(500, "Chyba pri rezervácii termínu adminom.");
             }
         }
 

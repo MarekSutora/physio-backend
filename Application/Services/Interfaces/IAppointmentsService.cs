@@ -16,9 +16,7 @@ namespace Application.Services.Interfaces
 
         Task DeleteAppointmentAsync(int appointmentId);
 
-        Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto);
-
-        Task ClientCreateBookedAppointmentAsync(ClientBookedAppointmentDto clientBookedAppointmentDto, string userId);
+        Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, string userId);
 
         Task DeleteBookedAppointmentAsync(int bookedAppointmentId);
 

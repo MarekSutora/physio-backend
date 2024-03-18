@@ -50,7 +50,7 @@ namespace Application.Services.Implementation
         }
 
 
-        public async Task ClientCreateBookedAppointmentAsync(ClientBookedAppointmentDto clientBookedAppointmentDto, string userId)
+        public async Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto clientBookedAppointmentDto, string userId)
         {
             try
             {
@@ -71,7 +71,6 @@ namespace Application.Services.Implementation
                     AppointmentServiceTypeDurationCostId = clientBookedAppointmentDto.astdcId,
                     AppointmentBookedDate = DateTime.Now,
                     ClientId = clientId,
-                    // Other properties if required
                 };
 
                 var existingBookingsCount = await _context.BookedAppointments
@@ -87,10 +86,8 @@ namespace Application.Services.Implementation
                     throw new Exception("Appointment is fully booked.");
                 }
 
-                // Add the new BookedAppointment to the context
                 _context.BookedAppointments.Add(bookedAppointment);
 
-                // Save the changes to the database
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -187,60 +184,6 @@ namespace Application.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving booked appointments.");
-                throw;
-            }
-        }
-
-        public async Task AdminCreateBookedAppointmentAsync(AdminBookedAppointmentDto bookedAppointmentDto)
-        {
-            // Start transaction to ensure atomicity
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                var appointment = new Appointment
-                {
-                    StartTime = bookedAppointmentDto.StartTime,
-                    Capacity = 1, // Assuming capacity of 1 for admin created Appointments
-                };
-
-                _context.Appointments.Add(appointment);
-                await _context.SaveChangesAsync();
-
-                // Step 2: Retrieve ServiceTypeDurationCost and associate it with Appointment
-                var serviceTypeDurationCost = await _context.ServiceTypeDurationCosts
-                    .FindAsync(bookedAppointmentDto.ServiceTypeDurationCostId);
-
-                if (serviceTypeDurationCost == null)
-                {
-                    throw new Exception("ServiceTypeDurationCost not found.");
-                }
-
-                // Link the ServiceTypeDurationCost with the Appointment
-                appointment.ServiceTypeDurationCosts.Add(serviceTypeDurationCost);
-
-                // Step 3: Create the BookedAppointment
-                var bookedAppointment = new BookedAppointment
-                {
-                    AppointmentServiceTypeDurationCostId = serviceTypeDurationCost.Id,
-                    AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
-                    ClientId = bookedAppointmentDto.ClientId,
-                    // Other properties if required
-                };
-
-                _context.BookedAppointments.Add(bookedAppointment);
-                await _context.SaveChangesAsync();
-
-                // Commit the transaction
-                await transaction.CommitAsync();
-
-                _logger.LogInformation("Admin created BookedAppointment successfully.");
-            }
-            catch (Exception ex)
-            {
-                // Rollback the transaction if any exception occurs
-                await transaction.RollbackAsync();
-                _logger.LogError(ex, "Error creating admin booked Appointment");
                 throw;
             }
         }

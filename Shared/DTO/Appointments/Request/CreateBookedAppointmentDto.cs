@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Appointments.Request
 {
-    public class ClientBookedAppointmentDto
+    public class CreateBookedAppointmentDto
     {
         public int astdcId { get; set; }
     }

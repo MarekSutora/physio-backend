@@ -34,16 +34,13 @@ namespace Application.Services.Implementation
 
                 if (existingServiceType != null && !existingServiceType.Active)
                 {
-                    // If it exists and is not active, reactivate it
                     existingServiceType.Active = true;
 
-                    // Update the existing ServiceTypeDurationCosts to set DateTo to Now + 1 hour
                     foreach (var stdc in existingServiceType.ServiceTypeDurationCosts)
                     {
                         stdc.DateTo = DateTime.UtcNow.AddHours(1);
                     }
 
-                    // Add new ServiceTypeDurationCosts based on the DTO
                     foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
                     {
                         var durationCost = new DurationCost
@@ -61,7 +58,6 @@ namespace Application.Services.Implementation
                 }
                 else
                 {
-                    // If it does not exist, create a new ServiceType as usual
                     var newServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
                     _context.ServiceTypes.Add(newServiceType);
                 }
@@ -131,7 +127,7 @@ namespace Application.Services.Implementation
             catch (Exception e)
             {
                 _logger.LogError(e, "Error retrieving active ServiceTypes with current DurationCosts.");
-                throw; // Preserve the original stack trace
+                throw;
             }
         }
 
@@ -156,8 +152,6 @@ namespace Application.Services.Implementation
                 serviceType.IconName = updateServiceTypeDto.IconName;
                 serviceType.ImageUrl = updateServiceTypeDto.ImageUrl;
 
-
-                // Handle existing associations
                 var currentDurationCosts = serviceType.ServiceTypeDurationCosts.ToList();
                 foreach (var current in currentDurationCosts)
                 {
@@ -167,7 +161,6 @@ namespace Application.Services.Implementation
                     }
                 }
 
-                // Handle new associations
                 foreach (var dto in updateServiceTypeDto.DurationCosts)
                 {
                     var existingDurationCost = await _context.DurationCosts
