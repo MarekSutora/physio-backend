@@ -1,8 +1,5 @@
 using Application;
-using DataAccess;
-using diploma_thesis_backend.API.Middlewares;
 using Serilog;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +10,6 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         .ReadFrom.Configuration(hostingContext.Configuration);
 });
 
-// Add services to the container.
-
 builder.Services.AddControllers().AddJsonOptions(options =>
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 
@@ -22,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddDataAccess(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {

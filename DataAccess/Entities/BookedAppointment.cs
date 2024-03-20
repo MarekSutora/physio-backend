@@ -1,5 +1,4 @@
-﻿
-namespace DataAccess.Model.Entities
+﻿namespace DataAccess.Entities
 {
     public class BookedAppointment
     {

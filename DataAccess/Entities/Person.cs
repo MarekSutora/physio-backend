@@ -5,7 +5,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Model.Entities
+namespace DataAccess.Entities
 {
     public class Person
     {
@@ -16,8 +16,5 @@ namespace DataAccess.Model.Entities
 
         public Client? Client { get; set; }
         public ApplicationUser? ApplicationUser { get; set; }
-
-        public int? AddressId { get; set; }
-        public Address? Address { get; set; }
     }
 }

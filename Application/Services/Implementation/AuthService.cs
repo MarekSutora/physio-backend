@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using AutoMapper.Internal;
 using Microsoft.Extensions.Logging;
 using Azure;
+using DataAccess.Entities;
 
 namespace Application.Services.Implementation
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess;
-using DataAccess.Model.Entities;
 using Application.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Appointments;
@@ -13,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
+using DataAccess.Entities;
 
 namespace Application.Services.Implementation
 {

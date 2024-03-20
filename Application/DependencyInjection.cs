@@ -1,5 +1,4 @@
-﻿using DataAccess.Model.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
@@ -12,6 +11,7 @@ using DataAccess;
 using AutoMapper;
 using Application.Mappings;
 using Application.Common.Email;
+using DataAccess.Entities;
 
 namespace Application
 {
@@ -40,6 +40,8 @@ namespace Application
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
+            services.AddDataAccess(configuration);
 
 
             services.Configure<IdentityOptions>(options =>

@@ -1,6 +1,7 @@
 ﻿using Application.Services.Interfaces;
 using AutoMapper;
 using DataAccess;
+using DataAccess.Entities;
 using DataAccess.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

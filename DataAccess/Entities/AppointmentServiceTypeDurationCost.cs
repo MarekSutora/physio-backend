@@ -1,6 +1,4 @@
-﻿using DataAccess.Model.Entities;
-
-namespace DataAccess.Model.Entities
+﻿namespace DataAccess.Entities
 {
     public class AppointmentServiceTypeDurationCost
     {

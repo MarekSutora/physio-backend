@@ -1,5 +1,4 @@
-﻿using DataAccess.DataSeeding;
-using DataAccess.Model.Entities;
+﻿using DataAccess.Entities;
 using DataAccess.Seeding;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,6 @@ namespace DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Address> Addresss { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentServiceTypeDurationCost> AppointmentServiceTypeDurationCosts { get; set; }
@@ -77,8 +75,6 @@ namespace DataAccess
             });
 
             builder.SeedApplicationUsers();
-
-            builder.SeedAppointments();
 
             builder.SeedExerciseTypes();
         }

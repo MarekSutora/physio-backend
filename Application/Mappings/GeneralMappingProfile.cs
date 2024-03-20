@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DataAccess.Model.Entities;
 using Shared.DTO.Clients.Response;
 using Shared.DTO.ServiceType.Request;
 using Shared.DTO.ServiceType.Response;
@@ -10,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using Shared.DTO.Appointments.Response;
 using Shared.DTO.Clients.Request;
+using DataAccess.Entities;
 
 namespace Application.Mappings
 {

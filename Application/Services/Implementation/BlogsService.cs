@@ -1,7 +1,7 @@
 ﻿using Application.Services.Interfaces;
 using AutoMapper;
 using DataAccess;
-using DataAccess.Model.Entities;
+using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.DTO.Blog.Request;
