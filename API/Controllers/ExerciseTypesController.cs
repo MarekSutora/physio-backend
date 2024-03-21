@@ -21,10 +21,21 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllExerciseTypesAsync()
         {
+            _logger.LogInformation("Getting all exercise types");
             try
             {
                 var exerciseTypes = await _exerciseTypesService.GetAllExerciseTypesAsync();
-                return Ok(exerciseTypes);
+
+                if (exerciseTypes != null && exerciseTypes.Any())
+                {
+                    _logger.LogInformation("Exercise types successfully retrieved");
+                    return Ok(exerciseTypes);
+                }
+                else
+                {
+                    _logger.LogInformation("No exercise types found");
+                    return NotFound("No exercise types found");
+                }
             }
             catch (Exception ex)
             {

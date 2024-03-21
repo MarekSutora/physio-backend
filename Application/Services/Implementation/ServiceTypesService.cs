@@ -23,91 +23,69 @@ namespace Application.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<bool> CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
+        public async Task CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
         {
-            try
+
+            var existingServiceType = await _context.ServiceTypes
+                .Include(st => st.ServiceTypeDurationCosts)
+                .ThenInclude(stdc => stdc.DurationCost)
+                .FirstOrDefaultAsync(st => EF.Functions.Like(st.Name, createNewServiceTypeDto.Name));
+
+            if (existingServiceType != null && !existingServiceType.Active)
             {
-                var existingServiceType = await _context.ServiceTypes
-                    .Include(st => st.ServiceTypeDurationCosts)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                    .FirstOrDefaultAsync(st => EF.Functions.Like(st.Name, createNewServiceTypeDto.Name));
+                existingServiceType.Active = true;
 
-                if (existingServiceType != null && !existingServiceType.Active)
+                foreach (var stdc in existingServiceType.ServiceTypeDurationCosts)
                 {
-                    existingServiceType.Active = true;
-
-                    foreach (var stdc in existingServiceType.ServiceTypeDurationCosts)
-                    {
-                        stdc.DateTo = DateTime.UtcNow.AddHours(1);
-                    }
-
-                    foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
-                    {
-                        var durationCost = new DurationCost
-                        {
-                            DurationMinutes = durationCostDto.DurationMinutes,
-                            Cost = durationCostDto.Cost
-                        };
-                        _context.DurationCosts.Add(durationCost);
-
-                        existingServiceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                        {
-                            DurationCost = durationCost
-                        });
-                    }
-                }
-                else
-                {
-                    var newServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
-                    _context.ServiceTypes.Add(newServiceType);
+                    stdc.DateTo = DateTime.UtcNow.AddHours(1);
                 }
 
-                await _context.SaveChangesAsync();
+                foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+                {
+                    var durationCost = new DurationCost
+                    {
+                        DurationMinutes = durationCostDto.DurationMinutes,
+                        Cost = durationCostDto.Cost
+                    };
+                    _context.DurationCosts.Add(durationCost);
 
-                _logger.LogInformation("ServiceType created or reactivated successfully.");
-
-                return true;
+                    existingServiceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                    {
+                        DurationCost = durationCost
+                    });
+                }
             }
-            catch (Exception e)
+            else
             {
-                _logger.LogError(e, "Error creating or reactivating ServiceType: {Message}", e.Message);
-                throw;
+                var newServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
+                _context.ServiceTypes.Add(newServiceType);
             }
+
+            await _context.SaveChangesAsync();
         }
 
 
-        public async Task<bool> SoftDeleteServiceTypeAsync(int id)
+        public async Task SoftDeleteServiceTypeAsync(int id)
         {
-            try
+
+            _logger.LogInformation("Attempting to soft delete ServiceType with ID: {ServiceTypeId}", id);
+
+            var serviceType = await _context.ServiceTypes.FindAsync(id);
+
+            if (serviceType == null)
             {
-                _logger.LogInformation("Attempting to soft delete ServiceType with ID: {ServiceTypeId}", id);
-
-                var serviceType = await _context.ServiceTypes.FindAsync(id);
-
-                if (serviceType == null)
-                {
-                    _logger.LogWarning("Soft delete failed: ServiceType with ID: {ServiceTypeId} not found.", id);
-                    return false;
-                }
-
-                serviceType.Active = false;
-
-                foreach (var stdc in serviceType.ServiceTypeDurationCosts)
-                {
-                    stdc.DateTo = DateTime.Now;
-                }
-
-                _context.ServiceTypes.Update(serviceType);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation("ServiceType with ID: {ServiceTypeId} soft deleted successfully.", id);
-                return true;
+                throw new Exception("ServiceType not found");
             }
-            catch (Exception e)
+
+            serviceType.Active = false;
+
+            foreach (var stdc in serviceType.ServiceTypeDurationCosts)
             {
-                _logger.LogError(e, "Error soft deleting ServiceType with ID: {ServiceTypeId}. Exception: {ExceptionMessage}", id, e.Message);
-                return false;
+                stdc.DateTo = DateTime.Now;
             }
+
+            _context.ServiceTypes.Update(serviceType);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync()
@@ -131,94 +109,76 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task<bool> UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
+        public async Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
-            try
+
+            var serviceType = await _context.ServiceTypes
+                .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id);
+
+            if (serviceType == null)
             {
-                var serviceType = await _context.ServiceTypes
-                    .Include(st => st.ServiceTypeDurationCosts)
-                        .ThenInclude(stdc => stdc.DurationCost)
-                    .FirstOrDefaultAsync(st => st.Id == updateServiceTypeDto.Id);
-
-                if (serviceType == null)
-                {
-                    _logger.LogWarning("Update failed: ServiceType with ID: {ServiceTypeId} not found.", updateServiceTypeDto.Id);
-                    return false;
-                }
-
-                serviceType.Name = updateServiceTypeDto.Name;
-                serviceType.Description = updateServiceTypeDto.Description;
-                serviceType.HexColor = updateServiceTypeDto.HexColor;
-                serviceType.IconName = updateServiceTypeDto.IconName;
-                serviceType.ImageUrl = updateServiceTypeDto.ImageUrl;
-
-                var currentDurationCosts = serviceType.ServiceTypeDurationCosts.ToList();
-                foreach (var current in currentDurationCosts)
-                {
-                    if (!updateServiceTypeDto.DurationCosts.Exists(dto => dto.DurationMinutes == current.DurationCost.DurationMinutes && dto.Cost == current.DurationCost.Cost))
-                    {
-                        current.DateTo = DateTime.Now; // Mark the end date of the current association
-                    }
-                }
-
-                foreach (var dto in updateServiceTypeDto.DurationCosts)
-                {
-                    var existingDurationCost = await _context.DurationCosts
-                        .FirstOrDefaultAsync(dc => dc.DurationMinutes == dto.DurationMinutes && dc.Cost == dto.Cost);
-
-                    if (existingDurationCost == null)
-                    {
-                        existingDurationCost = new DurationCost
-                        {
-                            DurationMinutes = dto.DurationMinutes,
-                            Cost = dto.Cost
-                        };
-                        _context.DurationCosts.Add(existingDurationCost);
-                    }
-
-                    if (!serviceType.ServiceTypeDurationCosts.Exists(stdc => stdc.DurationCost == existingDurationCost && stdc.DateTo == null))
-                    {
-                        serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                        {
-                            DurationCost = existingDurationCost
-                        });
-                    }
-                }
-
-                bool result = await _context.SaveChangesAsync() > 0;
-                _logger.LogInformation("ServiceType with ID: {ServiceTypeId} updated {Result}.", updateServiceTypeDto.Id, result ? "successfully" : "unsuccessfully");
-
-                return result;
+                throw new Exception("ServiceType not found");
             }
-            catch (Exception e)
+
+            serviceType.Name = updateServiceTypeDto.Name;
+            serviceType.Description = updateServiceTypeDto.Description;
+            serviceType.HexColor = updateServiceTypeDto.HexColor;
+            serviceType.IconName = updateServiceTypeDto.IconName;
+            serviceType.ImageUrl = updateServiceTypeDto.ImageUrl;
+
+            var currentDurationCosts = serviceType.ServiceTypeDurationCosts.ToList();
+            foreach (var current in currentDurationCosts)
             {
-                _logger.LogError(e, "Error updating ServiceType with ID: {ServiceTypeId}. Exception: {ExceptionMessage}", updateServiceTypeDto.Id, e.Message);
-                return false;
+                if (!updateServiceTypeDto.DurationCosts.Exists(dto => dto.DurationMinutes == current.DurationCost.DurationMinutes && dto.Cost == current.DurationCost.Cost))
+                {
+                    current.DateTo = DateTime.Now; // Mark the end date of the current association
+                }
             }
+
+            foreach (var dto in updateServiceTypeDto.DurationCosts)
+            {
+                var existingDurationCost = await _context.DurationCosts
+                    .FirstOrDefaultAsync(dc => dc.DurationMinutes == dto.DurationMinutes && dc.Cost == dto.Cost);
+
+                if (existingDurationCost == null)
+                {
+                    existingDurationCost = new DurationCost
+                    {
+                        DurationMinutes = dto.DurationMinutes,
+                        Cost = dto.Cost
+                    };
+                    _context.DurationCosts.Add(existingDurationCost);
+                }
+
+                if (!serviceType.ServiceTypeDurationCosts.Exists(stdc => stdc.DurationCost == existingDurationCost && stdc.DateTo == null))
+                {
+                    serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                    {
+                        DurationCost = existingDurationCost
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<ServiceTypeDto> GetServiceTypeBySlugAsync(string slug)
         {
-            try
-            {
-                var serviceType = await _context.ServiceTypes
-                    .Include(st => st.ServiceTypeDurationCosts)
-                        .ThenInclude(stdc => stdc.DurationCost)
-                    .Where(x => x.Slug == slug).FirstOrDefaultAsync();
 
-                if (serviceType == null)
-                {
-                    _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
-                    throw new KeyNotFoundException("ServiceType not found");
-                }
+            var serviceType = await _context.ServiceTypes
+                .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .Where(x => x.Slug == slug).FirstOrDefaultAsync();
 
-                return _mapper.Map<ServiceTypeDto>(serviceType);
-            }
-            catch (Exception e)
+            if (serviceType == null)
             {
-                _logger.LogError(e, "Error getting ServiceType by slug: {Slug}. Exception: {ExceptionMessage}", slug, e.Message);
-                throw;
+                _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
+                throw new KeyNotFoundException("ServiceType not found");
             }
+
+            return _mapper.Map<ServiceTypeDto>(serviceType);
         }
     }
 }

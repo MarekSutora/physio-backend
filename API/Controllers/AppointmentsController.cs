@@ -51,14 +51,17 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Admin")]
         [HttpPost("unbooked")]
         public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
         {
             _logger.LogInformation("Creating new appointment.");
+
             try
             {
                 await _appointmentsService.CreateAppointmentAsync(createAppointmentDto);
+
+                _logger.LogInformation("New appointment successfully created.");
                 return Ok("New appointment successfully created.");
             }
             catch (Exception ex)
@@ -81,6 +84,8 @@ namespace diploma_thesis_backend.Controllers
                 }
 
                 await _appointmentsService.CreateBookedAppointmentAsync(clientBookedAppointmentDto, clientId);
+
+                _logger.LogInformation($"Booked appointment for Client with Client.Id = {clientId} created successfully.");
                 return Ok("Termín úspešne rezervovaný klientom.");
             }
             catch (Exception ex)
@@ -98,6 +103,8 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
+
+                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {bookedAppointmentId} deleted successfully.");
                 return Ok("Termín úspešne zrušený.");
             }
             catch (Exception ex)
@@ -115,6 +122,8 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.DeleteAppointmentAsync(appointmentId);
+
+                _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} deleted successfully.");
                 return Ok("Termín úspešne vymazaný.");
             }
             catch (Exception ex)
@@ -158,6 +167,8 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.UpdateAppointmentDetailsAsync(id, appointmentDetailDto);
+
+                _logger.LogInformation($"Appointment details for appointment with Appointment.Id = {id} updated successfully.");
                 return Ok("Appointment exercise details updated successfully.");
             }
             catch (Exception ex)
@@ -167,7 +178,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Admin")]
         [HttpPut("booked/{id}/finish")]
         public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
         {
@@ -175,6 +186,8 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _appointmentsService.FinishBookedAppointmentAsync(id);
+
+                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {id} finished successfully.");
                 return Ok("Appointment finished successfully.");
             }
             catch (Exception ex)
@@ -184,7 +197,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Admin")]
         [HttpGet("booked")]
         public async Task<IActionResult> GetBookedAppointmentsAsync()
         {
@@ -245,7 +258,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Admin")]
         [HttpGet("finished")]
         public async Task<IActionResult> GetAllFinishedAppointmentsAsync()
         {

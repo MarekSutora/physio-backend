@@ -6,8 +6,8 @@
         public DateTime AppointmentBookedDate { get; set; }
 
         public bool IsFinished { get; set; } = false;
-        public bool sevenDaysReminderSent { get; set; } = false;
-        public bool oneDayReminderSent { get; set; } = false;
+        public bool SsevenDaysReminderSent { get; set; } = false;
+        public bool OneDayReminderSent { get; set; } = false;
 
         public int AppointmentServiceTypeDurationCostId { get; set; }
         public AppointmentServiceTypeDurationCost AppointmentServiceTypeDurationCost { get; set; } = null!;

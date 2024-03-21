@@ -15,12 +15,10 @@ namespace Application.Services.Implementation
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<StatisticsService> _logger;
 
         public StatisticsService(ApplicationDbContext context, ILogger<StatisticsService> logger)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<IEnumerable<ServiceTypeMonthlyStatisticsDto>> GetServiceTypesFinishedAppointmentsCountsAsync()

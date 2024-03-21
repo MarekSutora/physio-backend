@@ -1,4 +1,5 @@
 ﻿using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shared.DTO.ServiceType.Request;
@@ -21,103 +22,112 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
         {
+            _logger.LogInformation("Creating new service type");
             try
             {
-                var result = await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
-                if (result)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest("Failed to create service type");
-                }
+                await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
+
+                _logger.LogInformation("Service type created or reactivated successfully.");
+                return Ok("Service type created or reactivated successfully");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating service type");
-                return StatusCode(500, "An error occurred while creating the service type");
+                return BadRequest("An error occurred while creating the service type");
             }
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateServiceType([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
+            _logger.LogInformation($"Updating service type with ID {updateServiceTypeDto.Id}");
             try
             {
-                var result = await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
-                if (result)
-                {
-                    return Ok("Successfully updated ServiceType.");
-                }
-                else
-                {
-                    return BadRequest("Failed to update service type");
-                }
+                await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
+
+                _logger.LogInformation($"Service type updated successfully with ID {updateServiceTypeDto.Id}");
+                return Ok("Service type updated successfully");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating service type");
-                return StatusCode(500, "An error occurred while updating the service type");
+                return BadRequest("An error occurred while updating the service type");
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllServiceTypes()
         {
+            _logger.LogInformation("Retrieving all service types");
             try
             {
                 var serviceTypes = await _serviceTypesService.GetAllActiveServiceTypesAsync();
-                return Ok(serviceTypes); // Always return OK with the list (even if it's empty)
+
+                if (serviceTypes != null && serviceTypes.Any())
+                {
+                    _logger.LogInformation("Service types successfully retrieved");
+                    return Ok(serviceTypes);
+                }
+                else
+                {
+                    _logger.LogInformation("No service types found");
+                    return NotFound("No service types found");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving service types");
-                return StatusCode(500, "An error occurred while retrieving service types");
+                return BadRequest("An error occurred while retrieving service types");
             }
         }
 
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetServiceTypeBySlug(string slug)
         {
+            _logger.LogInformation($"Retrieving service type by slug {slug}");
             try
             {
                 var serviceType = await _serviceTypesService.GetServiceTypeBySlugAsync(slug);
-                if (serviceType == null)
-                {
-                    return NotFound("Service type not found");
-                }
-                return Ok(serviceType);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving service type by slug");
-                return StatusCode(500, "An error occurred while retrieving service type by slug");
-            }
-        }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteServiceType(int id)
-        {
-            try
-            {
-                var success = await _serviceTypesService.SoftDeleteServiceTypeAsync(id);
-                if (success)
+                if (serviceType != null)
                 {
-                    return Ok("Success");
+                    _logger.LogInformation($"Service type with slug {slug} successfully retrieved");
+                    return Ok(serviceType);
                 }
                 else
                 {
-                    return BadRequest("Failed");
+                    _logger.LogInformation($"Service type with slug {slug} not found");
+                    return NotFound("Service type not found");
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving service type by slug {ServiceTypeSlug}", slug);
+                return BadRequest("An error occurred while retrieving the service type");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteServiceType(int id)
+        {
+            _logger.LogInformation($"Deleting service type with ID {id}");
+            try
+            {
+                await _serviceTypesService.SoftDeleteServiceTypeAsync(id);
+
+                _logger.LogInformation($"Service type with ID {id} successfully deleted");
+                return Ok("Service type successfully deleted");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting service type with ID {ServiceTypeId}", id);
-                return StatusCode(500, "An error occurred while deleting the service type");
+                return BadRequest("An error occurred while deleting the service type");
             }
         }
     }

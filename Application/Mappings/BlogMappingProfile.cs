@@ -17,7 +17,11 @@ namespace Application.Mappings
     {
         public BlogMappingProfile()
         {
+            CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Title)));
 
+            CreateMap<BlogPost, BlogPostDto>();
+
+            CreateMap<UpdateBlogPostDto, BlogPost>();
         }
 
         private string GenerateSlug(string title)

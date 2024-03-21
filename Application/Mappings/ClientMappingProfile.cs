@@ -17,11 +17,12 @@ namespace Application.Mappings
     {
         public ClientMappingProfile()
         {
-            CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Title)));
+            CreateMap<ApplicationUser, ClientDto>()
+            .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
+            .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
 
-            CreateMap<BlogPost, BlogPostDto>();
-
-            CreateMap<UpdateBlogPostDto, BlogPost>();
+            CreateMap<CreateClientNoteDto, ClientNote>().ForMember(pn => pn.ClientId, dto => dto.MapFrom(cpn => cpn.ClientId));
+            CreateMap<ClientNote, ClientNoteDto>();
         }
     }
 }

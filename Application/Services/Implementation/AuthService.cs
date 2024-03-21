@@ -44,7 +44,6 @@ namespace Application.Services.Implementation
             _context = dbContext;
             _emailService = emailService;
             _configuration = configuration;
-            _logger = logger;
         }
 
         public async Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto)
@@ -144,12 +143,7 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.Failure;
                     }
 
-                    var emailSent = await SendVerificationEmail(user);
-                    if (!emailSent)
-                    {
-                        await transaction.RollbackAsync();
-                        return RegisterUserResult.Failure;
-                    }
+                    await SendVerificationEmail(user);
 
                     var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
                     if (!addToRoleResult.Succeeded)

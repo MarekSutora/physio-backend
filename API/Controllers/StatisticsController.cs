@@ -1,10 +1,12 @@
 ﻿using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTO.Statistics; // Assuming your DTOs are in this namespace
 using System.Threading.Tasks;
 
 namespace diploma_thesis_backend.Controllers
 {
+    [Authorize(Policy = "Admin")]
     [ApiController]
     [Route("[controller]")]
     [Produces("application/json")]
@@ -19,19 +21,30 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
+
         [HttpGet("appointments-service-types")]
         public async Task<IActionResult> GetServiceTypesFinishedAppointmentsCountsAsync()
         {
+            _logger.LogInformation("Fetching service type monthly finished appointments counts for all time (statistics).");
             try
             {
-                _logger.LogInformation("Fetching service type monthly finished appointments counts for all time.");
                 var statistics = await _statisticsService.GetServiceTypesFinishedAppointmentsCountsAsync();
-                return Ok(statistics);
+
+                if (statistics != null && statistics.Any())
+                {
+                    _logger.LogInformation("Service type monthly finished appointments counts successfully retrieved.");
+                    return Ok(statistics);
+                }
+                else
+                {
+                    _logger.LogInformation("No service type monthly finished appointments counts found.");
+                    return NotFound("No service type monthly finished appointments counts found.");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching service type monthly finished appointments counts.");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                return BadRequest("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -39,48 +52,78 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet("revenue")]
         public async Task<IActionResult> GetTotalRevenueStatisticsAsync()
         {
+            _logger.LogInformation("Fetching total revenue statistics for all finished appointments.");
             try
             {
-                _logger.LogInformation("Fetching total revenue statistics for all finished appointments.");
                 var revenueStatistics = await _statisticsService.GetTotalRevenueStatisticsAsync();
-                return Ok(revenueStatistics);
+
+                if (revenueStatistics != null)
+                {
+                    _logger.LogInformation("Total revenue statistics successfully retrieved.");
+                    return Ok(revenueStatistics);
+                }
+                else
+                {
+                    _logger.LogInformation("No total revenue statistics found.");
+                    return NotFound("No total revenue statistics found.");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching total revenue statistics.");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                return BadRequest("An unexpected error occurred. Please try again later.");
             }
         }
 
         [HttpGet("new-clients-trend")]
         public async Task<IActionResult> GetNewClientsTrendAsync()
         {
+            _logger.LogInformation("Fetching new clients trend statistics");
             try
             {
-                _logger.LogInformation("Fetching new clients trend.");
                 var newClientsTrend = await _statisticsService.GetNewClientsTrendAsync();
-                return Ok(newClientsTrend);
+
+                if (newClientsTrend != null && newClientsTrend.Any())
+                {
+                    _logger.LogInformation("New clients trend statistics successfully retrieved.");
+                    return Ok(newClientsTrend);
+                }
+                else
+                {
+                    _logger.LogInformation("No new clients trend statistics found.");
+                    return NotFound("No new clients trend statistics found.");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching new clients trend.");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                return BadRequest("An unexpected error occurred. Please try again later.");
             }
         }
 
         [HttpGet("blog-posts-views")]
         public async Task<IActionResult> GetBlogPostViewsStatsAsync()
         {
+            _logger.LogInformation("Fetching blog post views statistics.");
             try
             {
-                _logger.LogInformation("Fetching blog post views statistics.");
                 var blogPostViewsStats = await _statisticsService.GetBlogPostViewsStatsAsync();
-                return Ok(blogPostViewsStats);
+
+                if (blogPostViewsStats != null && blogPostViewsStats.Any())
+                {
+                    _logger.LogInformation("Blog post views statistics successfully retrieved.");
+                    return Ok(blogPostViewsStats);
+                }
+                else
+                {
+                    _logger.LogInformation("No blog post views statistics found.");
+                    return NotFound("No blog post views statistics found.");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching blog post views statistics.");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                return BadRequest("An unexpected error occurred. Please try again later.");
             }
         }
     }
