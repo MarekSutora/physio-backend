@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Common.Auth;
 using Application.Services.Implementation;
 using DataAccess;
-using AutoMapper;
 using Application.Mappings;
 using Application.Common.Email;
 using DataAccess.Entities;
@@ -37,6 +36,8 @@ namespace Application
             services.AddScoped<IExerciseTypesService, ExerciseTypesService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddHostedService<TimedHostedService>();
+
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
@@ -62,11 +63,9 @@ namespace Application
             }
             );
 
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(o =>
                 {
@@ -81,7 +80,10 @@ namespace Application
                     };
                 });
 
-            services.AddAutoMapper(typeof(GeneralMappingProfile));
+            services.AddAutoMapper(typeof(AppointmentMappingProfile));
+            services.AddAutoMapper(typeof(BlogMappingProfile));
+            services.AddAutoMapper(typeof(ClientMappingProfile));
+            services.AddAutoMapper(typeof(ServiceTypeMappingProfile));
         }
     }
 }

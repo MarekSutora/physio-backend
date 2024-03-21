@@ -1,5 +1,6 @@
 ﻿using Application.Common.Email;
 using Application.Services.Interfaces;
+using DataAccess;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -12,11 +13,13 @@ namespace Application.Services.Implementation
     {
         private readonly ILogger<EmailService> _logger;
         private readonly EmailSettings _mailSettings;
+        private readonly ApplicationDbContext _context;
 
-        public EmailService(ILogger<EmailService> logger, IOptions<EmailSettings> mailSettings)
+        public EmailService(ILogger<EmailService> logger, IOptions<EmailSettings> mailSettings, ApplicationDbContext context)
         {
             _logger = logger;
             _mailSettings = mailSettings.Value;
+            _context = context;
         }
 
         public async Task SendEmailAsync(EmailRequest emailRequest)
@@ -41,8 +44,19 @@ namespace Application.Services.Implementation
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message, ex);
-                throw new Exception(ex.Message);
+                throw new Exception("Error when sending an email", ex);
+            }
+        }
+
+        public async Task SendReminderEmailsAsync()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error when sending reminder emails", ex);
             }
         }
     }

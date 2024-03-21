@@ -10,5 +10,6 @@ namespace Application.Services.Interfaces
     public interface IEmailService
     {
         Task SendEmailAsync(EmailRequest emailRequest);
+        Task SendReminderEmailsAsync();
     }
 }

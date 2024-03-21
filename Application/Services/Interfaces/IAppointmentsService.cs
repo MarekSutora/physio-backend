@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DataAccess.Model.Entities;
+using DataAccess.Entities;
 using Shared.DTO.Appointments;
 using Shared.DTO.Appointments.Request;
 using Shared.DTO.Appointments.Response;
@@ -16,7 +16,7 @@ namespace Application.Services.Interfaces
 
         Task DeleteAppointmentAsync(int appointmentId);
 
-        Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, string userId);
+        Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, int clientId?);
 
         Task DeleteBookedAppointmentAsync(int bookedAppointmentId);
 

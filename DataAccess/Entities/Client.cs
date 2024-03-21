@@ -13,5 +13,6 @@ namespace DataAccess.Entities
         public Person Person { get; set; } = null!;
 
         public ICollection<ClientNote> ClientNotes { get; } = [];
+        public ICollection<BookedAppointment> BookedAppointments { get; } = [];
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Application.Services.Interfaces;
-using DataAccess.Model.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Shared.DTO.Auth;
@@ -30,7 +29,6 @@ namespace Application.Services.Implementation
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthService> _logger;
 
         public AuthService(UserManager<ApplicationUser> userManager,
                 IOptions<JwtSettings> jwtSettings,
@@ -58,7 +56,6 @@ namespace Application.Services.Implementation
                 return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
             }
 
-            // Include the Person entity when retrieving the ApplicationUser
             var person = await _context.Persons.FirstOrDefaultAsync(p => p.Id == user.PersonId);
 
             if (person == null)
@@ -74,7 +71,6 @@ namespace Application.Services.Implementation
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            // Assuming GenerateJwtToken is a method that generates the JWT token
             var jwtSecurityToken = await GenerateJwtToken(user);
 
             return new LoginUserResult
@@ -95,7 +91,7 @@ namespace Application.Services.Implementation
             var user = await GetUserByRefreshTokenAsync(refreshToken);
             if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                return null; // Or throw an appropriate exception
+                throw new Exception("Error when refreshing access token.");
             }
 
             var newJwtToken = await GenerateJwtToken(user);
@@ -166,58 +162,45 @@ namespace Application.Services.Implementation
                     await transaction.CommitAsync();
                     return RegisterUserResult.Success;
                 }
-                catch (Exception ex)
+                catch
                 {
                     // If an exception is thrown, roll back all database operations
                     await transaction.RollbackAsync();
-                    throw new Exception(ex.Message);
+                    throw;
                 }
             }
         }
 
-        private async Task<bool> SendVerificationEmail(ApplicationUser user)
+        private async Task SendVerificationEmail(ApplicationUser user)
         {
-            try
+            var origin = _configuration["Cors:AllowedOrigin"];
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var route = "apinet/auth/confirmEmail";
+            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
+            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+
+            var emailRequest = new EmailRequest
             {
-                var origin = _configuration["Cors:AllowedOrigin"];
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var route = "apinet/auth/confirmEmail";
-                var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-                var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-                verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+                ToEmail = user.Email,
+                Subject = "Potvrdenie registrácie",
+                Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
+            };
 
-                var emailRequest = new EmailRequest
-                {
-                    ToEmail = user.Email,
-                    Subject = "Potvrdenie registrácie",
-                    Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
-                };
-
-                await _emailService.SendEmailAsync(emailRequest);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
+            await _emailService.SendEmailAsync(emailRequest);
         }
 
-        public async Task<bool> ConfirmEmailAsync(string userId, string code)
+        public async Task ConfirmEmailAsync(string userId, string code)
         {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userId);
-                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-                var result = await _userManager.ConfirmEmailAsync(user, code);
 
-                return result.Succeeded;
-            }
-            catch (Exception ex)
+            var user = await _userManager.FindByIdAsync(userId);
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            if (!result.Succeeded)
             {
-                throw new Exception(ex.Message);
+                throw new Exception("Error confirming email.");
             }
         }
 
@@ -239,55 +222,44 @@ namespace Application.Services.Implementation
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
         {
-            try
+
+            var user = await _userManager.FindByEmailAsync(forgotPasswordRequestDto.Email);
+
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
-                var user = await _userManager.FindByEmailAsync(forgotPasswordRequestDto.Email);
-
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    return;
-                }
-
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                var origin = _configuration["Cors:AllowedOrigin"];
-                var route = "obnovenie-hesla"; // This should match the client-side route
-                var endpointUri = new Uri(string.Concat($"{origin}/", route));
-                var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", encodedToken);
-
-                // Add email to the query string
-                passwordResetUrl = QueryHelpers.AddQueryString(passwordResetUrl, "email", forgotPasswordRequestDto.Email);
-
-                var emailRequest = new EmailRequest()
-                {
-                    Body = $"If you requested a password reset for {origin}, please follow the link below: <a href='{passwordResetUrl}'>Reset Password</a>",
-                    ToEmail = forgotPasswordRequestDto.Email,
-                    Subject = "Password Reset Request",
-                };
-
-                await _emailService.SendEmailAsync(emailRequest);
+                return;
             }
-            catch (Exception ex)
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var origin = _configuration["Cors:AllowedOrigin"];
+            var route = "obnovenie-hesla"; // This should match the client-side route
+            var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", encodedToken);
+
+            // Add email to the query string
+            passwordResetUrl = QueryHelpers.AddQueryString(passwordResetUrl, "email", forgotPasswordRequestDto.Email);
+
+            var emailRequest = new EmailRequest()
             {
-                throw;
-            }
+                Body = $"If you requested a password reset for {origin}, please follow the link below: <a href='{passwordResetUrl}'>Reset Password</a>",
+                ToEmail = forgotPasswordRequestDto.Email,
+                Subject = "Password Reset Request",
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
         }
 
-        public async Task<bool> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
+        public async Task ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
         {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(resetPasswordRequestDto.Email);
-                if (user == null) throw new Exception($"No Accounts Registered with {resetPasswordRequestDto.Email}.");
-                var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequestDto.Token)), resetPasswordRequestDto.Password);
+            var user = await _userManager.FindByEmailAsync(resetPasswordRequestDto.Email);
+            if (user == null) throw new Exception($"No Accounts Registered with {resetPasswordRequestDto.Email}.");
+            var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequestDto.Token)), resetPasswordRequestDto.Password);
 
-                return result.Succeeded;
-            }
-            catch (Exception ex)
+            if (!result.Succeeded)
             {
-                _logger.LogError(ex.Message, ex);
-                throw;
+                throw new Exception("Error resetting password.");
             }
         }
 

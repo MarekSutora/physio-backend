@@ -2,7 +2,6 @@
 using AutoMapper;
 using DataAccess;
 using DataAccess.Entities;
-using DataAccess.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.DTO.ServiceType.Request;

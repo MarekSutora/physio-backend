@@ -28,27 +28,29 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("register-client")]
         public async Task<IActionResult> RegisterClientAsync([FromBody] RegisterRequestDto registerRequestDto)
         {
+            _logger.LogInformation("Registering new client.");
             try
             {
                 var registrationResult = await _authService.RegisterClientAsync(registerRequestDto);
 
                 return registrationResult switch
                 {
-                    RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
-                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email je už použítý." }),
-                    _ => BadRequest(new { message = "Nastala chyba počas registrácie." }),
+                    RegisterUserResult.Success => Ok(new { message = "Registration successful." }),
+                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email is already in use." }),
+                    _ => BadRequest(new { message = "An error occurred during registration." })
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba počas registrácie.");
-                return BadRequest(new { message = "Nastala chyba počas registrácie." });
+                _logger.LogError(ex, "An error occurred during client registration.");
+                return BadRequest(new { message = "An error occurred during registration." });
             }
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginRequestDto)
         {
+            _logger.LogInformation("Logging in user.");
             try
             {
                 var result = await _authService.LoginUserAsync(loginRequestDto);
@@ -87,21 +89,24 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequestDto refreshTokenRequest)
         {
+            _logger.LogInformation("Refreshing JWT token.");
             try
             {
                 var result = await _authService.RefreshTokenAsync(refreshTokenRequest.RefreshToken);
 
-                if (result is null)
+                if (result != null)
                 {
-                    return Unauthorized("Nevalídny refresh token.");
+                    return Ok(new
+                    {
+                        AccessToken = result.AccessToken,
+                        RefreshToken = result.RefreshToken,
+                        ExpirationDate = result.ExpiryDate
+                    });
                 }
-
-                return Ok(new
+                else
                 {
-                    jwtToken = result.AccessToken,
-                    refreshToken = result.RefreshToken,
-                    expiryDate = result.ExpiryDate
-                });
+                    return Unauthorized("Invalid refresh token.");
+                }
             }
             catch (Exception ex)
             {
@@ -113,24 +118,20 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
         {
+            _logger.LogInformation($"Confirming email for user with UserId = {userId}.");
             try
             {
-                var result = await _authService.ConfirmEmailAsync(userId, code);
-                if (result)
-                {
-                    var frontendUrl = _configuration["Cors:AllowedOrigin"];
+                await _authService.ConfirmEmailAsync(userId, code);
 
-                    var loginUrl = $"{frontendUrl}/prihlasenie?emailConfirmed=success";
-                    return Redirect(loginUrl);
-                }
-                else
-                {
-                    return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
-                }
+                var frontendUrl = _configuration["Cors:AllowedOrigin"];
+
+                var loginUrl = $"{frontendUrl}/prihlasenie?emailConfirmed=success";
+                return Redirect(loginUrl);
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba pri potvrdzovaní emailu.");
+                _logger.LogError(ex, $"Error when confirming email for user with UserId = {userId}");
                 return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
             }
 
@@ -139,17 +140,13 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
         {
+            _logger.LogInformation("Resetting user password.");
             try
             {
-                var result = await _authService.ResetPasswordAsync(resetPasswordRequestDto);
-                if (result)
-                {
-                    return Ok(new { message = "Heslo bolo úspešne zmenené." });
-                }
-                else
-                {
-                    return BadRequest(new { message = "Nastala chyba pri zmene hesla." });
-                }
+                await _authService.ResetPasswordAsync(resetPasswordRequestDto);
+
+                return Ok(new { message = "Heslo bolo úspešne zmenené." });
+
             }
             catch (Exception ex)
             {
@@ -161,6 +158,7 @@ namespace diploma_thesis_backend.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordRequestDto forgotPasswordRequestDto)
         {
+            _logger.LogInformation("Sending email for password reset.");
             try
             {
                 await _authService.ForgotPasswordAsync(forgotPasswordRequestDto);

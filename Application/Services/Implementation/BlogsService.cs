@@ -21,43 +21,27 @@ namespace Application.Services.Implementation
 
         public BlogsService(ApplicationDbContext context, ILogger<BlogsService> logger, IMapper mapper)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _context = context;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task CreateBlogPostAsync(CreateBlogPostDto createBlogPostDto)
         {
-            try
-            {
-                var blogPost = _mapper.Map<BlogPost>(createBlogPostDto);
-                _context.BlogPosts.Add(blogPost);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation($"Blog post created with ID: {blogPost.Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating blog post");
-                throw;
-            }
+            var blogPost = _mapper.Map<BlogPost>(createBlogPostDto);
+            _context.BlogPosts.Add(blogPost);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Blog post created with ID: {blogPost.Id}");
         }
 
         public async Task DeleteBlogPostAsync(DeleteBlogPostDto deleteBlogPostDto)
         {
-            try
-            {
-                var blogPost = await _context.BlogPosts.FindAsync(deleteBlogPostDto.Id);
-                if (blogPost == null) throw new KeyNotFoundException("Blog post not found");
+            var blogPost = await _context.BlogPosts.FindAsync(deleteBlogPostDto.Id);
+            if (blogPost == null) throw new KeyNotFoundException("Blog post not found");
 
-                _context.BlogPosts.Remove(blogPost);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation($"Blog post deleted with ID: {blogPost.Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting blog post");
-                throw;
-            }
+            _context.BlogPosts.Remove(blogPost);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Blog post deleted with ID: {blogPost.Id}");
         }
 
         public async Task<BlogPostDto> GetBlogPostByIdAsync(int id)

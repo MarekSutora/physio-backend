@@ -10,11 +10,11 @@ namespace Application.Services.Interfaces
 
         Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto);
 
-        Task<bool> ConfirmEmailAsync(string userId, string code);
+        Task ConfirmEmailAsync(string userId, string code);
 
         Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
 
-        Task<bool> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
+        Task ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
 
         Task<LoginUserResult> RefreshTokenAsync(string refreshToken);
 
