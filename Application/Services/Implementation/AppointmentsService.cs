@@ -1,11 +1,13 @@
 ﻿using DataAccess;
 using Application.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTO.Appointments.Request;
-using Shared.DTO.Appointments.Response;
+using Application.DTO.Appointments.Request;
+using Application.DTO.Appointments.Response;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using DataAccess.Entities;
+using Application.DTO.Appointments.Request;
+using Application.DTO.Appointments.Response;
 
 namespace Application.Services.Implementation
 {

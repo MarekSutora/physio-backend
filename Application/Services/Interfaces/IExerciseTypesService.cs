@@ -1,4 +1,4 @@
-﻿using Shared.DTO.Appointments.Response;
+﻿using Application.DTO.Appointments.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;

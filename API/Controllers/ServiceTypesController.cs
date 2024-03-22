@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Shared.DTO.ServiceType.Request;
+using Application.DTO.ServiceType.Request;
 using System;
 using System.Threading.Tasks;
 

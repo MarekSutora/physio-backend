@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Interfaces;
-using Shared.DTO.Clients.Request; // Assuming you have renamed the DTOs as well
+using Application.DTO.Clients.Request; // Assuming you have renamed the DTOs as well
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 namespace diploma_thesis_backend.Controllers

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataAccess.Entities;
-using Shared.DTO.Appointments;
-using Shared.DTO.Appointments.Request;
-using Shared.DTO.Appointments.Response;
+using Application.DTO.Appointments;
+using Application.DTO.Appointments.Request;
+using Application.DTO.Appointments.Response;
 
 namespace Application.Services.Interfaces
 {

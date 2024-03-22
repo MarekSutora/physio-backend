@@ -1,5 +1,5 @@
-﻿using Shared.DTO.Clients.Request;
-using Shared.DTO.Clients.Response;
+﻿using Application.DTO.Clients.Request;
+using Application.DTO.Clients.Response;
 
 namespace Application.Services.Interfaces
 {

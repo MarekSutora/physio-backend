@@ -1,6 +1,6 @@
 ﻿
-using Shared.DTO.ServiceType.Request;
-using Shared.DTO.ServiceType.Response;
+using Application.DTO.ServiceType.Request;
+using Application.DTO.ServiceType.Response;
 
 namespace Application.Services.Interfaces
 {

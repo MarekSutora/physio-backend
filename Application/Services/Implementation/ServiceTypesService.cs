@@ -4,8 +4,8 @@ using DataAccess;
 using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Shared.DTO.ServiceType.Request;
-using Shared.DTO.ServiceType.Response;
+using Application.DTO.ServiceType.Request;
+using Application.DTO.ServiceType.Response;
 
 
 namespace Application.Services.Implementation

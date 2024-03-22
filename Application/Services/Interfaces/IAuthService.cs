@@ -1,6 +1,6 @@
 ﻿using Application.Common.Auth;
 using Azure;
-using Shared.DTO.Auth;
+using Application.DTO.Auth;
 
 namespace Application.Services.Interfaces
 {

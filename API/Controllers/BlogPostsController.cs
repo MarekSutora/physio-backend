@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Shared.DTO.Blog.Request;
-using Shared.DTO.Blog.Response;
+using Application.DTO.Blog.Request;
+using Application.DTO.Blog.Response;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

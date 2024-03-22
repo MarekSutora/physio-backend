@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Interfaces;
-using Shared.DTO.Appointments.Request;
+using Application.DTO.Appointments.Request;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Shared.DTO.Appointments.Response;
+using Application.DTO.Appointments.Response;
 using Microsoft.AspNetCore.Authorization;
 
 namespace diploma_thesis_backend.Controllers

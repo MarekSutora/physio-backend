@@ -1,5 +1,5 @@
-﻿using Shared.DTO.Blog.Request;
-using Shared.DTO.Blog.Response;
+﻿using Application.DTO.Blog.Request;
+using Application.DTO.Blog.Response;
 
 namespace Application.Services.Interfaces
 {

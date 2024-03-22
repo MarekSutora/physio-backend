@@ -3,7 +3,7 @@ using AutoMapper;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Shared.DTO.Appointments.Response;
+using Application.DTO.Appointments.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;

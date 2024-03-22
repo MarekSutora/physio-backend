@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTO.Auth;
+using Application.DTO.Auth;
 using Application.Services.Interfaces;
 using Application.Common.Auth;
 using System.IdentityModel.Tokens.Jwt;
