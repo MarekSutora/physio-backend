@@ -288,10 +288,15 @@ namespace Application.Services.Implementation
 
         private async Task<string> GenerateRefreshToken(ApplicationUser user)
         {
-            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var refreshTokenBytes = RandomNumberGenerator.GetBytes(375);
+            var refreshTokenFull = Convert.ToBase64String(refreshTokenBytes);
+
+            var refreshToken = refreshTokenFull.Length > 500 ? refreshTokenFull.Substring(0, 500) : refreshTokenFull;
+
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _userManager.UpdateAsync(user);
+
             return refreshToken;
         }
 

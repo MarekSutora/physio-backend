@@ -95,11 +95,11 @@ namespace DataAccess.Seeding
 
             // Seed Persons
             builder.Entity<Person>().HasData(
-                new Person { Id = 1, FirstName = "Admin", LastName = "One" },
-                new Person { Id = 2, FirstName = "Admin", LastName = "Two" },
-                new Person { Id = 3, FirstName = "Client", LastName = "One" },
-                new Person { Id = 4, FirstName = "Client", LastName = "Two" },
-                new Person { Id = 5, FirstName = "Client", LastName = "Three" }
+                new Person { Id = 1, FirstName = "Admin", LastName = "One", PhoneNumber = "1234567890" },
+                new Person { Id = 2, FirstName = "Admin", LastName = "Two", PhoneNumber = "1234567890" },
+                new Person { Id = 3, FirstName = "Client", LastName = "One", PhoneNumber = "1234567890" },
+                new Person { Id = 4, FirstName = "Client", LastName = "Two", PhoneNumber = "1234567890" },
+                new Person { Id = 5, FirstName = "Client", LastName = "Three", PhoneNumber = "1234567890" }
             );
 
             Client client1Entity = new Client { PersonId = 3 };

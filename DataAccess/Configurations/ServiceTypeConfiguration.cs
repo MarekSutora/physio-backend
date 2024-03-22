@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Configurations
 {
-    public class ServiceTypeEntityConfiguration : IEntityTypeConfiguration<ServiceType>
+    public class ServiceTypeConfiguration : IEntityTypeConfiguration<ServiceType>
     {
         public void Configure(EntityTypeBuilder<ServiceType> builder)
         {
@@ -26,7 +26,7 @@ namespace DataAccess.Configurations
                 .HasDefaultValue("#14746F");
 
             builder.Property(st => st.Description)
-                .HasMaxLength(1000);
+                .HasMaxLength(10000);
 
             builder.Property(st => st.Active)
                 .HasDefaultValue(true);

@@ -4,7 +4,7 @@ using DataAccess.Entities;
 
 namespace DataAccess.Configurations
 {
-    public class ServiceTypeDurationCostEntityConfiguration : IEntityTypeConfiguration<ServiceTypeDurationCost>
+    public class ServiceTypeDurationCostConfiguration : IEntityTypeConfiguration<ServiceTypeDurationCost>
     {
         public void Configure(EntityTypeBuilder<ServiceTypeDurationCost> builder)
         {

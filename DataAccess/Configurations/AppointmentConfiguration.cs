@@ -9,7 +9,7 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.Property(ar => ar.StartTime)
-                .IsRequired().HasColumnType("datetime2");
+                .IsRequired();
 
             builder.Property(ar => ar.Capacity)
                 .IsRequired();

@@ -9,14 +9,14 @@ namespace DataAccess.Entities
     public class BlogPost
     {
         public int Id { get; set; }
-        public required string Title { get; set; }
-        public required string Slug { get; set; }
-        public required DateTime DatePublished { get; set; }
-        public required string HTMLContent { get; set; }
-        public required string Author { get; set; }
-        public required string KeywordsString { get; set; }
-        public required string MainImageUrl { get; set; }
-        public required bool IsHidden { get; set; } = false;
+        public string Title { get; set; }
+        public string Slug { get; set; }
+        public DateTime DatePublished { get; set; }
+        public string HTMLContent { get; set; }
+        public string Author { get; set; }
+        public string KeywordsString { get; set; }
+        public string MainImageUrl { get; set; }
+        public bool IsHidden { get; set; } = false;
         public int ViewCount { get; set; } = 0;
     }
 }

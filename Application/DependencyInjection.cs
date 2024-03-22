@@ -36,13 +36,11 @@ namespace Application
             services.AddScoped<IExerciseTypesService, ExerciseTypesService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddHostedService<TimedHostedService>();
+            //services.AddHostedService<TimedHostedService>();
 
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-
-            services.AddDataAccess(configuration);
 
 
             services.Configure<IdentityOptions>(options =>

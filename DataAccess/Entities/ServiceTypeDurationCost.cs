@@ -14,7 +14,7 @@ namespace DataAccess.Entities
         public ServiceType ServiceType { get; set; } = null!;
         public DurationCost DurationCost { get; set; } = null!;
         public DateTime DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public DateTime DateTo { get; set; }
 
 
         public List<Appointment> Appointments { get; } = [];

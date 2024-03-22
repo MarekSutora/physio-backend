@@ -8,11 +8,38 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BlogPost> builder)
         {
-            builder.HasIndex(st => st.Slug)
+            builder.HasIndex(bp => bp.Slug)
                 .IsUnique();
 
-            builder.HasIndex(st => st.Title)
+            builder.HasIndex(bp => bp.Title)
                 .IsUnique();
+
+            builder.Property(bp => bp.Title)
+                .IsRequired().HasMaxLength(100);
+
+            builder.Property(bp => bp.Slug)
+                .IsRequired().HasMaxLength(100);
+
+            builder.Property(bp => bp.Author)
+                .IsRequired().HasMaxLength(100);
+
+            builder.Property(bp => bp.DatePublished)
+                .IsRequired();
+
+            builder.Property(bp => bp.HTMLContent)
+                .IsRequired();
+
+            builder.Property(bp => bp.KeywordsString)
+                .IsRequired().HasMaxLength(300);
+
+            builder.Property(bp => bp.MainImageUrl)
+                .IsRequired();
+
+            builder.Property(bp => bp.IsHidden)
+                .IsRequired();
+
+            builder.Property(bp => bp.ViewCount)
+                .IsRequired();
         }
     }
 }

@@ -8,7 +8,14 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
+            builder.Property(p => p.FirstName)
+                .IsRequired().HasMaxLength(100);
 
+            builder.Property(p => p.LastName)
+                .IsRequired().HasMaxLength(100);
+
+            builder.Property(p => p.PhoneNumber)
+                .IsRequired().HasMaxLength(100);
         }
     }
 }

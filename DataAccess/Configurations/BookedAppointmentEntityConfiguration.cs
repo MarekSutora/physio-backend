@@ -14,8 +14,17 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<BookedAppointment> builder)
         {
 
-            builder.Property(br => br.AppointmentBookedDate)
-                .HasColumnType("datetime2");
+            builder.Property(ba => ba.AppointmentBookedDate)
+                .IsRequired();
+
+            builder.Property(ba => ba.IsFinished)
+                .IsRequired();
+
+            builder.Property(ba => ba.SevenDaysReminderSent)
+                .IsRequired();
+
+            builder.Property(ba => ba.OneDayReminderSent)
+                .IsRequired();
         }
     }
 }
