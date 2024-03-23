@@ -12,7 +12,7 @@
         public int AppointmentServiceTypeDurationCostId { get; set; }
         public AppointmentServiceTypeDurationCost AppointmentServiceTypeDurationCost { get; set; } = null!;
 
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public int PersonId { get; set; }
+        public Person Person { get; set; } = null!;
     }
 }

@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240323194840_serviceTypeDateToNull")]
+    partial class serviceTypeDateToNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,18 +109,18 @@ namespace DataAccess.Migrations
                         {
                             Id = "4ab97c50-052f-44af-8516-3a27e4ec3d72",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3a1964e7-9de3-4025-9ba4-ad2cbd324cfa",
+                            ConcurrencyStamp = "2713a011-09ba-408e-93ea-be676799f480",
                             Email = "admin1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDNRYF6H934a9gAlJAg9JtembW+ofArj5E7EOAan1YG7vwZoBA/9unfByZjVOFcppQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM+94FxM2EDbtuSrhytYm6RJcNbiHP+IyKgSkWWrpB10tkEOWup4b3vW0fTooyl6WQ==",
                             PersonId = 1,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fd806ad4-578f-488d-af88-d0ad083d89a6",
+                            SecurityStamp = "df9e3613-1e9f-4df4-a504-10363016c50b",
                             TwoFactorEnabled = false,
                             UserName = "admin1@example.com"
                         },
@@ -125,18 +128,18 @@ namespace DataAccess.Migrations
                         {
                             Id = "faa2cd95-a59c-4127-8f54-916deb38b612",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fd2724ee-739e-4fb1-ae7c-9d2c028a755a",
+                            ConcurrencyStamp = "1520cdde-610f-4a28-9ed0-fdcce6a86f0c",
                             Email = "admin2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN2@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN2@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMuTa/H4FLxmyjr8ktnVGCjU7JLml+4/+42huvNx/Zk0Oq36IBzAevqeS0RG5SxZXQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDl92b9ih63cqMgsr9S7pU7+3M8NKSzR0vgzZOro97rnYLPXGNfeaCjdfTAWICLlsQ==",
                             PersonId = 2,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "8c0aaa77-faaa-42ab-9c92-d17013b5be10",
+                            SecurityStamp = "3d43379b-e41d-4831-8354-f5b0465e9569",
                             TwoFactorEnabled = false,
                             UserName = "admin2@example.com"
                         },
@@ -144,18 +147,18 @@ namespace DataAccess.Migrations
                         {
                             Id = "ea4cbaeb-0869-493c-b80c-372a32b05539",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31d9e855-b20b-4b00-8b2c-98772873ef51",
+                            ConcurrencyStamp = "c156c2e8-8621-45ab-abb1-fdcdae8f9498",
                             Email = "client1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT1@EXAMPLE.COM",
                             NormalizedUserName = "client1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPdtU8lRAMCLnsdfxFEB0BPZwgpSV9TxMV12Cn56UiSNh0KVqDthwNrz8P2DchUR7w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB5d9HQLm1LGRp43fhjzyX4ZqGWmHBdxPRLe7c6HdcJWVNj4crZd81PrdRxpnoJ2Yw==",
                             PersonId = 3,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "8b0c3e90-5830-48dc-9a58-f7793ba6a937",
+                            SecurityStamp = "b268cd91-5556-42b8-8d7c-e0dcc4dff4ff",
                             TwoFactorEnabled = false,
                             UserName = "client1@example.com"
                         },
@@ -163,18 +166,18 @@ namespace DataAccess.Migrations
                         {
                             Id = "55f7cc01-0e49-4cb0-bff8-aced0c399819",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ab16a20e-b8c2-4dff-9fe6-174f5c08eddd",
+                            ConcurrencyStamp = "ccc099de-9c9c-440e-b7d6-7516e31a465d",
                             Email = "client2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT12@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT12@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPD5XizV9a/Q9agh64uQd9aBtfyGL+OOxtsOKQ4zyf4kap3wtGyatVnon1cj812aQQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBVdAwPqIVWX9bSFWIQdeW/MmuZToEGn2SKSUXbuXyVPtBQXE3s4DSyacPC7a1Hbkw==",
                             PersonId = 4,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "8e1835d4-da93-4432-bff9-998f8d3a78b7",
+                            SecurityStamp = "46aa9fa9-1da7-48d3-a1dd-2027b66a85eb",
                             TwoFactorEnabled = false,
                             UserName = "client2@example.com"
                         },
@@ -182,18 +185,18 @@ namespace DataAccess.Migrations
                         {
                             Id = "064b6a0b-8c25-4710-8fc3-95e2d59be04e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8967a087-34ac-497b-9737-b7388eb76741",
+                            ConcurrencyStamp = "99e927a4-de88-43d9-ac25-448bc06d7b0d",
                             Email = "client3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT3@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT3@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENxRPWjXpkDBgPknONtPMHjIQQbErkYdr07gPpJ0TsSkG06QtzhQk4RcdlKO2oEcNw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHeLRCAPdVR+jAF3u6Bhzomgc/bFhz2jnYymobVHoMzG+FXLcZecjNXmpyXtx+kRKg==",
                             PersonId = 5,
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "4c3cd68b-d751-4649-a70d-a38c4afee640",
+                            SecurityStamp = "51e89629-7760-47f5-850e-2dd7658f457c",
                             TwoFactorEnabled = false,
                             UserName = "client3@example.com"
                         });
@@ -367,14 +370,14 @@ namespace DataAccess.Migrations
                     b.Property<int>("AppointmentServiceTypeDurationCostId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
                     b.Property<bool>("OneDayReminderSent")
                         .HasColumnType("bit");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("SevenDaysReminderSent")
                         .HasColumnType("bit");
@@ -383,9 +386,33 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("AppointmentServiceTypeDurationCostId");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("BookedAppointments");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Client", b =>
+                {
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PersonId");
+
+                    b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            PersonId = 3
+                        },
+                        new
+                        {
+                            PersonId = 4
+                        },
+                        new
+                        {
+                            PersonId = 5
+                        });
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ClientNote", b =>
@@ -396,6 +423,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -403,12 +433,9 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("ClientNotes");
                 });
@@ -978,26 +1005,37 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.Person", "Person")
+                    b.HasOne("DataAccess.Entities.Client", "Client")
                         .WithMany("BookedAppointments")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppointmentServiceTypeDurationCost");
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Client", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Person", "Person")
+                        .WithOne("Client")
+                        .HasForeignKey("DataAccess.Entities.Client", "PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Person");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ClientNote", b =>
                 {
-                    b.HasOne("DataAccess.Entities.Person", "Person")
+                    b.HasOne("DataAccess.Entities.Client", "Client")
                         .WithMany("ClientNotes")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ServiceTypeDurationCost", b =>
@@ -1087,6 +1125,13 @@ namespace DataAccess.Migrations
                     b.Navigation("BookedAppointments");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.Client", b =>
+                {
+                    b.Navigation("BookedAppointments");
+
+                    b.Navigation("ClientNotes");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.DurationCost", b =>
                 {
                     b.Navigation("ServiceTypeDurationCosts");
@@ -1094,12 +1139,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.Person", b =>
                 {
-                    b.Navigation("ApplicationUser")
-                        .IsRequired();
+                    b.Navigation("ApplicationUser");
 
-                    b.Navigation("BookedAppointments");
-
-                    b.Navigation("ClientNotes");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ServiceType", b =>

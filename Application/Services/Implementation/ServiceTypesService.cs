@@ -90,23 +90,13 @@ namespace Application.Services.Implementation
 
         public async Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync()
         {
-            _logger.LogInformation("Retrieving all active ServiceTypes with current DurationCosts.");
-            try
-            {
-                var serviceTypes = await _context.ServiceTypes
-                    .Where(st => st.Active)
-                    .Include(st => st.ServiceTypeDurationCosts)
-                        .ThenInclude(stdc => stdc.DurationCost)
-                    .ToListAsync();
+            var serviceTypes = await _context.ServiceTypes
+                .Where(st => st.Active)
+                .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .ToListAsync();
 
-                _logger.LogInformation("Retrieved {Count} active ServiceTypes with current DurationCosts.", serviceTypes.Count);
-                return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error retrieving active ServiceTypes with current DurationCosts.");
-                throw;
-            }
+            return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
         }
 
         public async Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
@@ -164,7 +154,7 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ServiceTypeDto> GetServiceTypeBySlugAsync(string slug)
+        public async Task<ServiceTypeDto?> GetServiceTypeBySlugAsync(string slug)
         {
 
             var serviceType = await _context.ServiceTypes
@@ -175,7 +165,7 @@ namespace Application.Services.Implementation
             if (serviceType == null)
             {
                 _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
-                throw new KeyNotFoundException("ServiceType not found");
+                return null;
             }
 
             return _mapper.Map<ServiceTypeDto>(serviceType);

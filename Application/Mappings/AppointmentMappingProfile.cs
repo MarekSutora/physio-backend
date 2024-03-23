@@ -27,20 +27,6 @@ namespace Application.Mappings
             CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>().ReverseMap();
 
             CreateMap<ExerciseTypeDto, ExerciseType>().ReverseMap();
-
-            CreateMap<BookedAppointment, BookedAppointmentDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.AppointmentId))
-                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.StartTime))
-                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes))
-                .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name))
-                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
-                .ForMember(dest => dest.ClientFirstName, opt => opt.MapFrom(src => src.Client == null ? "-" : src.Client.Person.FirstName))
-                .ForMember(dest => dest.ClientSecondName, opt => opt.MapFrom(src => src.Client == null ? "-" : src.Client.Person.LastName))
-                .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost))
-                .ForMember(dest => dest.HexColor, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor))
-                .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.AppointmentServiceTypeDurationCost.Appointment.Capacity))
-                .ForMember(dest => dest.AppointmentBookedDate, opt => opt.MapFrom(src => src.AppointmentBookedDate));
         }
     }
 }

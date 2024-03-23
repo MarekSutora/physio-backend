@@ -21,7 +21,7 @@ namespace Application.Mappings
             .ForMember(dto => dto.FirstName, conf => conf.MapFrom(user => user.Person.FirstName))
             .ForMember(dto => dto.LastName, conf => conf.MapFrom(user => user.Person.LastName));
 
-            CreateMap<CreateClientNoteDto, ClientNote>().ForMember(pn => pn.ClientId, dto => dto.MapFrom(cpn => cpn.ClientId));
+            CreateMap<CreateClientNoteDto, ClientNote>().ForMember(pn => pn.PersonId, dto => dto.MapFrom(cpn => cpn.ClientId));
             CreateMap<ClientNote, ClientNoteDto>();
         }
     }

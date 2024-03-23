@@ -10,6 +10,6 @@ namespace Application.Services.Interfaces
         Task SoftDeleteServiceTypeAsync(int id);
         Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync();
         Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto);
-        Task<ServiceTypeDto> GetServiceTypeBySlugAsync(string slug);
+        Task<ServiceTypeDto?> GetServiceTypeBySlugAsync(string slug);
     }
 }

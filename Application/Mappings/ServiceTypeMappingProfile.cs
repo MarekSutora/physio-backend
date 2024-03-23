@@ -10,6 +10,7 @@ using System.Text;
 using Application.DTO.Appointments.Response;
 using Application.DTO.Clients.Request;
 using DataAccess.Entities;
+using Application.Common;
 
 namespace Application.Mappings
 {
@@ -38,31 +39,7 @@ namespace Application.Mappings
                         Cost = stdc.DurationCost.Cost
                     })));
 
-            CreateMap<CreateServiceTypeDto, ServiceType>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => GenerateSlug(src.Name)));
-        }
-
-        private string GenerateSlug(string title)
-        {
-            // Normalize string, removing diacritics
-            string normalizedString = title.Normalize(NormalizationForm.FormD);
-            var stringBuilder = new StringBuilder();
-
-            foreach (var c in normalizedString)
-            {
-                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-                {
-                    stringBuilder.Append(c);
-                }
-            }
-
-            // Lowercase and remove invalid chars
-            string slug = stringBuilder.ToString().Normalize(NormalizationForm.FormC).ToLower();
-            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
-            slug = Regex.Replace(slug, @"\s+", " ").Trim(); // Convert multiple spaces into one space   
-            slug = Regex.Replace(slug, @"\s", "-"); // Replace spaces with hyphens
-
-            return slug;
+            CreateMap<CreateServiceTypeDto, ServiceType>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => MappingUtilities.GenerateSlug(src.Name)));
         }
     }
 }

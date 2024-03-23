@@ -59,8 +59,7 @@ namespace Application.Services.Implementation
                        .ThenInclude(astdc => astdc.Appointment)
                        .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
                        .ThenInclude(stdc => stdc.ServiceType)
-                       .Include(ba => ba.Client)
-                       .ThenInclude(c => c.Person)
+                       .Include(c => c.Person)
                        .ThenInclude(p => p.ApplicationUser)
                        .Where(ba => !ba.IsFinished && !ba.SevenDaysReminderSent && !ba.OneDayReminderSent)
                        .ToListAsync();
@@ -80,7 +79,7 @@ namespace Application.Services.Implementation
                     {
                         await SendEmailAsync(new EmailRequest
                         {
-                            ToEmail = appointment.Client.Person.ApplicationUser.Email,
+                            ToEmail = appointment.Person.ApplicationUser.Email,
                             Subject = subject,
                             Body = body
                         });
@@ -92,7 +91,7 @@ namespace Application.Services.Implementation
                     {
                         await SendEmailAsync(new EmailRequest
                         {
-                            ToEmail = appointment.Client.Person.ApplicationUser.Email,
+                            ToEmail = appointment.Person.ApplicationUser.Email,
                             Subject = subject,
                             Body = body
                         });

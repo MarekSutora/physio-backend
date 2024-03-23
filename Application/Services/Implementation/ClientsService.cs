@@ -29,111 +29,97 @@ namespace Application.Services.Implementation
 
         public async Task AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto)
         {
-            try
+
+            var clientExists = await _context.Persons.AnyAsync(p => p.Id == createClientNoteDto.ClientId);
+
+            if (!clientExists)
             {
-                var clientExists = await _context.Clients.AnyAsync(p => p.PersonId == createClientNoteDto.ClientId);
-
-                if (!clientExists)
-                {
-                    throw new InvalidOperationException($"No Client found with ID {createClientNoteDto.ClientId}.");
-                }
-
-                var clientNote = _mapper.Map<ClientNote>(createClientNoteDto);
-                clientNote.CreatedAt = DateTime.UtcNow.AddHours(1);
-
-                clientNote.ClientId = createClientNoteDto.ClientId;
-
-                _context.ClientNotes.Add(clientNote);
-                await _context.SaveChangesAsync();
+                throw new InvalidOperationException($"No Client found with ID {createClientNoteDto.ClientId}.");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while adding note to Client");
-                throw;
-            }
+
+            var clientNote = _mapper.Map<ClientNote>(createClientNoteDto);
+            clientNote.CreatedAt = DateTime.UtcNow.AddHours(1);
+
+            clientNote.PersonId = createClientNoteDto.ClientId;
+
+            _context.ClientNotes.Add(clientNote);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteNoteAsync(int noteId)
         {
-            try
+            var note = await _context.ClientNotes.FirstOrDefaultAsync(n => n.Id == noteId);
+
+            if (note == null)
             {
-                var note = await _context.ClientNotes.FirstOrDefaultAsync(n => n.Id == noteId);
-
-                if (note == null)
-                {
-                    throw new InvalidOperationException($"No note found with ID {noteId}.");
-                }
-
-                _context.ClientNotes.Remove(note);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation($"Deleted note with ID {noteId}");
+                throw new InvalidOperationException($"No note found with ID {noteId}.");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while deleting note");
-                throw;
-            }
+
+            _context.ClientNotes.Remove(note);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Deleted note with ID {noteId}");
         }
 
         public async Task<IEnumerable<ClientNoteDto>> GetAllNotesForClientAsync(int clientId)
         {
-            try
-            {
-                var clientNotes = await _context.ClientNotes
-                    .Where(n => n.ClientId == clientId)
-                    .ToListAsync();
+            var clientNotes = await _context.ClientNotes
+                .Where(n => n.PersonId == clientId)
+                .ToListAsync();
 
-                _logger.LogInformation($"Retrieved all notes for Client ID {clientId}");
+            _logger.LogInformation($"Retrieved all notes for Client ID {clientId}");
 
-                return _mapper.Map<IEnumerable<ClientNoteDto>>(clientNotes);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while getting all notes for Client");
-                throw;
-            }
+            return _mapper.Map<IEnumerable<ClientNoteDto>>(clientNotes);
         }
 
         public async Task<IEnumerable<ClientDto>> GetAllClientsAsync()
         {
-            try
-            {
-                var clients = await _context.ApplicationUsers
-                    .Include(u => u.Person)
-                    .ThenInclude(p => p.Client)
-                    .Where(u => u.Person.Client != null) // Ensure there is a Client record
-                    .ToListAsync();
+            // Get all user IDs that have the role "Client"
+            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
+            var clientUserIds = new List<string>();
 
-                _logger.LogInformation("Successfully retrieved all Clients");
-
-                return _mapper.Map<IEnumerable<ClientDto>>(clients);
-            }
-            catch (Exception ex)
+            if (clientRole != null)
             {
-                _logger.LogError(ex, "Error while getting all Clients");
-                throw;
+                clientUserIds = await _context.UserRoles
+                                               .Where(ur => ur.RoleId == clientRole.Id)
+                                               .Select(ur => ur.UserId)
+                                               .ToListAsync();
             }
+
+            var clients = await _context.Users
+                                        .Where(u => clientUserIds.Contains(u.Id))
+                                        .Include(u => u.Person)
+                                        .ToListAsync();
+
+
+            return _mapper.Map<IEnumerable<ClientDto>>(clients);
         }
 
-        public async Task<ClientDto> GetClientByIdAsync(int clientId)
+        public async Task<ClientDto?> GetClientByIdAsync(int clientId)
         {
-            try
+            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
+            if (clientRole == null)
             {
-                var client = await _context.ApplicationUsers
-                    .Include(u => u.Person)
-                    .ThenInclude(p => p.Client)
-                    .FirstOrDefaultAsync(u => u.Person.Id == clientId);
-
-                _logger.LogInformation("Successfully retrieved Client by id");
-
-                return _mapper.Map<ClientDto>(client);
+                _logger.LogInformation("Client role not found.");
+                return null;
             }
-            catch (Exception ex)
+            var clientUserIds = await _context.UserRoles
+                                              .Where(ur => ur.RoleId == clientRole.Id)
+                                              .Select(ur => ur.UserId)
+                                              .ToListAsync();
+
+            var client = await _context.Users
+                                       .Where(u => clientUserIds.Contains(u.Id) && u.PersonId == clientId)
+                                       .Include(u => u.Person)
+                                       .FirstOrDefaultAsync();
+
+            if (client == null)
             {
-                _logger.LogError(ex, "Error while getting Client by id");
-                throw;
+                _logger.LogInformation($"No Client found with Person ID {clientId}.");
+                return null;
             }
+
+            return _mapper.Map<ClientDto>(client);
         }
     }
 }

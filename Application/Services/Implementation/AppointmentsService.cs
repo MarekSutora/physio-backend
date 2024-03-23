@@ -3,11 +3,8 @@ using Application.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Application.DTO.Appointments.Request;
 using Application.DTO.Appointments.Response;
-using Microsoft.Extensions.Logging;
 using AutoMapper;
 using DataAccess.Entities;
-using Application.DTO.Appointments.Request;
-using Application.DTO.Appointments.Response;
 
 namespace Application.Services.Implementation
 {
@@ -45,7 +42,7 @@ namespace Application.Services.Implementation
         public async Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, int clientId)
         {
 
-            var client = await _context.Clients.FindAsync(clientId);
+            var client = await _context.Persons.FindAsync(clientId);
 
             if (client == null)
             {
@@ -56,7 +53,7 @@ namespace Application.Services.Implementation
             {
                 AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.astdcId,
                 AppointmentBookedDate = DateTime.Now,
-                ClientId = clientId,
+                PersonId = clientId,
             };
 
             var existingBookingsCount = await _context.BookedAppointments
@@ -121,13 +118,12 @@ namespace Application.Services.Implementation
         public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null)
         {
             var bookedAppointmentsQuery = _context.BookedAppointments
-                .Include(ba => ba.Client)
-                    .ThenInclude(p => p.Person)
+                .Include(p => p.Person)
                 .Where(ba => !ba.IsFinished);
 
             if (clientId.HasValue)
             {
-                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.ClientId == clientId.Value);
+                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
             }
 
             var bookedAppointments = await bookedAppointmentsQuery.Select(ba => new BookedAppointmentDto
@@ -139,9 +135,9 @@ namespace Application.Services.Implementation
                 ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                 HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                 Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Client == null ? -1 : ba.Client.PersonId,
-                ClientFirstName = ba.Client == null ? "-" : ba.Client.Person.FirstName,
-                ClientSecondName = ba.Client == null ? "-" : ba.Client.Person.LastName,
+                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
+                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
                 Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                 AppointmentBookedDate = ba.AppointmentBookedDate
             }).ToListAsync();
@@ -190,7 +186,7 @@ namespace Application.Services.Implementation
         {
             var appointment = await _context.Appointments
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(ba => ba.Client).ThenInclude(p => p.Person)
+                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(p => p.Person)
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
                     .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
                         .ThenInclude(stdc => stdc.ServiceType)
@@ -277,14 +273,13 @@ namespace Application.Services.Implementation
         public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null)
         {
             var finishedAppointmentsQuery = _context.BookedAppointments
-                .Include(ba => ba.Client)
-                    .ThenInclude(p => p.Person)
+                    .Include(p => p.Person)
                 .Where(ba => ba.IsFinished);
 
             if (clientId.HasValue)
             {
 
-                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.ClientId == clientId.Value);
+                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
             }
 
             var finishedAppointments = await finishedAppointmentsQuery.Select(ba => new BookedAppointmentDto
@@ -296,9 +291,9 @@ namespace Application.Services.Implementation
                 ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                 HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                 Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Client == null ? -1 : ba.Client.PersonId,
-                ClientFirstName = ba.Client == null ? "-" : ba.Client.Person.FirstName,
-                ClientSecondName = ba.Client == null ? "-" : ba.Client.Person.LastName,
+                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
+                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
                 Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
                 AppointmentBookedDate = ba.AppointmentBookedDate
             }).ToListAsync();

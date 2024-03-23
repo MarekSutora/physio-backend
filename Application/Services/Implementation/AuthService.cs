@@ -200,19 +200,18 @@ namespace Application.Services.Implementation
 
         public async Task<bool> VerifyClientByIdAsync(int clientId, string userId)
         {
+            var person = await _context.Persons
+                                .Include(p => p.ApplicationUser)
+                                .FirstOrDefaultAsync(p => p.Id == clientId);
 
-            var client = await _context.Clients
-                                .Include(p => p.Person)
-                                .ThenInclude(p => p.ApplicationUser)
-                                .FirstOrDefaultAsync(p => p.PersonId == clientId);
-
-            if (client != null && client.Person.ApplicationUser.Id == userId)
+            if (person != null && person.ApplicationUser != null && person.ApplicationUser.Id == userId)
             {
                 return true;
             }
 
             return false;
         }
+
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
         {

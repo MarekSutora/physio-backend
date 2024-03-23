@@ -16,7 +16,6 @@ namespace DataAccess
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<DurationCost> DurationCosts { get; set; }
         public DbSet<ExerciseType> ExerciseTypes { get; set; }
-        public DbSet<Client> Clients { get; set; }
         public DbSet<ClientNote> ClientNotes { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
@@ -50,14 +49,6 @@ namespace DataAccess
                                                   l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AppointmentServiceTypeDurationCosts),
                                                   r => r.HasOne<Appointment>(e => e.Appointment).WithMany(e => e.AppointmentServiceTypeDurationCosts));
 
-            // client -> person 1:1
-            builder.Entity<Client>()
-           .HasKey(s => s.PersonId);
-
-            builder.Entity<Client>()
-                       .HasOne<Person>(p => p.Person)
-                       .WithOne(s => s.Client)
-                       .HasForeignKey<Client>(pa => pa.PersonId);
 
             // Appointment -> AppointmentDetail 1:1
             builder.Entity<AppointmentDetail>().HasKey(ad => ad.AppointmentId);

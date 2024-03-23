@@ -101,12 +101,6 @@ namespace DataAccess.Seeding
                 new Person { Id = 4, FirstName = "Client", LastName = "Two", PhoneNumber = "1234567890" },
                 new Person { Id = 5, FirstName = "Client", LastName = "Three", PhoneNumber = "1234567890" }
             );
-
-            Client client1Entity = new Client { PersonId = 3 };
-            Client client2Entity = new Client { PersonId = 4 };
-            Client client3Entity = new Client { PersonId = 5 };
-
-            builder.Entity<Client>().HasData(client1Entity, client2Entity, client3Entity);
         }
     }
 }
