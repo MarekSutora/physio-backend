@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTO.Appointments.Request
 {
@@ -11,9 +6,9 @@ namespace Application.DTO.Appointments.Request
     {
         [Required]
         public List<int> StdcIds { get; set; }
-
+        [Required]
         public DateTime StartTime { get; set; }
-
+        [Required]
         public int Capacity { get; set; }
     }
 }

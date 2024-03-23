@@ -1,4 +1,5 @@
 ﻿using Application.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,13 +11,14 @@ namespace Application.Services.Implementation
     public class TimedHostedService : IHostedService, IDisposable
     {
         private readonly ILogger<TimedHostedService> _logger;
-        private readonly IEmailService _emailService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private Timer _timer;
+        private bool _disposed;
 
-        public TimedHostedService(ILogger<TimedHostedService> logger, IEmailService emailService)
+        public TimedHostedService(ILogger<TimedHostedService> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
-            _emailService = emailService;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -35,7 +37,13 @@ namespace Application.Services.Implementation
         private async void DoWork(object state)
         {
             _logger.LogInformation("Timed Hosted Service is working.");
-            await _emailService.SendReminderEmailsAsync();
+
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                await emailService.SendReminderEmailsAsync();
+            }
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -47,9 +55,27 @@ namespace Application.Services.Implementation
             return Task.CompletedTask;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _timer?.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
+        ~TimedHostedService()
+        {
+            Dispose(disposing: false);
+        }
+
         public void Dispose()
         {
-            _timer?.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

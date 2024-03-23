@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTO.Appointments.Request
 {
     public class CreateBookedAppointmentDto
     {
+        [Required]
         public int astdcId { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Application.DTO.Auth
     public class RefreshTokenRequestDto
     {
         [Required]
+        [StringLength(500)]
         public string RefreshToken { get; set; }
     }
 }

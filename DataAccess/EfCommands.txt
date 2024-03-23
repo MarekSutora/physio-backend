@@ -1,6 +1,0 @@
-﻿dotnet ef database update --verbose --project DataAccess --startup-project API
-dotnet ef migrations add XXXXXX --verbose --project DataAccess --startup-project API
-dotnet ef migrations remove --project DataAccess --startup-project API
-
-dotnet ef migrations script --idempotent --project DataAccess --startup-project API
-dotnet ef migrations script AddNewTables --project DataAccess --startup-project API
