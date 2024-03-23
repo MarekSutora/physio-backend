@@ -55,27 +55,29 @@ namespace Application.Services.Implementation
             try
             {
                 var upcomingAppointments = await _context.BookedAppointments
-                       .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                   .Include(ba => ba.AppointmentServiceTypeDurationCost)
                        .ThenInclude(astdc => astdc.Appointment)
                        .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
                        .ThenInclude(stdc => stdc.ServiceType)
-                       .Include(c => c.Person)
+                   .Include(ba => ba.Person)
                        .ThenInclude(p => p.ApplicationUser)
-                       .Where(ba => !ba.IsFinished && !ba.SevenDaysReminderSent && !ba.OneDayReminderSent)
-                       .ToListAsync();
+                   .Where(ba => !ba.IsFinished &&
+                               ((!ba.SevenDaysReminderSent && (ba.AppointmentServiceTypeDurationCost.Appointment.StartTime - DateTime.UtcNow).TotalDays > 3) ||
+                                !ba.OneDayReminderSent))
+                   .ToListAsync();
 
                 foreach (var appointment in upcomingAppointments)
                 {
-
                     var startTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime;
                     var daysToAppointment = (startTime - DateTime.UtcNow).TotalDays;
                     var subject = "Pripomienka termínu";
+                    var serviceName = appointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name;
+                    var appointmentDateTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime.ToString("dd.MM.yyyy HH:mm");
 
-                    // vygenreuj telo a daj tam aj info o tom appointmente o aky servicetype ide
-                    var body = $"<h1>Termín na {appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime} sa blíži. Tešíme sa na Vás.</h1>";
-                    body = body + $"<p>Na tento termín máte objednaný servis: {appointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name}</p>";
+                    var body = $"<h1>Blíži sa Váš termín {appointmentDateTime}. Tešíme sa na Vás.</h1>";
+                    body += $"<p>Objednali ste si službu: {serviceName}.</p>";
 
-                    if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5)
+                    if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5 && daysToAppointment > 3)
                     {
                         await SendEmailAsync(new EmailRequest
                         {
@@ -112,6 +114,5 @@ namespace Application.Services.Implementation
                 throw;
             }
         }
-
     }
 }

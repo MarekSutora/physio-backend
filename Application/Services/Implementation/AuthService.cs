@@ -170,7 +170,7 @@ namespace Application.Services.Implementation
             var origin = _configuration["Cors:AllowedOrigin"];
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "apinet/auth/confirmEmail";
+            var route = "apinet/auth/confirm-email";
             var _enpointUri = new Uri(string.Concat($"{origin}/", route));
             var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
@@ -236,9 +236,9 @@ namespace Application.Services.Implementation
 
             var emailRequest = new EmailRequest()
             {
-                Body = $"If you requested a password reset for {origin}, please follow the link below: <a href='{passwordResetUrl}'>Reset Password</a>",
-                ToEmail = forgotPasswordRequestDto.Email,
-                Subject = "Password Reset Request",
+                Body = $"Prosím obnovte svoje heslo kliknutím na <a href='{passwordResetUrl}'>tento odkaz</a>",
+                Subject = "Obnova hesla",
+                ToEmail = forgotPasswordRequestDto.Email
             };
 
             await _emailService.SendEmailAsync(emailRequest);

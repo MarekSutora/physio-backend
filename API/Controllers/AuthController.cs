@@ -35,9 +35,10 @@ namespace diploma_thesis_backend.Controllers
 
                 return registrationResult switch
                 {
-                    RegisterUserResult.Success => Ok(new { message = "Registration successful." }),
-                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email is already in use." }),
-                    _ => BadRequest(new { message = "An error occurred during registration." })
+                    RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
+                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email už existuje." }),
+                    RegisterUserResult.Failure => BadRequest(new { message = "Nastala chyba počas registrácie." }),
+                    _ => BadRequest(new { message = "Nastala chyba počas registrácie." }),
                 };
             }
             catch (Exception ex)
