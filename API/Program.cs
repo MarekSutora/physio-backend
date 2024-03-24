@@ -1,8 +1,6 @@
 using Application;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Text.Json;
-using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddDataAccess(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {

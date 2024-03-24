@@ -1,7 +1,9 @@
 ﻿using DataAccess.Entities;
 using DataAccess.Seeding;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace DataAccess
 {
@@ -32,6 +34,18 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Ignore(e => e.TwoFactorEnabled);
+                entity.Ignore(e => e.PhoneNumberConfirmed);
+                entity.Ignore(e => e.PhoneNumber);
+            });
+
+            builder.Ignore<IdentityUserToken<string>>();
+            builder.Ignore<IdentityUserLogin<string>>();
+            builder.Ignore<IdentityUserClaim<string>>();
+            builder.Ignore<IdentityRoleClaim<string>>();
 
             //serviceType -> durationCost m:n
             builder.Entity<ServiceType>()

@@ -17,11 +17,6 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.4.1" />
-		<PackageReference Include="RestSharp" Version="110.2.0" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.22.0.87781">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

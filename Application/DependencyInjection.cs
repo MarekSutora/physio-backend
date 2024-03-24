@@ -18,6 +18,7 @@ namespace Application
     {
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddDataAccess(configuration);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(
                     options =>
