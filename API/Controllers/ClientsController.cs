@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Interfaces;
-using Application.DTO.Clients.Request; // Assuming you have renamed the DTOs as well
+using Application.DTO.Clients.Request;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 namespace diploma_thesis_backend.Controllers
@@ -22,13 +22,13 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost("{clientId}/notes")]
-        public async Task<IActionResult> AddNoteToClientAsync(int clientId, [FromBody] CreateClientNoteDto createClientNoteDto)
+        [HttpPost("{personId}/notes")]
+        public async Task<IActionResult> AddNoteToClientAsync(int personId, [FromBody] CreateClientNoteDto createClientNoteDto)
         {
-            _logger.LogInformation($"Adding note to client with ID {clientId}");
+            _logger.LogInformation($"Adding note to Client with ID {personId}");
             try
             {
-                if (clientId != createClientNoteDto.ClientId)
+                if (personId != createClientNoteDto.PersonId)
                 {
                     return BadRequest("Client ID mismatch.");
                 }
@@ -38,35 +38,35 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adding note to client.");
-                return BadRequest("Error adding note to client.");
+                _logger.LogError(ex, "Error adding note to Client.");
+                return BadRequest("Error adding note to Client.");
             }
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpGet("{clientId}/notes")]
-        public async Task<IActionResult> GetAllNotesForClientAsync(int clientId)
+        [HttpGet("{personId}/notes")]
+        public async Task<IActionResult> GetAllNotesForClientAsync(int personId)
         {
-            _logger.LogInformation($"Retrieving notes for client with ID {clientId}");
+            _logger.LogInformation($"Retrieving notes for Client with Person.Id {personId}");
             try
             {
-                var notes = await _clientsService.GetAllNotesForClientAsync(clientId);
+                var notes = await _clientsService.GetAllNotesForClientAsync(personId);
 
                 if (notes != null && notes.Any())
                 {
-                    _logger.LogInformation($"Notes for client with ID {clientId} successfully retrieved.");
+                    _logger.LogInformation($"Notes for Client with Person.Id {personId} successfully retrieved.");
                     return Ok(notes);
                 }
                 else
                 {
-                    _logger.LogInformation($"Client with ID {clientId} has no notes.");
+                    _logger.LogInformation($"Client with Person.Id {personId} has no notes.");
                     return NotFound("Client has no notes.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving client's notes.");
-                return BadRequest("Error retrieving client's notes.");
+                _logger.LogError(ex, "Error retrieving Client's notes.");
+                return BadRequest("Error retrieving Client's notes.");
             }
         }
 
@@ -74,18 +74,18 @@ namespace diploma_thesis_backend.Controllers
         [HttpDelete("notes/{noteId}")]
         public async Task<IActionResult> DeleteNoteAsync(int noteId)
         {
-            _logger.LogInformation($"Deleting note with ID {noteId}");
+            _logger.LogInformation($"Deleting note with Note.Id {noteId}");
             try
             {
                 await _clientsService.DeleteNoteAsync(noteId);
 
-                _logger.LogInformation($"Note with ID {noteId} successfully deleted.");
+                _logger.LogInformation($"Note with Note.Id {noteId} successfully deleted.");
                 return Ok("Note successfully deleted.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting note.");
-                return BadRequest("Error deleting note.");
+                _logger.LogError(ex, "Error deleting Note.");
+                return BadRequest("Error deleting Note.");
             }
         }
 
@@ -93,63 +93,63 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllClientsAsync()
         {
-            _logger.LogInformation("Retrieving all clients.");
+            _logger.LogInformation("Retrieving all Client.");
             try
             {
                 var clients = await _clientsService.GetAllClientsAsync();
 
                 if (clients != null && clients.Any())
                 {
-                    _logger.LogInformation("All clients successfully retrieved.");
+                    _logger.LogInformation("All Clients successfully retrieved.");
                     return Ok(clients);
                 }
                 else
                 {
-                    _logger.LogInformation("No clients found.");
-                    return NotFound("No clients found.");
+                    _logger.LogInformation("No Clients found.");
+                    return NotFound("No Clients found.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving all clients.");
-                return BadRequest("Error retrieving all clients.");
+                _logger.LogError(ex, "Error retrieving all Clients.");
+                return BadRequest("Error retrieving all Clients.");
             }
         }
 
         [Authorize]
-        [HttpGet("{clientId}")]
-        public async Task<IActionResult> GetClientByIdAsync(int clientId)
+        [HttpGet("{personId}")]
+        public async Task<IActionResult> GetClientByIdAsync(int personId)
         {
-            _logger.LogInformation($"Retrieving client with ID {clientId}");
+            _logger.LogInformation($"Retrieving Client with ID {personId}");
             try
             {
-                if (!IsAdminOrAccessingTheirOwnData(clientId))
+                if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
-                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view client with Client.Id = {clientId}");
+                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view Client with Person.Id = {personId}");
                     return Unauthorized("You are not authorized to view this data.");
                 }
 
-                var client = await _clientsService.GetClientByIdAsync(clientId);
+                var client = await _clientsService.GetClientByIdAsync(personId);
 
                 if (client != null)
                 {
-                    _logger.LogInformation($"Client with ID {clientId} successfully retrieved.");
+                    _logger.LogInformation($"Client with Person.Id {personId} successfully retrieved.");
                     return Ok(client);
                 }
                 else
                 {
-                    _logger.LogInformation($"Client with ID {clientId} not found.");
+                    _logger.LogInformation($"Client with ID {personId} not found.");
                     return NotFound("Client not found.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving client by ID.");
-                return BadRequest("Error retrieving client by ID.");
+                _logger.LogError(ex, $"Error retrieving Client by Person.Id.");
+                return BadRequest("Error retrieving Client by Person.Id.");
             }
         }
 
-        private bool IsAdminOrAccessingTheirOwnData(int clientId)
+        private bool IsAdminOrAccessingTheirOwnData(int personId)
         {
             var jwtUserId = User.FindFirstValue("userId");
 
@@ -160,7 +160,7 @@ namespace diploma_thesis_backend.Controllers
 
             var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
             var isAdmin = userRoles.Contains("Admin");
-            var isClientVerified = _authService.VerifyClientByIdAsync(clientId, jwtUserId).Result;
+            var isClientVerified = _authService.VerifyClientByIdAsync(personId, jwtUserId).Result;
             return isAdmin || isClientVerified;
         }
     }

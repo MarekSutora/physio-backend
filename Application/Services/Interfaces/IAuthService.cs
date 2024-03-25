@@ -18,6 +18,6 @@ namespace Application.Services.Interfaces
 
         Task<LoginUserResult> RefreshTokenAsync(string refreshToken);
 
-        Task<bool> VerifyClientByIdAsync(int clientId, string userId);
+        Task<bool> VerifyClientByIdAsync(int personId, string userId);
     }
 }

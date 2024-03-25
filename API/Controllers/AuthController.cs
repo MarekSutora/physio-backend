@@ -48,7 +48,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginRequestDto)
         {
             _logger.LogInformation("Logging in user.");
@@ -65,7 +65,7 @@ namespace diploma_thesis_backend.Controllers
                             UserId = result.UserId,
                             FullName = result.FullName,
                             Roles = result.roles,
-                            ClientId = result.ClientId
+                            PersonId = result.PersonId
                         },
                         BackendTokens = new
                         {

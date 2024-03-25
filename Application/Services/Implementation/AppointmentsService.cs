@@ -72,7 +72,6 @@ namespace Application.Services.Implementation
             _context.BookedAppointments.Add(bookedAppointment);
 
             await _context.SaveChangesAsync();
-
         }
 
         public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()

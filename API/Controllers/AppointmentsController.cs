@@ -72,25 +72,25 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpPost("booked/{clientId}")]
-        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int clientId, [FromBody] CreateBookedAppointmentDto clientBookedAppointmentDto)
+        [HttpPost("booked/{personId}")]
+        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int personId, [FromBody] CreateBookedAppointmentDto createBookedAppointmentDto)
         {
-            _logger.LogInformation($"Retrieving booked appointments for Client with Client.Id = {clientId}.");
+            _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}.");
             try
             {
-                if (!IsAdminOrAccessingTheirOwnData(clientId))
+                if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
                     return Unauthorized("You are not authorized to view these appointments.");
                 }
 
-                await _appointmentsService.CreateBookedAppointmentAsync(clientBookedAppointmentDto, clientId);
+                await _appointmentsService.CreateBookedAppointmentAsync(createBookedAppointmentDto, personId);
 
-                _logger.LogInformation($"Booked appointment for Client with Client.Id = {clientId} created successfully.");
+                _logger.LogInformation($"Booked appointment for Client with Person.Id = {personId} created successfully.");
                 return Ok("Termín úspešne rezervovaný klientom.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when retrieving booked appointments for Client with ClientId = {clientId}.");
+                _logger.LogError(ex, $"Error when retrieving booked appointments for Client with Person.Id = {personId}.");
                 return BadRequest("Error when retrieving booked appointments.");
             }
         }
@@ -225,28 +225,28 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("client/{clientId}/booked")]
-        public async Task<IActionResult> GetClientBookedAppointmentsAsync(int clientId)
+        [HttpGet("client/{personId}/booked")]
+        public async Task<IActionResult> GetClientBookedAppointmentsAsync(int personId)
         {
-            _logger.LogInformation($"Retrieving booked appointments for client with Client.Id = {clientId}");
+            _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}");
             try
             {
-                if (!IsAdminOrAccessingTheirOwnData(clientId))
+                if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
-                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view booked appointments for client with Client.Id = {clientId}");
+                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view booked appointments for Client with Person.Id = {personId}");
                     return Unauthorized("You are not authorized to view these appointments.");
                 }
 
-                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(clientId);
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(personId);
 
                 if (bookedAppointments != null && bookedAppointments.Any())
                 {
-                    _logger.LogInformation($"Booked appointments for client with Client.Id = {clientId} successfully returned");
+                    _logger.LogInformation($"Booked appointments for Client with Person.Id = {personId} successfully returned");
                     return Ok(bookedAppointments);
                 }
                 else
                 {
-                    _logger.LogInformation($"No booked appointments found for client with Client.Id = {clientId}");
+                    _logger.LogInformation($"No booked appointments found for Client with Person.Id = {personId}");
                     return NotFound("No booked appointments found.");
                 }
             }
@@ -286,39 +286,39 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("client/{clientId}/finished")]
-        public async Task<IActionResult> GetClientsFinishedAppointmentsAsync(int clientId)
+        [HttpGet("client/{personId}/finished")]
+        public async Task<IActionResult> GetClientsFinishedAppointmentsAsync(int personId)
         {
-            _logger.LogInformation($"Retrieving finished appointments for client with Client.Id = {clientId}");
+            _logger.LogInformation($"Retrieving finished appointments for Person with Person.Id = {personId}");
             try
             {
-                if (!IsAdminOrAccessingTheirOwnData(clientId))
+                if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
-                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view finished appointments for client with Client.Id = {clientId}");
+                    _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view finished appointments for Person with Person.Id = {personId}");
                     return Unauthorized("You are not authorized to view these appointments.");
                 }
 
-                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(clientId);
+                var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(personId);
 
                 if (finishedAppointments != null && finishedAppointments.Any())
                 {
-                    _logger.LogInformation($"Finished appointments for client with Client.Id = {clientId} successfully returned");
+                    _logger.LogInformation($"Finished appointments for Client with Person.Id = {personId} successfully returned");
                     return Ok(finishedAppointments);
                 }
                 else
                 {
-                    _logger.LogWarning($"No finished appointments found for client with Client.Id = {clientId}");
+                    _logger.LogWarning($"No finished appointments found for Client with Person.Id = {personId}");
                     return NotFound("No finished appointments found.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving finished appointments for client with Client.Id = {clientId}.");
+                _logger.LogError(ex, $"Error retrieving finished appointments for Client with Person.Id = {personId}.");
                 return BadRequest("Error retrieving finished appointments.");
             }
         }
 
-        private bool IsAdminOrAccessingTheirOwnData(int clientId)
+        private bool IsAdminOrAccessingTheirOwnData(int personId)
         {
             var jwtUserId = User.FindFirstValue("userId");
 
@@ -329,7 +329,7 @@ namespace diploma_thesis_backend.Controllers
 
             var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
             var isAdmin = userRoles.Contains("Admin");
-            var isClientVerified = _authService.VerifyClientByIdAsync(clientId, jwtUserId).Result;
+            var isClientVerified = _authService.VerifyClientByIdAsync(personId, jwtUserId).Result;
             return isAdmin || isClientVerified;
         }
     }

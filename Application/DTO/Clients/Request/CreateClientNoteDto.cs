@@ -8,7 +8,7 @@ namespace Application.DTO.Clients.Request
 {
     public class CreateClientNoteDto
     {
-        public int ClientId { get; set; }
+        public int PersonId { get; set; }
         public string Note { get; set; }
     }
 }

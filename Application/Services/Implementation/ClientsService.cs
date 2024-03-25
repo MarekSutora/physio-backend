@@ -30,17 +30,17 @@ namespace Application.Services.Implementation
         public async Task AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto)
         {
 
-            var clientExists = await _context.Persons.AnyAsync(p => p.Id == createClientNoteDto.ClientId);
+            var clientExists = await _context.Persons.AnyAsync(p => p.Id == createClientNoteDto.PersonId);
 
             if (!clientExists)
             {
-                throw new InvalidOperationException($"No Client found with ID {createClientNoteDto.ClientId}.");
+                throw new InvalidOperationException($"No Client found with ID {createClientNoteDto.PersonId}.");
             }
 
             var clientNote = _mapper.Map<ClientNote>(createClientNoteDto);
             clientNote.CreatedAt = DateTime.UtcNow.AddHours(1);
 
-            clientNote.PersonId = createClientNoteDto.ClientId;
+            clientNote.PersonId = createClientNoteDto.PersonId;
 
             _context.ClientNotes.Add(clientNote);
             await _context.SaveChangesAsync();

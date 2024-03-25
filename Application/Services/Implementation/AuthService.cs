@@ -77,7 +77,7 @@ namespace Application.Services.Implementation
             {
                 roles = roles,
                 FullName = $"{person.FirstName} {person.LastName}",
-                ClientId = person.Id,
+                PersonId = person.Id,
                 UserId = user.Id,
                 Outcome = LoginUserOutcome.Success,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
@@ -201,11 +201,11 @@ namespace Application.Services.Implementation
             }
         }
 
-        public async Task<bool> VerifyClientByIdAsync(int clientId, string userId)
+        public async Task<bool> VerifyClientByIdAsync(int personId, string userId)
         {
             var person = await _context.Persons
                                 .Include(p => p.ApplicationUser)
-                                .FirstOrDefaultAsync(p => p.Id == clientId);
+                                .FirstOrDefaultAsync(p => p.Id == personId);
 
             if (person != null && person.ApplicationUser != null && person.ApplicationUser.Id == userId)
             {
@@ -230,7 +230,7 @@ namespace Application.Services.Implementation
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
             var origin = _configuration["Cors:AllowedOrigin"];
-            var route = "obnovenie-hesla"; // This should match the client-side route
+            var route = "obnovenie-hesla";
             var endpointUri = new Uri(string.Concat($"{origin}/", route));
             var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", encodedToken);
 
