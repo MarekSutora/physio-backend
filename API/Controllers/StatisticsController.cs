@@ -21,7 +21,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpGet("appointments-service-types")]
         public async Task<IActionResult> GetServiceTypesFinishedAppointmentsCountsAsync()
         {
@@ -48,7 +48,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpGet("revenue")]
         public async Task<IActionResult> GetTotalRevenueStatisticsAsync()
         {
@@ -75,6 +75,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet("new-clients-trend")]
         public async Task<IActionResult> GetNewClientsTrendAsync()
         {
@@ -101,6 +102,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet("blog-posts-views")]
         public async Task<IActionResult> GetBlogPostViewsStatsAsync()
         {

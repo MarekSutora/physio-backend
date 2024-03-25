@@ -8,7 +8,7 @@ namespace Application.Services.Interfaces
     {
         Task CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto);
         Task SoftDeleteServiceTypeAsync(int id);
-        Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync();
+        Task<List<ServiceTypeDto>> GetActiveServiceTypesAsync();
         Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto);
         Task<ServiceTypeDto?> GetServiceTypeBySlugAsync(string slug);
     }

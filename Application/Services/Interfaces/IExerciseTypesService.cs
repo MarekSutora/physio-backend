@@ -9,6 +9,6 @@ namespace Application.Services.Interfaces
 {
     public interface IExerciseTypesService
     {
-        Task<IEnumerable<ExerciseTypeDto>> GetAllExerciseTypesAsync();
+        Task<IEnumerable<ExerciseTypeDto>> GetExerciseTypesAsync();
     }
 }

@@ -69,11 +69,11 @@ namespace Application.Services.Implementation
 
         public async Task<IEnumerable<NewClientsStatisticsDto>> GetNewClientsTrendAsync()
         {
-            var newClientsTrend = await _context.ApplicationUsers // Use ApplicationUser entity
+            var newClientsTrend = await _context.ApplicationUsers
                 .GroupBy(u => new
                 {
-                    Year = u.RegisteredDate.Year, // Directly use RegisteredDate.Year
-                    Month = u.RegisteredDate.Month // Directly use RegisteredDate.Month
+                    Year = u.RegisteredDate.Year,
+                    Month = u.RegisteredDate.Month
                 })
                 .Select(g => new NewClientsStatisticsDto
                 {

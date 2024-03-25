@@ -61,7 +61,7 @@ namespace Application.Services.Implementation
             _logger.LogInformation($"Deleted note with ID {noteId}");
         }
 
-        public async Task<IEnumerable<ClientNoteDto>> GetAllNotesForClientAsync(int clientId)
+        public async Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int clientId)
         {
             var clientNotes = await _context.ClientNotes
                 .Where(n => n.PersonId == clientId)
@@ -72,9 +72,8 @@ namespace Application.Services.Implementation
             return _mapper.Map<IEnumerable<ClientNoteDto>>(clientNotes);
         }
 
-        public async Task<IEnumerable<ClientDto>> GetAllClientsAsync()
+        public async Task<IEnumerable<ClientDto>> GetClientsAsync()
         {
-            // Get all user IDs that have the role "Client"
             var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
             var clientUserIds = new List<string>();
 

@@ -22,51 +22,13 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [Authorize(Policy = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> CreateServiceType([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
-        {
-            _logger.LogInformation("Creating new service type");
-            try
-            {
-                await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
-
-                _logger.LogInformation("Service type created or reactivated successfully.");
-                return Ok("Service type created or reactivated successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating service type");
-                return BadRequest("An error occurred while creating the service type");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateServiceType([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
-        {
-            _logger.LogInformation($"Updating service type with ID {updateServiceTypeDto.Id}");
-            try
-            {
-                await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
-
-                _logger.LogInformation($"Service type updated successfully with ID {updateServiceTypeDto.Id}");
-                return Ok("Service type updated successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating service type");
-                return BadRequest("An error occurred while updating the service type");
-            }
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAllServiceTypes()
+        public async Task<IActionResult> GetActiveServiceTypesAsync()
         {
-            _logger.LogInformation("Retrieving all service types");
+            _logger.LogInformation("Retrieving all service types.");
             try
             {
-                var serviceTypes = await _serviceTypesService.GetAllActiveServiceTypesAsync();
+                var serviceTypes = await _serviceTypesService.GetActiveServiceTypesAsync();
 
                 if (serviceTypes != null && serviceTypes.Any())
                 {
@@ -87,7 +49,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet("{slug}")]
-        public async Task<IActionResult> GetServiceTypeBySlug(string slug)
+        public async Task<IActionResult> GetServiceTypeBySlugAsync(string slug)
         {
             _logger.LogInformation($"Retrieving service type by slug {slug}");
             try
@@ -113,8 +75,46 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize(Policy = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> CreateServiceTypeAsync([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
+        {
+            _logger.LogInformation("Creating new service type");
+            try
+            {
+                await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
+
+                _logger.LogInformation("Service type created or reactivated successfully.");
+                return Ok("Service type created or reactivated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating service type");
+                return BadRequest("An error occurred while creating the service type");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateServiceTypeAsync([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
+        {
+            _logger.LogInformation($"Updating service type with ID {updateServiceTypeDto.Id}");
+            try
+            {
+                await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
+
+                _logger.LogInformation($"Service type updated successfully with ID {updateServiceTypeDto.Id}");
+                return Ok("Service type updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating service type");
+                return BadRequest("An error occurred while updating the service type");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteServiceType(int id)
+        public async Task<IActionResult> DeleteServiceTypeAsync(int id)
         {
             _logger.LogInformation($"Deleting service type with ID {id}");
             try

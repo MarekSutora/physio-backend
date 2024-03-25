@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace diploma_thesis_backend.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -23,6 +23,28 @@ namespace diploma_thesis_backend.Controllers
             _authService = authService;
             _configuration = configuration;
             _logger = logger;
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        {
+            _logger.LogInformation($"Confirming email for user with UserId = {userId}.");
+            try
+            {
+                await _authService.ConfirmEmailAsync(userId, code);
+
+                var frontendUrl = _configuration["Cors:AllowedOrigin"];
+
+                var loginUrl = $"{frontendUrl}/prihlasenie?emailConfirmed=success";
+                return Redirect(loginUrl);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when confirming email for user with UserId = {userId}");
+                return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
+            }
+
         }
 
         [HttpPost("register-client")]
@@ -49,7 +71,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginRequestDto)
+        public async Task<IActionResult> LoginUserAsync([FromBody] LoginRequestDto loginRequestDto)
         {
             _logger.LogInformation("Logging in user.");
             try
@@ -114,28 +136,6 @@ namespace diploma_thesis_backend.Controllers
                 _logger.LogError(ex, "Nastala chyba pri získavaní refresh tokenu.");
                 return BadRequest(new { message = "Nastala chyba pri získavaní refresh tokenu." });
             }
-        }
-
-        [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
-        {
-            _logger.LogInformation($"Confirming email for user with UserId = {userId}.");
-            try
-            {
-                await _authService.ConfirmEmailAsync(userId, code);
-
-                var frontendUrl = _configuration["Cors:AllowedOrigin"];
-
-                var loginUrl = $"{frontendUrl}/prihlasenie?emailConfirmed=success";
-                return Redirect(loginUrl);
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error when confirming email for user with UserId = {userId}");
-                return BadRequest(new { message = "Nastala chyba pri potvrdzovaní emailu." });
-            }
-
         }
 
         [HttpPost("reset-password")]

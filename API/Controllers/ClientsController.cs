@@ -22,81 +22,13 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost("{personId}/notes")]
-        public async Task<IActionResult> AddNoteToClientAsync(int personId, [FromBody] CreateClientNoteDto createClientNoteDto)
-        {
-            _logger.LogInformation($"Adding note to Client with ID {personId}");
-            try
-            {
-                if (personId != createClientNoteDto.PersonId)
-                {
-                    return BadRequest("Client ID mismatch.");
-                }
-
-                await _clientsService.AddNoteToClientAsync(createClientNoteDto);
-                return Ok("Note successfully added.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adding note to Client.");
-                return BadRequest("Error adding note to Client.");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpGet("{personId}/notes")]
-        public async Task<IActionResult> GetAllNotesForClientAsync(int personId)
-        {
-            _logger.LogInformation($"Retrieving notes for Client with Person.Id {personId}");
-            try
-            {
-                var notes = await _clientsService.GetAllNotesForClientAsync(personId);
-
-                if (notes != null && notes.Any())
-                {
-                    _logger.LogInformation($"Notes for Client with Person.Id {personId} successfully retrieved.");
-                    return Ok(notes);
-                }
-                else
-                {
-                    _logger.LogInformation($"Client with Person.Id {personId} has no notes.");
-                    return NotFound("Client has no notes.");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving Client's notes.");
-                return BadRequest("Error retrieving Client's notes.");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpDelete("notes/{noteId}")]
-        public async Task<IActionResult> DeleteNoteAsync(int noteId)
-        {
-            _logger.LogInformation($"Deleting note with Note.Id {noteId}");
-            try
-            {
-                await _clientsService.DeleteNoteAsync(noteId);
-
-                _logger.LogInformation($"Note with Note.Id {noteId} successfully deleted.");
-                return Ok("Note successfully deleted.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting Note.");
-                return BadRequest("Error deleting Note.");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetAllClientsAsync()
+        public async Task<IActionResult> GetClientsAsync()
         {
             _logger.LogInformation("Retrieving all Client.");
             try
             {
-                var clients = await _clientsService.GetAllClientsAsync();
+                var clients = await _clientsService.GetClientsAsync();
 
                 if (clients != null && clients.Any())
                 {
@@ -146,6 +78,74 @@ namespace diploma_thesis_backend.Controllers
             {
                 _logger.LogError(ex, $"Error retrieving Client by Person.Id.");
                 return BadRequest("Error retrieving Client by Person.Id.");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("{personId}/notes")]
+        public async Task<IActionResult> GetNotesForClientAsync(int personId)
+        {
+            _logger.LogInformation($"Retrieving notes for Client with Person.Id {personId}");
+            try
+            {
+                var notes = await _clientsService.GetNotesForClientAsync(personId);
+
+                if (notes != null && notes.Any())
+                {
+                    _logger.LogInformation($"Notes for Client with Person.Id {personId} successfully retrieved.");
+                    return Ok(notes);
+                }
+                else
+                {
+                    _logger.LogInformation($"Client with Person.Id {personId} has no notes.");
+                    return NotFound("Client has no notes.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving Client's notes.");
+                return BadRequest("Error retrieving Client's notes.");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPost("{personId}/notes")]
+        public async Task<IActionResult> AddNoteToClientAsync(int personId, [FromBody] CreateClientNoteDto createClientNoteDto)
+        {
+            _logger.LogInformation($"Adding note to Client with ID {personId}");
+            try
+            {
+                if (personId != createClientNoteDto.PersonId)
+                {
+                    return BadRequest("Client ID mismatch.");
+                }
+
+                await _clientsService.AddNoteToClientAsync(createClientNoteDto);
+                return Ok("Note successfully added.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding note to Client.");
+                return BadRequest("Error adding note to Client.");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpDelete("notes/{noteId}")]
+        public async Task<IActionResult> DeleteNoteAsync(int noteId)
+        {
+            _logger.LogInformation($"Deleting note with Note.Id {noteId}");
+            try
+            {
+                await _clientsService.DeleteNoteAsync(noteId);
+
+                _logger.LogInformation($"Note with Note.Id {noteId} successfully deleted.");
+                return Ok("Note successfully deleted.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Note.");
+                return BadRequest("Error deleting Note.");
             }
         }
 

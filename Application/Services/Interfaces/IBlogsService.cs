@@ -10,7 +10,6 @@ namespace Application.Services.Interfaces
         Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto);
         Task DeleteBlogPostAsync(int id);
         Task HideBlogPostAsync(int id);
-        Task<BlogPostDto?> GetBlogPostByIdAsync(int id);
         Task<BlogPostDto?> GetBlogPostBySlugAsync(string slug);
         Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync();
         Task IncrementBlogPostViewCountAsync(string slug);

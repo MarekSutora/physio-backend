@@ -25,7 +25,7 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ExerciseTypeDto>> GetAllExerciseTypesAsync()
+        public async Task<IEnumerable<ExerciseTypeDto>> GetExerciseTypesAsync()
         {
             try
             {

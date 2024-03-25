@@ -19,6 +19,133 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
+        public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()
+        {
+
+            var unBookedAppointmentsQuery = _context.AppointmentServiceTypeDurationCosts
+                .Include(astdc => astdc.BookedAppointments)
+                .Include(astdc => astdc.ServiceTypeDurationCost)
+                    .ThenInclude(stdc => stdc.ServiceType)
+                .Include(astdc => astdc.ServiceTypeDurationCost)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
+                        && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1) && astdc.ServiceTypeDurationCost.DateTo == null)
+                .Select(astdc => new
+                {
+                    astdc.Appointment,
+                    BookedCount = astdc.BookedAppointments.Count,
+                    ServiceTypeInfo = new ServiceTypeInfoDto
+                    {
+                        AstdcId = astdc.Id,
+                        Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
+                        DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                        Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
+                        HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
+                    }
+                });
+
+            var groupedAppointments = (await unBookedAppointmentsQuery.ToListAsync())
+                .GroupBy(x => x.Appointment)
+                .OrderBy(g => g.Key.StartTime)
+                .Select(g => new UnbookedAppointmentDto
+                {
+                    Id = g.Key.Id,
+                    StartTime = g.Key.StartTime,
+                    Capacity = g.Key.Capacity,
+                    ReservedCount = g.Sum(x => x.BookedCount), // Aggregate the count here
+                    ServiceTypeInfos = g.Select(x => x.ServiceTypeInfo).ToList()
+                });
+
+            return groupedAppointments.ToList();
+        }
+
+        public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId)
+        {
+            var appointment = await _context.Appointments
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(p => p.Person)
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.ServiceType)
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.DurationCost)
+                        .Include(a => a.AppointmentDetail).ThenInclude(ad => ad.AppointmentExerciseDetails).ThenInclude(aed => aed.ExerciseType)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == appointmentId);
+
+            if (appointment == null)
+            {
+                throw new Exception($"Appointment not found for ID {appointmentId}.");
+            }
+
+            var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
+
+            return appointmentDto;
+        }
+
+
+        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null)
+        {
+            var finishedAppointmentsQuery = _context.BookedAppointments
+                    .Include(p => p.Person)
+                .Where(ba => ba.IsFinished);
+
+            if (clientId.HasValue)
+            {
+
+                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
+            }
+
+            var finishedAppointments = await finishedAppointmentsQuery.Select(ba => new BookedAppointmentDto
+            {
+                Id = ba.Id,
+                AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
+                StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
+                HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
+                Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
+                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
+                Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
+                AppointmentBookedDate = ba.AppointmentBookedDate
+            }).ToListAsync();
+
+            return finishedAppointments;
+        }
+
+        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null)
+        {
+            var bookedAppointmentsQuery = _context.BookedAppointments
+                .Include(p => p.Person)
+                .Where(ba => !ba.IsFinished);
+
+            if (clientId.HasValue)
+            {
+                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
+            }
+
+            var bookedAppointments = await bookedAppointmentsQuery.Select(ba => new BookedAppointmentDto
+            {
+                Id = ba.Id,
+                AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
+                StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
+                DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
+                HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
+                Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
+                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
+                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
+                Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
+                AppointmentBookedDate = ba.AppointmentBookedDate
+            }).ToListAsync();
+
+            return bookedAppointments;
+        }
+
         public async Task CreateAppointmentAsync(CreateAppointmentDto createAppointmentDto)
         {
 
@@ -72,138 +199,6 @@ namespace Application.Services.Implementation
             _context.BookedAppointments.Add(bookedAppointment);
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()
-        {
-
-            var unBookedAppointmentsQuery = _context.AppointmentServiceTypeDurationCosts
-                .Include(astdc => astdc.BookedAppointments)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.ServiceType)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
-                        && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1) && astdc.ServiceTypeDurationCost.DateTo == null)
-                .Select(astdc => new
-                {
-                    astdc.Appointment,
-                    BookedCount = astdc.BookedAppointments.Count,
-                    ServiceTypeInfo = new ServiceTypeInfoDto
-                    {
-                        AstdcId = astdc.Id,
-                        Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
-                        DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                        Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
-                        HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
-                    }
-                });
-
-            var groupedAppointments = (await unBookedAppointmentsQuery.ToListAsync())
-                .GroupBy(x => x.Appointment)
-                .OrderBy(g => g.Key.StartTime)
-                .Select(g => new UnbookedAppointmentDto
-                {
-                    Id = g.Key.Id,
-                    StartTime = g.Key.StartTime,
-                    Capacity = g.Key.Capacity,
-                    ReservedCount = g.Sum(x => x.BookedCount), // Aggregate the count here
-                    ServiceTypeInfos = g.Select(x => x.ServiceTypeInfo).ToList()
-                });
-
-            return groupedAppointments.ToList();
-        }
-
-        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null)
-        {
-            var bookedAppointmentsQuery = _context.BookedAppointments
-                .Include(p => p.Person)
-                .Where(ba => !ba.IsFinished);
-
-            if (clientId.HasValue)
-            {
-                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
-            }
-
-            var bookedAppointments = await bookedAppointmentsQuery.Select(ba => new BookedAppointmentDto
-            {
-                Id = ba.Id,
-                AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
-                StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
-                DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
-                Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Person == null ? -1 : ba.PersonId,
-                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
-                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
-                Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
-                AppointmentBookedDate = ba.AppointmentBookedDate
-            }).ToListAsync();
-
-            return bookedAppointments;
-
-        }
-
-        public async Task DeleteAppointmentAsync(int appointmentId)
-        {
-
-            var appointment = await _context.Appointments
-                .Include(a => a.AppointmentServiceTypeDurationCosts)
-                .FirstOrDefaultAsync(a => a.Id == appointmentId);
-
-            if (appointment == null)
-            {
-                throw new Exception("Appointment not found.");
-            }
-
-            _context.AppointmentServiceTypeDurationCosts.RemoveRange(appointment.AppointmentServiceTypeDurationCosts);
-
-            _context.Appointments.Remove(appointment);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteBookedAppointmentAsync(int bookedAppointmentId)
-        {
-
-            var bookedAppointment = await _context.BookedAppointments
-                .Include(ba => ba.AppointmentServiceTypeDurationCost)
-                .FirstOrDefaultAsync(ba => ba.Id == bookedAppointmentId);
-
-            if (bookedAppointment == null)
-            {
-                throw new Exception("BookedAppointment not found.");
-            }
-
-            _context.BookedAppointments.Remove(bookedAppointment);
-            await _context.SaveChangesAsync();
-
-        }
-
-        public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId)
-        {
-            var appointment = await _context.Appointments
-                .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(p => p.Person)
-                .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
-                        .ThenInclude(stdc => stdc.ServiceType)
-                .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
-                        .ThenInclude(stdc => stdc.DurationCost)
-                        .Include(a => a.AppointmentDetail).ThenInclude(ad => ad.AppointmentExerciseDetails).ThenInclude(aed => aed.ExerciseType)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == appointmentId);
-
-            if (appointment == null)
-            {
-                throw new Exception($"Appointment not found for ID {appointmentId}.");
-            }
-
-            var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
-
-            return appointmentDto;
         }
 
         public async Task UpdateAppointmentDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails)
@@ -268,35 +263,39 @@ namespace Application.Services.Implementation
 
         }
 
-        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null)
+        public async Task DeleteBookedAppointmentAsync(int bookedAppointmentId)
         {
-            var finishedAppointmentsQuery = _context.BookedAppointments
-                    .Include(p => p.Person)
-                .Where(ba => ba.IsFinished);
 
-            if (clientId.HasValue)
+            var bookedAppointment = await _context.BookedAppointments
+                .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                .FirstOrDefaultAsync(ba => ba.Id == bookedAppointmentId);
+
+            if (bookedAppointment == null)
             {
-
-                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
+                throw new Exception("BookedAppointment not found.");
             }
 
-            var finishedAppointments = await finishedAppointmentsQuery.Select(ba => new BookedAppointmentDto
-            {
-                Id = ba.Id,
-                AppointmentId = ba.AppointmentServiceTypeDurationCost.Appointment.Id,
-                StartTime = ba.AppointmentServiceTypeDurationCost.Appointment.StartTime,
-                DurationMinutes = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
-                HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
-                Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Person == null ? -1 : ba.PersonId,
-                ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
-                ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
-                Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
-                AppointmentBookedDate = ba.AppointmentBookedDate
-            }).ToListAsync();
+            _context.BookedAppointments.Remove(bookedAppointment);
+            await _context.SaveChangesAsync();
+        }
 
-            return finishedAppointments;
+        public async Task DeleteAppointmentAsync(int appointmentId)
+        {
+
+            var appointment = await _context.Appointments
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                .FirstOrDefaultAsync(a => a.Id == appointmentId);
+
+            if (appointment == null)
+            {
+                throw new Exception("Appointment not found.");
+            }
+
+            _context.AppointmentServiceTypeDurationCosts.RemoveRange(appointment.AppointmentServiceTypeDurationCosts);
+
+            _context.Appointments.Remove(appointment);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

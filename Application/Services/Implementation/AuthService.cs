@@ -35,8 +35,7 @@ namespace Application.Services.Implementation
                 SignInManager<ApplicationUser> signInManager,
                 ApplicationDbContext dbContext,
                 IEmailService emailService,
-                IConfiguration configuration,
-                ILogger<AuthService> logger)
+                IConfiguration configuration)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
@@ -44,6 +43,79 @@ namespace Application.Services.Implementation
             _context = dbContext;
             _emailService = emailService;
             _configuration = configuration;
+        }
+
+        public async Task ConfirmEmailAsync(string userId, string code)
+        {
+
+            var user = await _userManager.FindByIdAsync(userId);
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception("Error confirming email.");
+            }
+        }
+
+        public async Task<RegisterUserResult> RegisterClientAsync(RegisterRequestDto registerRequestDto)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var userWithSameEmail = await _userManager.FindByEmailAsync(registerRequestDto.Email);
+                    if (userWithSameEmail != null)
+                    {
+                        return RegisterUserResult.EmailAlreadyInUse;
+                    }
+
+                    // Create a new Person entity
+                    var person = new Person
+                    {
+                        FirstName = registerRequestDto.FirstName,
+                        LastName = registerRequestDto.LastName,
+                        PhoneNumber = registerRequestDto.PhoneNumber
+                    };
+
+                    await _context.Persons.AddAsync(person);
+                    await _context.SaveChangesAsync();
+
+                    var user = new ApplicationUser
+                    {
+                        UserName = registerRequestDto.Email,
+                        Email = registerRequestDto.Email,
+                        PersonId = person.Id,
+                        RegisteredDate = DateTime.Now
+                    };
+
+                    var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);
+                    if (!userCreationResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return RegisterUserResult.Failure;
+                    }
+
+                    await SendVerificationEmail(user);
+
+                    var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
+                    if (!addToRoleResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return RegisterUserResult.Failure;
+                    }
+
+                    // If all operations succeeded, commit the transaction
+                    await transaction.CommitAsync();
+                    return RegisterUserResult.Success;
+                }
+                catch
+                {
+                    // If an exception is thrown, roll back all database operations
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
 
         public async Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto)
@@ -108,113 +180,17 @@ namespace Application.Services.Implementation
             };
         }
 
-        public async Task<RegisterUserResult> RegisterClientAsync(RegisterRequestDto registerRequestDto)
+        public async Task ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var userWithSameEmail = await _userManager.FindByEmailAsync(registerRequestDto.Email);
-                    if (userWithSameEmail != null)
-                    {
-                        return RegisterUserResult.EmailAlreadyInUse;
-                    }
-
-                    // Create a new Person entity
-                    var person = new Person
-                    {
-                        FirstName = registerRequestDto.FirstName,
-                        LastName = registerRequestDto.LastName,
-                        PhoneNumber = registerRequestDto.PhoneNumber
-                    };
-
-                    await _context.Persons.AddAsync(person);
-                    await _context.SaveChangesAsync();
-
-                    var user = new ApplicationUser
-                    {
-                        UserName = registerRequestDto.Email,
-                        Email = registerRequestDto.Email,
-                        PersonId = person.Id,
-                        RegisteredDate = DateTime.Now
-                    };
-
-                    var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);
-                    if (!userCreationResult.Succeeded)
-                    {
-                        await transaction.RollbackAsync();
-                        return RegisterUserResult.Failure;
-                    }
-
-                    await SendVerificationEmail(user);
-
-                    var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
-                    if (!addToRoleResult.Succeeded)
-                    {
-                        await transaction.RollbackAsync();
-                        return RegisterUserResult.Failure;
-                    }
-
-                    // If all operations succeeded, commit the transaction
-                    await transaction.CommitAsync();
-                    return RegisterUserResult.Success;
-                }
-                catch
-                {
-                    // If an exception is thrown, roll back all database operations
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }
-        }
-
-        private async Task SendVerificationEmail(ApplicationUser user)
-        {
-            var origin = _configuration["Cors:AllowedOrigin"];
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "apinet/auth/confirm-email";
-            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
-
-            var emailRequest = new EmailRequest
-            {
-                ToEmail = user.Email,
-                Subject = "Potvrdenie registrácie",
-                Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
-            };
-
-            await _emailService.SendEmailAsync(emailRequest);
-        }
-
-        public async Task ConfirmEmailAsync(string userId, string code)
-        {
-
-            var user = await _userManager.FindByIdAsync(userId);
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var user = await _userManager.FindByEmailAsync(resetPasswordRequestDto.Email);
+            if (user == null) throw new Exception($"No Accounts Registered with {resetPasswordRequestDto.Email}.");
+            var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequestDto.Token)), resetPasswordRequestDto.Password);
 
             if (!result.Succeeded)
             {
-                throw new Exception("Error confirming email.");
+                throw new Exception("Error resetting password.");
             }
         }
-
-        public async Task<bool> VerifyClientByIdAsync(int personId, string userId)
-        {
-            var person = await _context.Persons
-                                .Include(p => p.ApplicationUser)
-                                .FirstOrDefaultAsync(p => p.Id == personId);
-
-            if (person != null && person.ApplicationUser != null && person.ApplicationUser.Id == userId)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
         {
@@ -247,16 +223,38 @@ namespace Application.Services.Implementation
             await _emailService.SendEmailAsync(emailRequest);
         }
 
-        public async Task ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto)
+        private async Task SendVerificationEmail(ApplicationUser user)
         {
-            var user = await _userManager.FindByEmailAsync(resetPasswordRequestDto.Email);
-            if (user == null) throw new Exception($"No Accounts Registered with {resetPasswordRequestDto.Email}.");
-            var result = await _userManager.ResetPasswordAsync(user, Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequestDto.Token)), resetPasswordRequestDto.Password);
+            var origin = _configuration["Cors:AllowedOrigin"];
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var route = "apinet/auth/confirm-email";
+            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
+            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
 
-            if (!result.Succeeded)
+            var emailRequest = new EmailRequest
             {
-                throw new Exception("Error resetting password.");
+                ToEmail = user.Email,
+                Subject = "Potvrdenie registrácie",
+                Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
+        }
+
+        public async Task<bool> VerifyClientByIdAsync(int personId, string userId)
+        {
+            var person = await _context.Persons
+                                .Include(p => p.ApplicationUser)
+                                .FirstOrDefaultAsync(p => p.Id == personId);
+
+            if (person != null && person.ApplicationUser != null && person.ApplicationUser.Id == userId)
+            {
+                return true;
             }
+
+            return false;
         }
 
         private async Task<JwtSecurityToken> GenerateJwtToken(ApplicationUser user)

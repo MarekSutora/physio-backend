@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace diploma_thesis_backend.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("appointments")]
     [Produces("application/json")]
     public class AppointmentsController : ControllerBase
     {
@@ -51,88 +51,6 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
-        [HttpPost("unbooked")]
-        public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
-        {
-            _logger.LogInformation("Creating new appointment.");
-
-            try
-            {
-                await _appointmentsService.CreateAppointmentAsync(createAppointmentDto);
-
-                _logger.LogInformation("New appointment successfully created.");
-                return Ok("New appointment successfully created.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when creating new appointment.");
-                return BadRequest("Error when creating new appointment.");
-            }
-        }
-
-        [Authorize]
-        [HttpPost("booked/{personId}")]
-        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int personId, [FromBody] CreateBookedAppointmentDto createBookedAppointmentDto)
-        {
-            _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}.");
-            try
-            {
-                if (!IsAdminOrAccessingTheirOwnData(personId))
-                {
-                    return Unauthorized("You are not authorized to view these appointments.");
-                }
-
-                await _appointmentsService.CreateBookedAppointmentAsync(createBookedAppointmentDto, personId);
-
-                _logger.LogInformation($"Booked appointment for Client with Person.Id = {personId} created successfully.");
-                return Ok("Termín úspešne rezervovaný klientom.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error when retrieving booked appointments for Client with Person.Id = {personId}.");
-                return BadRequest("Error when retrieving booked appointments.");
-            }
-        }
-
-        [Authorize]
-        [HttpDelete("booked/{bookedAppointmentId}")]
-        public async Task<IActionResult> DeleteBookedAppointmentAsync(int bookedAppointmentId)
-        {
-            _logger.LogInformation($"Deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
-            try
-            {
-                await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
-
-                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {bookedAppointmentId} deleted successfully.");
-                return Ok("Termín úspešne zrušený.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error when deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
-                return BadRequest("Error when deleting booked appointment.");
-            }
-        }
-
-        [Authorize]
-        [HttpDelete("{appointmentId}")]
-        public async Task<IActionResult> DeleteAppointmentAsync(int appointmentId)
-        {
-            _logger.LogInformation($"Deleting appointment with Appointment.Id = {appointmentId}.");
-            try
-            {
-                await _appointmentsService.DeleteAppointmentAsync(appointmentId);
-
-                _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} deleted successfully.");
-                return Ok("Termín úspešne vymazaný.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error when deleting appointment with Appointment.Id = {appointmentId}.");
-                return BadRequest("Error when deleting appointment");
-            }
-        }
-
         [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointmentByIdAsync(int id)
@@ -159,70 +77,6 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize]
-        [HttpPut("{id}/details")]
-        public async Task<IActionResult> UpdateAppointmentDetailsAsync(int id, [FromBody] AppointmentDetailDto appointmentDetailDto)
-        {
-            _logger.LogInformation($"Updating appointment details for appointment with Appointment.Id = {id}.");
-            try
-            {
-                await _appointmentsService.UpdateAppointmentDetailsAsync(id, appointmentDetailDto);
-
-                _logger.LogInformation($"Appointment details for appointment with Appointment.Id = {id} updated successfully.");
-                return Ok("Appointment exercise details updated successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error when updating appointment details for appointment with Appointment.Id = {id}");
-                return BadRequest("Error when updating appointment details");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpPut("booked/{id}/finish")]
-        public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
-        {
-            _logger.LogInformation($"Finishing booked appointment with BookedAppointment.Id = {id}.");
-            try
-            {
-                await _appointmentsService.FinishBookedAppointmentAsync(id);
-
-                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {id} finished successfully.");
-                return Ok("Appointment finished successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error finishing booked appointment with BookedAppointment.Id = {id}.");
-                return BadRequest("Error finishing booked appointment.");
-            }
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpGet("booked")]
-        public async Task<IActionResult> GetBookedAppointmentsAsync()
-        {
-            _logger.LogInformation("Retrieving booked appointments.");
-            try
-            {
-                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync();
-
-                if (bookedAppointments != null && bookedAppointments.Any())
-                {
-                    _logger.LogInformation("Booked appointments retrieved successfully.");
-                    return Ok(bookedAppointments);
-                }
-                else
-                {
-                    _logger.LogInformation("No booked appointments found.");
-                    return NotFound("No booked appointments found.");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving booked appointments.");
-                return BadRequest("Error retrieving booked appointments.");
-            }
-        }
 
         [Authorize]
         [HttpGet("client/{personId}/booked")]
@@ -260,7 +114,7 @@ namespace diploma_thesis_backend.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpGet("finished")]
-        public async Task<IActionResult> GetAllFinishedAppointmentsAsync()
+        public async Task<IActionResult> GetFinishedAppointmentsAsync()
         {
             _logger.LogInformation("Retrieving finished appointments.");
             try
@@ -315,6 +169,153 @@ namespace diploma_thesis_backend.Controllers
             {
                 _logger.LogError(ex, $"Error retrieving finished appointments for Client with Person.Id = {personId}.");
                 return BadRequest("Error retrieving finished appointments.");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("booked")]
+        public async Task<IActionResult> GetBookedAppointmentsAsync()
+        {
+            _logger.LogInformation("Retrieving booked appointments.");
+            try
+            {
+                var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync();
+
+                if (bookedAppointments != null && bookedAppointments.Any())
+                {
+                    _logger.LogInformation("Booked appointments retrieved successfully.");
+                    return Ok(bookedAppointments);
+                }
+                else
+                {
+                    _logger.LogInformation("No booked appointments found.");
+                    return NotFound("No booked appointments found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving booked appointments.");
+                return BadRequest("Error retrieving booked appointments.");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPost("unbooked")]
+        public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
+        {
+            _logger.LogInformation("Creating new appointment.");
+
+            try
+            {
+                await _appointmentsService.CreateAppointmentAsync(createAppointmentDto);
+
+                _logger.LogInformation("New appointment successfully created.");
+                return Ok("New appointment successfully created.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when creating new appointment.");
+                return BadRequest("Error when creating new appointment.");
+            }
+        }
+
+        [Authorize]
+        [HttpPost("booked/{personId}")]
+        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int personId, [FromBody] CreateBookedAppointmentDto createBookedAppointmentDto)
+        {
+            _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}.");
+            try
+            {
+                if (!IsAdminOrAccessingTheirOwnData(personId))
+                {
+                    return Unauthorized("You are not authorized to view these appointments.");
+                }
+
+                await _appointmentsService.CreateBookedAppointmentAsync(createBookedAppointmentDto, personId);
+
+                _logger.LogInformation($"Booked appointment for Client with Person.Id = {personId} created successfully.");
+                return Ok("Termín úspešne rezervovaný klientom.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when retrieving booked appointments for Client with Person.Id = {personId}.");
+                return BadRequest("Error when retrieving booked appointments.");
+            }
+        }
+
+        [Authorize]
+        [HttpPut("{id}/details")]
+        public async Task<IActionResult> UpdateAppointmentDetailsAsync(int id, [FromBody] AppointmentDetailDto appointmentDetailDto)
+        {
+            _logger.LogInformation($"Updating appointment details for appointment with Appointment.Id = {id}.");
+            try
+            {
+                await _appointmentsService.UpdateAppointmentDetailsAsync(id, appointmentDetailDto);
+
+                _logger.LogInformation($"Appointment details for appointment with Appointment.Id = {id} updated successfully.");
+                return Ok("Appointment exercise details updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when updating appointment details for appointment with Appointment.Id = {id}");
+                return BadRequest("Error when updating appointment details");
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("booked/{id}/finish")]
+        public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
+        {
+            _logger.LogInformation($"Finishing booked appointment with BookedAppointment.Id = {id}.");
+            try
+            {
+                await _appointmentsService.FinishBookedAppointmentAsync(id);
+
+                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {id} finished successfully.");
+                return Ok("Appointment finished successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error finishing booked appointment with BookedAppointment.Id = {id}.");
+                return BadRequest("Error finishing booked appointment.");
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("booked/{bookedAppointmentId}")]
+        public async Task<IActionResult> DeleteBookedAppointmentAsync(int bookedAppointmentId)
+        {
+            _logger.LogInformation($"Deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
+            try
+            {
+                await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
+
+                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {bookedAppointmentId} deleted successfully.");
+                return Ok("Termín úspešne zrušený.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
+                return BadRequest("Error when deleting booked appointment.");
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("{appointmentId}")]
+        public async Task<IActionResult> DeleteAppointmentAsync(int appointmentId)
+        {
+            _logger.LogInformation($"Deleting appointment with Appointment.Id = {appointmentId}.");
+            try
+            {
+                await _appointmentsService.DeleteAppointmentAsync(appointmentId);
+
+                _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} deleted successfully.");
+                return Ok("Termín úspešne vymazaný.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error when deleting appointment with Appointment.Id = {appointmentId}.");
+                return BadRequest("Error when deleting appointment");
             }
         }
 

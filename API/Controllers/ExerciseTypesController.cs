@@ -19,12 +19,12 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllExerciseTypesAsync()
+        public async Task<IActionResult> GetExerciseTypesAsync()
         {
             _logger.LogInformation("Getting all exercise types");
             try
             {
-                var exerciseTypes = await _exerciseTypesService.GetAllExerciseTypesAsync();
+                var exerciseTypes = await _exerciseTypesService.GetExerciseTypesAsync();
 
                 if (exerciseTypes != null && exerciseTypes.Any())
                 {

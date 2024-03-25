@@ -23,6 +23,34 @@ namespace Application.Services.Implementation
             _logger = logger;
         }
 
+        public async Task<List<ServiceTypeDto>> GetActiveServiceTypesAsync()
+        {
+            var serviceTypes = await _context.ServiceTypes
+                .Where(st => st.Active)
+                .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .ToListAsync();
+
+            return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
+        }
+
+        public async Task<ServiceTypeDto?> GetServiceTypeBySlugAsync(string slug)
+        {
+
+            var serviceType = await _context.ServiceTypes
+                .Include(st => st.ServiceTypeDurationCosts)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .Where(x => x.Slug == slug).FirstOrDefaultAsync();
+
+            if (serviceType == null)
+            {
+                _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
+                return null;
+            }
+
+            return _mapper.Map<ServiceTypeDto>(serviceType);
+        }
+
         public async Task CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
         {
 
@@ -62,41 +90,6 @@ namespace Application.Services.Implementation
             }
 
             await _context.SaveChangesAsync();
-        }
-
-
-        public async Task SoftDeleteServiceTypeAsync(int id)
-        {
-
-            _logger.LogInformation("Attempting to soft delete ServiceType with ID: {ServiceTypeId}", id);
-
-            var serviceType = await _context.ServiceTypes.FindAsync(id);
-
-            if (serviceType == null)
-            {
-                throw new Exception("ServiceType not found");
-            }
-
-            serviceType.Active = false;
-
-            foreach (var stdc in serviceType.ServiceTypeDurationCosts)
-            {
-                stdc.DateTo = DateTime.Now;
-            }
-
-            _context.ServiceTypes.Update(serviceType);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<ServiceTypeDto>> GetAllActiveServiceTypesAsync()
-        {
-            var serviceTypes = await _context.ServiceTypes
-                .Where(st => st.Active)
-                .Include(st => st.ServiceTypeDurationCosts)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                .ToListAsync();
-
-            return _mapper.Map<List<ServiceTypeDto>>(serviceTypes);
         }
 
         public async Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
@@ -154,21 +147,27 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ServiceTypeDto?> GetServiceTypeBySlugAsync(string slug)
+        public async Task SoftDeleteServiceTypeAsync(int id)
         {
 
-            var serviceType = await _context.ServiceTypes
-                .Include(st => st.ServiceTypeDurationCosts)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                .Where(x => x.Slug == slug).FirstOrDefaultAsync();
+            _logger.LogInformation("Attempting to soft delete ServiceType with ID: {ServiceTypeId}", id);
+
+            var serviceType = await _context.ServiceTypes.FindAsync(id);
 
             if (serviceType == null)
             {
-                _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
-                return null;
+                throw new Exception("ServiceType not found");
             }
 
-            return _mapper.Map<ServiceTypeDto>(serviceType);
+            serviceType.Active = false;
+
+            foreach (var stdc in serviceType.ServiceTypeDurationCosts)
+            {
+                stdc.DateTo = DateTime.Now;
+            }
+
+            _context.ServiceTypes.Update(serviceType);
+            await _context.SaveChangesAsync();
         }
     }
 }
