@@ -48,6 +48,7 @@ namespace Application.Services.Implementation
 
         public async Task<LoginUserResult> LoginUserAsync(LoginRequestDto loginRequestDto)
         {
+
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
 
             if (user == null)
@@ -83,6 +84,8 @@ namespace Application.Services.Implementation
                 RefreshToken = await GenerateRefreshToken(user),
                 ExpiryDate = jwtSecurityToken.ValidTo
             };
+
+
         }
 
         public async Task<LoginUserResult> RefreshTokenAsync(string refreshToken)

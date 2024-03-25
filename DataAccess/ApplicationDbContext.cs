@@ -35,17 +35,16 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<AppointmentServiceTypeDurationCost>()
+                .HasIndex(p => new { p.ServiceTypeDurationCostId, p.AppointmentId })
+                .IsUnique(true);
+
             builder.Entity<ApplicationUser>(entity =>
             {
                 entity.Ignore(e => e.TwoFactorEnabled);
                 entity.Ignore(e => e.PhoneNumberConfirmed);
                 entity.Ignore(e => e.PhoneNumber);
             });
-
-            builder.Ignore<IdentityUserToken<string>>();
-            builder.Ignore<IdentityUserLogin<string>>();
-            builder.Ignore<IdentityUserClaim<string>>();
-            builder.Ignore<IdentityRoleClaim<string>>();
 
             //serviceType -> durationCost m:n
             builder.Entity<ServiceType>()

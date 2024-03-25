@@ -246,8 +246,7 @@ namespace Application.Services.Implementation
                 }
 
                 var detail = _mapper.Map<AppointmentExerciseDetail>(detailDto);
-                detail.ExerciseType = existingExerciseType; // Use the existing instance
-                detail.AppointmentId = appointmentId;
+                detail.ExerciseType = existingExerciseType;
 
                 appointment.AppointmentDetail.AppointmentExerciseDetails.Add(detail);
             }

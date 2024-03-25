@@ -12,16 +12,14 @@ namespace DataAccess.Entities
         public int Id { get; set; }
         public int ExerciseTypeId { get; set; }
         public ExerciseType ExerciseType { get; set; } = null!;
-        public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; } = null!;
         [Column(TypeName = "decimal(18,4)")]
-        public decimal Weight { get; set; }
-        public int NumberOfRepetitions { get; set; }
-        public int NumberOfSets { get; set; }
-        public int DurationInMinutes { get; set; }
-        public int RestAfterExerciseInMinutes { get; set; }
-        public int RestBetweenSetsInMinutes { get; set; }
-        public int Order { get; set; }
-        public bool SuccessfulyPerformed { get; set; } = false;
+        public decimal? Weight { get; set; }
+        public int? NumberOfRepetitions { get; set; }
+        public int? NumberOfSets { get; set; }
+        public int? DurationInMinutes { get; set; }
+        public int? RestAfterExerciseInMinutes { get; set; }
+        public int? RestBetweenSetsInMinutes { get; set; }
+        public int? Order { get; set; }
+        public bool? SuccessfulyPerformed { get; set; } = false;
     }
 }

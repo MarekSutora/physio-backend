@@ -55,16 +55,14 @@ namespace Application.Services.Implementation
             try
             {
                 var upcomingAppointments = await _context.BookedAppointments
-                   .Include(ba => ba.AppointmentServiceTypeDurationCost)
-                       .ThenInclude(astdc => astdc.Appointment)
-                       .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
-                       .ThenInclude(stdc => stdc.ServiceType)
-                   .Include(ba => ba.Person)
-                       .ThenInclude(p => p.ApplicationUser)
-                   .Where(ba => !ba.IsFinished &&
-                               ((!ba.SevenDaysReminderSent && (ba.AppointmentServiceTypeDurationCost.Appointment.StartTime - DateTime.UtcNow).TotalDays > 3) ||
-                                !ba.OneDayReminderSent))
-                   .ToListAsync();
+                          .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                          .ThenInclude(astdc => astdc.Appointment)
+                          .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
+                          .ThenInclude(stdc => stdc.ServiceType)
+                          .Include(c => c.Person)
+                          .ThenInclude(p => p.ApplicationUser)
+                          .Where(ba => !ba.IsFinished && !ba.SevenDaysReminderSent && !ba.OneDayReminderSent)
+                          .ToListAsync();
 
                 foreach (var appointment in upcomingAppointments)
                 {
@@ -77,7 +75,7 @@ namespace Application.Services.Implementation
                     var body = $"<h1>Blíži sa Váš termín {appointmentDateTime}. Tešíme sa na Vás.</h1>";
                     body += $"<p>Objednali ste si službu: {serviceName}.</p>";
 
-                    if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5 && daysToAppointment > 3)
+                    if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5 && daysToAppointment > 2.5)
                     {
                         await SendEmailAsync(new EmailRequest
                         {

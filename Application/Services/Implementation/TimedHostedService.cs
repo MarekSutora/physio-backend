@@ -36,14 +36,20 @@ namespace Application.Services.Implementation
 
         private async void DoWork(object state)
         {
-            _logger.LogInformation("Timed Hosted Service is working.");
-
-            using (var scope = _serviceScopeFactory.CreateScope())
+            try
             {
-                var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
-                await emailService.SendReminderEmailsAsync();
-            }
+                _logger.LogInformation("Sending reminder emails.");
 
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                    await emailService.SendReminderEmailsAsync();
+                }
+            }
+            catch
+            {
+                _logger.LogError("Error sending reminder emails.");
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

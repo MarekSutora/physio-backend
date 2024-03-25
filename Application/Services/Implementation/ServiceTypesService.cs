@@ -123,7 +123,7 @@ namespace Application.Services.Implementation
             {
                 if (!updateServiceTypeDto.DurationCosts.Exists(dto => dto.DurationMinutes == current.DurationCost.DurationMinutes && dto.Cost == current.DurationCost.Cost))
                 {
-                    current.DateTo = DateTime.Now; // Mark the end date of the current association
+                    current.DateTo = DateTime.UtcNow.AddHours(1);
                 }
             }
 
