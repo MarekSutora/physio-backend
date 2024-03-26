@@ -118,41 +118,23 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpPost("hide/{id}")]
-        public async Task<IActionResult> HideBlogPostAsync(int id)
-        {
-            _logger.LogInformation($"Hiding blog post with BlogPost.Id = {id}");
-            try
-            {
-                await _blogService.HideBlogPostAsync(id);
-
-                _logger.LogInformation($"Blog post hidden successfully with BlogPost.Id = {id}");
-                return Ok("Blog post hidden successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error Hiding blog post with BlogPost.Id = {id}");
-                return BadRequest("Error Hiding blog post.");
-            }
-        }
-
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBlogPostAsync(int id, [FromBody] UpdateBlogPostDto updateBlogPostDto)
+        [HttpPut("{slug}")]
+        public async Task<IActionResult> UpdateBlogPostAsync(string slug, [FromBody] UpdateBlogPostDto updateBlogPostDto)
         {
-            _logger.LogInformation($"Updating blog post with BlogPost.Id = {id}");
+            _logger.LogInformation($"Updating blog post with BlogPost.Slug = {slug}");
             try
             {
-                updateBlogPostDto.Id = id;
+                updateBlogPostDto.Slug = slug;
                 await _blogService.UpdateBlogPostAsync(updateBlogPostDto);
 
-                _logger.LogInformation($"Blog post updated successfully with BlogPost.Id = {id}");
+                _logger.LogInformation($"Blog post updated successfully with BlogPost.Slug = {slug}");
                 return Ok("Blog post updated successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error updating blog post with BlogPost.Id = {id}");
+                _logger.LogError(ex, $"Error updating blog post with BlogPost.Slug = {slug}");
                 return BadRequest("Error updating blog post.");
             }
         }
@@ -175,20 +157,20 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBlogPostAsync(int id)
+        [HttpDelete("{slug}")]
+        public async Task<IActionResult> DeleteBlogPostAsync(string slug)
         {
-            _logger.LogInformation($"Deleting blog post with BlogPost.Id = {id}");
+            _logger.LogInformation($"Deleting blog post with BlogPost.Slug = {slug}");
             try
             {
-                await _blogService.DeleteBlogPostAsync(id);
+                await _blogService.DeleteBlogPostAsync(slug);
 
-                _logger.LogInformation($"Blog post deleted successfully with BlogPost.Id = {id}");
+                _logger.LogInformation($"Blog post deleted successfully with BlogPost.Slug = {slug}");
                 return Ok("Blog post deleted successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when deleting blog post with BlogPost.Id = {id}");
+                _logger.LogError(ex, $"Error when deleting blog post with BlogPost.Slug = {slug}");
                 return BadRequest("Error when deleting the blog post");
             }
         }

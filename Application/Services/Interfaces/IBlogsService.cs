@@ -8,8 +8,7 @@ namespace Application.Services.Interfaces
         Task<IEnumerable<BlogPostDto>> GetBlogPostsAsync();
         Task CreateBlogPostAsync(CreateBlogPostDto createBlogPostDto);
         Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto);
-        Task DeleteBlogPostAsync(int id);
-        Task HideBlogPostAsync(int id);
+        Task DeleteBlogPostAsync(string slug);
         Task<BlogPostDto?> GetBlogPostBySlugAsync(string slug);
         Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync();
         Task IncrementBlogPostViewCountAsync(string slug);

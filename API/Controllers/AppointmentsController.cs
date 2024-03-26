@@ -55,7 +55,7 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointmentByIdAsync(int id)
         {
-            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {id}");
+            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {id}.");
             try
             {
                 var appointment = await _appointmentsService.GetAppointmentByIdAsync(id);
@@ -73,7 +73,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {id}");
-                return BadRequest("Error when retrieving appointment");
+                return BadRequest("Error when retrieving appointment.");
             }
         }
 

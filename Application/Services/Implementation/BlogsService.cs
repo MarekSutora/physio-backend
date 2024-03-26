@@ -16,13 +16,11 @@ namespace Application.Services.Implementation
     public class BlogsService : IBlogsService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<BlogsService> _logger;
         private readonly IMapper _mapper;
 
-        public BlogsService(ApplicationDbContext context, ILogger<BlogsService> logger, IMapper mapper)
+        public BlogsService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-            _logger = logger;
             _mapper = mapper;
         }
 
@@ -53,18 +51,9 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task HideBlogPostAsync(int id)
-        {
-            var blogPost = await _context.BlogPosts.FindAsync(id);
-            if (blogPost == null) throw new Exception("Blog post not found");
-
-            blogPost.IsHidden = true;
-            await _context.SaveChangesAsync();
-        }
-
         public async Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(updateBlogPostDto.Id);
+            var blogPost = await _context.BlogPosts.FindAsync(updateBlogPostDto.Slug);
             if (blogPost == null) throw new Exception("Blog post not found");
 
             _mapper.Map(updateBlogPostDto, blogPost);
@@ -80,9 +69,9 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteBlogPostAsync(int id)
+        public async Task DeleteBlogPostAsync(string slug)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(id);
+            var blogPost = await _context.BlogPosts.FindAsync(slug);
             if (blogPost == null) throw new Exception("Blog post not found");
 
             _context.BlogPosts.Remove(blogPost);

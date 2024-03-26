@@ -8,8 +8,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BlogPost> builder)
         {
-            builder.HasIndex(bp => bp.Slug)
-                .IsUnique();
+            builder.HasKey(bp => bp.Slug);
 
             builder.HasIndex(bp => bp.Title)
                 .IsUnique();
@@ -17,8 +16,7 @@ namespace DataAccess.Configurations
             builder.Property(bp => bp.Title)
                 .IsRequired().HasMaxLength(100);
 
-            builder.Property(bp => bp.Slug)
-                .IsRequired().HasMaxLength(100);
+            builder.Property(bp => bp.Slug).HasMaxLength(100);
 
             builder.Property(bp => bp.Author)
                 .IsRequired().HasMaxLength(100);

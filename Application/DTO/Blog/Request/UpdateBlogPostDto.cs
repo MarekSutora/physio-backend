@@ -8,7 +8,6 @@ namespace Application.DTO.Blog.Request
 {
     public class UpdateBlogPostDto
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime DatePublished { get; set; }
         public string HTMLContent { get; set; }

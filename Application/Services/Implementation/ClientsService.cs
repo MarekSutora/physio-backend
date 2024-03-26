@@ -17,13 +17,11 @@ namespace Application.Services.Implementation
     public class ClientsService : IClientsService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ClientsService> _logger;
         private readonly IMapper _mapper;
 
-        public ClientsService(ApplicationDbContext context, ILogger<ClientsService> logger, IMapper mapper)
+        public ClientsService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-            _logger = logger;
             _mapper = mapper;
         }
 
@@ -34,7 +32,7 @@ namespace Application.Services.Implementation
 
             if (!clientExists)
             {
-                throw new InvalidOperationException($"No Client found with ID {createClientNoteDto.PersonId}.");
+                throw new Exception($"No Client found with ID {createClientNoteDto.PersonId}.");
             }
 
             var clientNote = _mapper.Map<ClientNote>(createClientNoteDto);
@@ -52,13 +50,11 @@ namespace Application.Services.Implementation
 
             if (note == null)
             {
-                throw new InvalidOperationException($"No note found with ID {noteId}.");
+                throw new Exception($"No note found with ID {noteId}.");
             }
 
             _context.ClientNotes.Remove(note);
             await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"Deleted note with ID {noteId}");
         }
 
         public async Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int clientId)
@@ -67,7 +63,6 @@ namespace Application.Services.Implementation
                 .Where(n => n.PersonId == clientId)
                 .ToListAsync();
 
-            _logger.LogInformation($"Retrieved all notes for Client ID {clientId}");
 
             return _mapper.Map<IEnumerable<ClientNoteDto>>(clientNotes);
         }
@@ -99,8 +94,7 @@ namespace Application.Services.Implementation
             var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
             if (clientRole == null)
             {
-                _logger.LogInformation("Client role not found.");
-                return null;
+                throw new Exception("Client role not found at GetClientByIdAsync.");
             }
             var clientUserIds = await _context.UserRoles
                                               .Where(ur => ur.RoleId == clientRole.Id)
@@ -114,7 +108,6 @@ namespace Application.Services.Implementation
 
             if (client == null)
             {
-                _logger.LogInformation($"No Client found with Person ID {clientId}.");
                 return null;
             }
 

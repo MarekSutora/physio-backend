@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ namespace DataAccess.Entities
 {
     public class BlogPost
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        [Key]
         public string Slug { get; set; }
+        public string Title { get; set; }
         public DateTime DatePublished { get; set; }
         public string HTMLContent { get; set; }
         public string Author { get; set; }

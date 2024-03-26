@@ -10,17 +10,15 @@ using Application.DTO.ServiceType.Response;
 
 namespace Application.Services.Implementation
 {
-    public class ServiceTypeService : IServiceTypesService
+    public class ServiceTypesService : IServiceTypesService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<ServiceTypeService> _logger;
 
-        public ServiceTypeService(ApplicationDbContext context, IMapper mapper, ILogger<ServiceTypeService> logger)
+        public ServiceTypesService(ApplicationDbContext context, IMapper mapper, ILogger<ServiceTypesService> logger)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
         }
 
         public async Task<List<ServiceTypeDto>> GetActiveServiceTypesAsync()
@@ -44,7 +42,6 @@ namespace Application.Services.Implementation
 
             if (serviceType == null)
             {
-                _logger.LogWarning("ServiceType with slug: {Slug} not found.", slug);
                 return null;
             }
 
@@ -149,8 +146,6 @@ namespace Application.Services.Implementation
 
         public async Task SoftDeleteServiceTypeAsync(int id)
         {
-
-            _logger.LogInformation("Attempting to soft delete ServiceType with ID: {ServiceTypeId}", id);
 
             var serviceType = await _context.ServiceTypes.FindAsync(id);
 

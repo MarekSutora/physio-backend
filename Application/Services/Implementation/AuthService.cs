@@ -96,7 +96,7 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.Failure;
                     }
 
-                    await SendVerificationEmail(user);
+                    await SendVerificationEmailAsync(user);
 
                     var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
                     if (!addToRoleResult.Succeeded)
@@ -223,7 +223,7 @@ namespace Application.Services.Implementation
             await _emailService.SendEmailAsync(emailRequest);
         }
 
-        private async Task SendVerificationEmail(ApplicationUser user)
+        private async Task SendVerificationEmailAsync(ApplicationUser user)
         {
             var origin = _configuration["Cors:AllowedOrigin"];
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

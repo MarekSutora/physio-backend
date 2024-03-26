@@ -79,7 +79,7 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet("new-clients-trend")]
         public async Task<IActionResult> GetNewClientsTrendAsync()
         {
-            _logger.LogInformation("Fetching new clients trend statistics");
+            _logger.LogInformation("Fetching new clients trend statistics.");
             try
             {
                 var newClientsTrend = await _statisticsService.GetNewClientsTrendAsync();
