@@ -11,7 +11,7 @@ namespace diploma_thesis_backend.Controllers
     [Route("/service-types")]
     [ApiController]
     [Produces("application/json")]
-    public class ServiceTypesController : Controller
+    public class ServiceTypesController : ControllerBase
     {
         private readonly IServiceTypesService _serviceTypesService;
         private readonly ILogger<ServiceTypesController> _logger;

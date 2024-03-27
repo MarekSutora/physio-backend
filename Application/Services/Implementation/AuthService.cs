@@ -156,8 +156,6 @@ namespace Application.Services.Implementation
                 RefreshToken = await GenerateRefreshToken(user),
                 ExpiryDate = jwtSecurityToken.ValidTo
             };
-
-
         }
 
         public async Task<LoginUserResult> RefreshTokenAsync(string refreshToken)
@@ -268,7 +266,6 @@ namespace Application.Services.Implementation
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim("userId", user.Id)
                 }
             .Union(userClaims)

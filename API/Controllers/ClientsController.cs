@@ -5,10 +5,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 namespace diploma_thesis_backend.Controllers
 {
-    [Route("[controller]")]
+    [Route("clients")]
     [ApiController]
     [Produces("application/json")]
-    public class ClientsController : Controller
+    public class ClientsController : ControllerBase
     {
         private readonly IClientsService _clientsService;
         private readonly IAuthService _authService;

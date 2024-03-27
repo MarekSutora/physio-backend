@@ -24,6 +24,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetBlogPostsAsync()
         {
@@ -49,6 +50,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetBlogPostBySlugAsync(string slug)
         {
@@ -74,6 +76,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("non-hidden")]
         public async Task<IActionResult> GetNonHiddenBlogPostsAsync()
         {
@@ -104,6 +107,7 @@ namespace diploma_thesis_backend.Controllers
         public async Task<IActionResult> CreateBlogPostAsync([FromBody] CreateBlogPostDto createBlogPostDto)
         {
             _logger.LogInformation("Creating new blog post.");
+
             try
             {
                 await _blogService.CreateBlogPostAsync(createBlogPostDto);
@@ -139,6 +143,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPut("{slug}/increment-view-count")]
         public async Task<IActionResult> IncrementBlogPostViewCountAsync(string slug)
         {
@@ -157,6 +162,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpDelete("{slug}")]
         public async Task<IActionResult> DeleteBlogPostAsync(string slug)
         {

@@ -1,14 +1,12 @@
 ﻿using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTO.Statistics; // Assuming your DTOs are in this namespace
-using System.Threading.Tasks;
 
 namespace diploma_thesis_backend.Controllers
 {
     [Authorize(Policy = "Admin")]
     [ApiController]
-    [Route("[controller]")]
+    [Route("statistics")]
     [Produces("application/json")]
     public class StatisticsController : ControllerBase
     {

@@ -1,5 +1,6 @@
 ﻿using Application.Common.Email;
 using Application.Services.Interfaces;
+using Application.Utilities.Email;
 using DataAccess;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -21,6 +22,11 @@ namespace Application.Services.Implementation
             _logger = logger;
             _mailSettings = mailSettings.Value;
             _context = context;
+        }
+
+        public Task SendContactFormEmailAsync(ContactFormEmailRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SendEmailAsync(EmailRequest emailRequest)

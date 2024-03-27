@@ -21,11 +21,6 @@ namespace Application
             services.AddDataAccess(configuration);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(
-                    options =>
-                    {
-                        options.Lockout.MaxFailedAccessAttempts = 5;
-                        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-                    }
                 )
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
@@ -51,8 +46,9 @@ namespace Application
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 7;
-                options.Password.RequiredUniqueChars = 1;
                 options.SignIn.RequireConfirmedEmail = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
 
             services.AddAuthorization(options =>

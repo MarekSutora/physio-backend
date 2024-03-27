@@ -80,8 +80,11 @@ namespace diploma_thesis_backend.Controllers
 
                 if (result.Outcome == LoginUserResult.LoginUserOutcome.Success)
                 {
+                    _logger.LogInformation("User logged in successfully.");
+
                     return Ok(new
                     {
+
                         User = new
                         {
                             UserId = result.UserId,
