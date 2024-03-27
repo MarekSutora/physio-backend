@@ -24,7 +24,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet("unbooked")]
         public async Task<IActionResult> GetUnbookedAppointmentsAsync()
         {
@@ -51,7 +51,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointmentByIdAsync(int id)
         {

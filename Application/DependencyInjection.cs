@@ -80,7 +80,7 @@ namespace Application
                 });
 
             services.AddAutoMapper(typeof(AppointmentMappingProfile));
-            services.AddAutoMapper(typeof(BlogMappingProfile));
+            services.AddAutoMapper(typeof(BlogPostMappingProfile));
             services.AddAutoMapper(typeof(ClientMappingProfile));
             services.AddAutoMapper(typeof(ServiceTypeMappingProfile));
         }

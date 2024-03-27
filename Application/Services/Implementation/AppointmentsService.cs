@@ -61,6 +61,7 @@ namespace Application.Services.Implementation
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId)
         {
+
             var appointment = await _context.Appointments
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
                     .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(p => p.Person)
@@ -76,7 +77,7 @@ namespace Application.Services.Implementation
 
             if (appointment == null)
             {
-                throw new Exception($"Appointment not found for ID {appointmentId}.");
+                throw new Exception("Appointment not found.");
             }
 
             var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
@@ -85,16 +86,16 @@ namespace Application.Services.Implementation
         }
 
 
-        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? clientId = null)
+        public async Task<List<BookedAppointmentDto>> GetFinishedAppointmentsAsync(int? personId = null)
         {
             var finishedAppointmentsQuery = _context.BookedAppointments
                     .Include(p => p.Person)
                 .Where(ba => ba.IsFinished);
 
-            if (clientId.HasValue)
+            if (personId.HasValue)
             {
 
-                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
+                finishedAppointmentsQuery = finishedAppointmentsQuery.Where(ba => ba.PersonId == personId.Value);
             }
 
             var finishedAppointments = await finishedAppointmentsQuery.Select(ba => new BookedAppointmentDto
@@ -106,7 +107,7 @@ namespace Application.Services.Implementation
                 ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                 HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                 Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                PersonId = ba.Person == null ? -1 : ba.PersonId,
                 ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
                 ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
                 Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
@@ -116,15 +117,15 @@ namespace Application.Services.Implementation
             return finishedAppointments;
         }
 
-        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? clientId = null)
+        public async Task<List<BookedAppointmentDto>> GetBookedAppointmentsAsync(int? personId = null)
         {
             var bookedAppointmentsQuery = _context.BookedAppointments
                 .Include(p => p.Person)
                 .Where(ba => !ba.IsFinished);
 
-            if (clientId.HasValue)
+            if (personId.HasValue)
             {
-                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.PersonId == clientId.Value);
+                bookedAppointmentsQuery = bookedAppointmentsQuery.Where(ba => ba.PersonId == personId.Value);
             }
 
             var bookedAppointments = await bookedAppointmentsQuery.Select(ba => new BookedAppointmentDto
@@ -136,7 +137,7 @@ namespace Application.Services.Implementation
                 ServiceTypeName = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name,
                 HexColor = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.HexColor,
                 Capacity = ba.AppointmentServiceTypeDurationCost.Appointment.Capacity,
-                ClientId = ba.Person == null ? -1 : ba.PersonId,
+                PersonId = ba.Person == null ? -1 : ba.PersonId,
                 ClientFirstName = ba.Person == null ? "-" : ba.Person.FirstName,
                 ClientSecondName = ba.Person == null ? "-" : ba.Person.LastName,
                 Cost = ba.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost,
@@ -166,10 +167,10 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, int clientId)
+        public async Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, int personId)
         {
 
-            var client = await _context.Persons.FindAsync(clientId);
+            var client = await _context.Persons.FindAsync(personId);
 
             if (client == null)
             {
@@ -180,7 +181,7 @@ namespace Application.Services.Implementation
             {
                 AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.astdcId,
                 AppointmentBookedDate = DateTime.Now,
-                PersonId = clientId,
+                PersonId = personId,
             };
 
             var existingBookingsCount = await _context.BookedAppointments

@@ -57,10 +57,10 @@ namespace Application.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int clientId)
+        public async Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int personId)
         {
             var clientNotes = await _context.ClientNotes
-                .Where(n => n.PersonId == clientId)
+                .Where(n => n.PersonId == personId)
                 .ToListAsync();
 
 
@@ -89,7 +89,7 @@ namespace Application.Services.Implementation
             return _mapper.Map<IEnumerable<ClientDto>>(clients);
         }
 
-        public async Task<ClientDto?> GetClientByIdAsync(int clientId)
+        public async Task<ClientDto?> GetClientByIdAsync(int personId)
         {
             var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
             if (clientRole == null)
@@ -102,7 +102,7 @@ namespace Application.Services.Implementation
                                               .ToListAsync();
 
             var client = await _context.Users
-                                       .Where(u => clientUserIds.Contains(u.Id) && u.PersonId == clientId)
+                                       .Where(u => clientUserIds.Contains(u.Id) && u.PersonId == personId)
                                        .Include(u => u.Person)
                                        .FirstOrDefaultAsync();
 

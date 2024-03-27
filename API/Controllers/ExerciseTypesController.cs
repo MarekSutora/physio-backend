@@ -21,26 +21,26 @@ namespace diploma_thesis_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetExerciseTypesAsync()
         {
-            _logger.LogInformation("Getting all exercise types");
+            _logger.LogInformation("Getting all exercise types.");
             try
             {
                 var exerciseTypes = await _exerciseTypesService.GetExerciseTypesAsync();
 
                 if (exerciseTypes != null && exerciseTypes.Any())
                 {
-                    _logger.LogInformation("Exercise types successfully retrieved");
+                    _logger.LogInformation("Exercise types successfully retrieved.");
                     return Ok(exerciseTypes);
                 }
                 else
                 {
-                    _logger.LogInformation("No exercise types found");
-                    return NotFound("No exercise types found");
+                    _logger.LogInformation("No exercise types found.");
+                    return NotFound("No exercise types found.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting all exercise types");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting all exercise types.");
+                return BadRequest("Error getting all exercise types.");
             }
         }
     }

@@ -16,7 +16,7 @@ namespace DataAccess.Entities
 
         public ApplicationUser ApplicationUser { get; set; }
 
-        public ICollection<ClientNote> ClientNotes { get; } = [];
-        public ICollection<BookedAppointment> BookedAppointments { get; } = [];
+        public ICollection<ClientNote> ClientNotes { get; } = new List<ClientNote>();
+        public ICollection<BookedAppointment> BookedAppointments { get; } = new List<BookedAppointment>();
     }
 }

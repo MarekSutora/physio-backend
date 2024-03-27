@@ -10,6 +10,8 @@ namespace DataAccess.Entities
     public class AppointmentExerciseDetail
     {
         public int Id { get; set; }
+        public int AppointmentDetailId { get; set; }
+        public AppointmentDetail AppointmentDetail { get; set; } = null!;
         public int ExerciseTypeId { get; set; }
         public ExerciseType ExerciseType { get; set; } = null!;
         [Column(TypeName = "decimal(18,4)")]

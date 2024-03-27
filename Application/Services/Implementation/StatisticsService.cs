@@ -16,7 +16,7 @@ namespace Application.Services.Implementation
 
         private readonly ApplicationDbContext _context;
 
-        public StatisticsService(ApplicationDbContext context, ILogger<StatisticsService> logger)
+        public StatisticsService(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -40,8 +40,7 @@ namespace Application.Services.Implementation
                     FinishedAppointmentsCount = g.Count(),
                     HexColor = g.Key.HexColor
                 })
-                .OrderByDescending(x => x.Year)
-                .ThenByDescending(x => x.Month)
+                .OrderBy(s => s.Year).ThenBy(s => s.Month)
                 .ToListAsync();
         }
 
@@ -81,7 +80,7 @@ namespace Application.Services.Implementation
                     Month = g.Key.Month,
                     NewClientsCount = g.Count()
                 })
-                .OrderBy(n => n.Year).ThenBy(n => n.Month)
+                .OrderBy(s => s.Year).ThenBy(s => s.Month)
                 .ToListAsync();
 
             return newClientsTrend;
@@ -101,8 +100,7 @@ namespace Application.Services.Implementation
                     Month = g.Key.Month,
                     TotalViews = g.Sum(bp => bp.ViewCount)
                 })
-                .OrderByDescending(stats => stats.Year)
-                .ThenByDescending(stats => stats.Month)
+                .OrderBy(s => s.Year).ThenBy(s => s.Month)
                 .ToListAsync();
 
             return blogPostViewsStats;

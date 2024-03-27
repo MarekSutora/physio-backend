@@ -28,7 +28,7 @@ namespace Application.Services.Implementation
             if (!cancellationToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Timed Hosted Service is not stopping.");
-                _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(6));
+                _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(4));
             }
 
             return Task.CompletedTask;

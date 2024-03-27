@@ -7,9 +7,9 @@ namespace Application.Services.Interfaces
     {
         Task<IEnumerable<ClientDto>> GetClientsAsync();
 
-        Task<ClientDto?> GetClientByIdAsync(int clientId);
+        Task<ClientDto?> GetClientByIdAsync(int personId);
 
-        Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int clientId);
+        Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int personId);
 
         Task AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto);
 

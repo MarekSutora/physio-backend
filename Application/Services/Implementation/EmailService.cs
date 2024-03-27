@@ -25,91 +25,78 @@ namespace Application.Services.Implementation
 
         public async Task SendEmailAsync(EmailRequest emailRequest)
         {
-            try
-            {
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(emailRequest.From ?? _mailSettings.SmtpUser);
-                email.To.Add(MailboxAddress.Parse(emailRequest.ToEmail));
-                email.Subject = emailRequest.Subject;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = emailRequest.Body;
-                email.Body = builder.ToMessageBody();
 
-                using (var smtpCLient = new SmtpClient())
-                {
-                    smtpCLient.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
-                    smtpCLient.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
-                    await smtpCLient.SendAsync(email);
-                    smtpCLient.Disconnect(true);
-                }
-            }
-            catch (Exception ex)
+            var email = new MimeMessage();
+            email.Sender = MailboxAddress.Parse(emailRequest.From ?? _mailSettings.SmtpUser);
+            email.To.Add(MailboxAddress.Parse(emailRequest.ToEmail));
+            email.Subject = emailRequest.Subject;
+            var builder = new BodyBuilder();
+            builder.HtmlBody = emailRequest.Body;
+            email.Body = builder.ToMessageBody();
+
+            using (var smtpCLient = new SmtpClient())
             {
-                _logger.LogError("Error when sending an email: {Message}", ex.Message);
-                throw new Exception("Error when sending an email", ex);
+                smtpCLient.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
+                smtpCLient.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
+                await smtpCLient.SendAsync(email);
+                smtpCLient.Disconnect(true);
             }
+
         }
 
         public async Task SendReminderEmailsAsync()
         {
-            try
-            {
-                var upcomingAppointments = await _context.BookedAppointments
-                          .Include(ba => ba.AppointmentServiceTypeDurationCost)
-                          .ThenInclude(astdc => astdc.Appointment)
-                          .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
-                          .ThenInclude(stdc => stdc.ServiceType)
-                          .Include(c => c.Person)
-                          .ThenInclude(p => p.ApplicationUser)
-                          .Where(ba => !ba.IsFinished && !ba.SevenDaysReminderSent && !ba.OneDayReminderSent)
-                          .ToListAsync();
 
-                foreach (var appointment in upcomingAppointments)
+            var upcomingAppointments = await _context.BookedAppointments
+                      .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                      .ThenInclude(astdc => astdc.Appointment)
+                      .ThenInclude(astdc => astdc.ServiceTypeDurationCosts)
+                      .ThenInclude(stdc => stdc.ServiceType)
+                      .Include(c => c.Person)
+                      .ThenInclude(p => p.ApplicationUser)
+                      .Where(ba => !ba.IsFinished && !ba.SevenDaysReminderSent && !ba.OneDayReminderSent)
+                      .ToListAsync();
+
+            foreach (var appointment in upcomingAppointments)
+            {
+                var startTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime;
+                var daysToAppointment = (startTime - DateTime.UtcNow).TotalDays;
+                var subject = "Pripomienka termínu";
+                var serviceName = appointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name;
+                var appointmentDateTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime.ToString("dd.MM.yyyy HH:mm");
+
+                var body = $"<h1>Blíži sa Váš termín {appointmentDateTime}. Tešíme sa na Vás.</h1>";
+                body += $"<p>Objednali ste si službu: {serviceName}.</p>";
+
+                if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5 && daysToAppointment > 2.5)
                 {
-                    var startTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime;
-                    var daysToAppointment = (startTime - DateTime.UtcNow).TotalDays;
-                    var subject = "Pripomienka termínu";
-                    var serviceName = appointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name;
-                    var appointmentDateTime = appointment.AppointmentServiceTypeDurationCost.Appointment.StartTime.ToString("dd.MM.yyyy HH:mm");
-
-                    var body = $"<h1>Blíži sa Váš termín {appointmentDateTime}. Tešíme sa na Vás.</h1>";
-                    body += $"<p>Objednali ste si službu: {serviceName}.</p>";
-
-                    if (!appointment.SevenDaysReminderSent && daysToAppointment <= 7.5 && daysToAppointment > 2.5)
+                    await SendEmailAsync(new EmailRequest
                     {
-                        await SendEmailAsync(new EmailRequest
-                        {
-                            ToEmail = appointment.Person.ApplicationUser.Email,
-                            Subject = subject,
-                            Body = body
-                        });
+                        ToEmail = appointment.Person.ApplicationUser.Email,
+                        Subject = subject,
+                        Body = body
+                    });
 
-                        appointment.SevenDaysReminderSent = true;
-                    }
-
-                    if (!appointment.OneDayReminderSent && daysToAppointment < 1.5)
-                    {
-                        await SendEmailAsync(new EmailRequest
-                        {
-                            ToEmail = appointment.Person.ApplicationUser.Email,
-                            Subject = subject,
-                            Body = body
-                        });
-
-                        appointment.OneDayReminderSent = true;
-                    }
-
-                    if (appointment.SevenDaysReminderSent || appointment.OneDayReminderSent)
-                    {
-                        _context.BookedAppointments.Update(appointment);
-                        await _context.SaveChangesAsync();
-                    }
+                    appointment.SevenDaysReminderSent = true;
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error sending reminder emails: {Message}", ex.Message);
-                throw;
+
+                if (!appointment.OneDayReminderSent && daysToAppointment < 1.5)
+                {
+                    await SendEmailAsync(new EmailRequest
+                    {
+                        ToEmail = appointment.Person.ApplicationUser.Email,
+                        Subject = subject,
+                        Body = body
+                    });
+
+                    appointment.OneDayReminderSent = true;
+                }
+
+                if (appointment.SevenDaysReminderSent || appointment.OneDayReminderSent)
+                {
+                    _context.BookedAppointments.Update(appointment);
+                    await _context.SaveChangesAsync();
+                }
             }
         }
     }

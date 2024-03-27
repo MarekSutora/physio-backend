@@ -50,10 +50,9 @@ namespace Application.Services.Implementation
 
         public async Task CreateServiceTypeAsync(CreateServiceTypeDto createNewServiceTypeDto)
         {
-
             var existingServiceType = await _context.ServiceTypes
                 .Include(st => st.ServiceTypeDurationCosts)
-                .ThenInclude(stdc => stdc.DurationCost)
+                    .ThenInclude(stdc => stdc.DurationCost)
                 .FirstOrDefaultAsync(st => EF.Functions.Like(st.Name, createNewServiceTypeDto.Name));
 
             if (existingServiceType != null && !existingServiceType.Active)
@@ -64,34 +63,40 @@ namespace Application.Services.Implementation
                 {
                     stdc.DateTo = DateTime.UtcNow.AddHours(1);
                 }
+            }
+            else
+            {
+                existingServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
+                _context.ServiceTypes.Add(existingServiceType);
+            }
 
-                foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+            foreach (var durationCostDto in createNewServiceTypeDto.DurationCosts)
+            {
+                var durationCost = await _context.DurationCosts
+                    .FirstOrDefaultAsync(dc => dc.DurationMinutes == durationCostDto.DurationMinutes && dc.Cost == durationCostDto.Cost);
+
+                if (durationCost == null)
                 {
-                    var durationCost = new DurationCost
+                    durationCost = new DurationCost
                     {
                         DurationMinutes = durationCostDto.DurationMinutes,
                         Cost = durationCostDto.Cost
                     };
                     _context.DurationCosts.Add(durationCost);
-
-                    existingServiceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
-                    {
-                        DurationCost = durationCost
-                    });
                 }
-            }
-            else
-            {
-                var newServiceType = _mapper.Map<ServiceType>(createNewServiceTypeDto);
-                _context.ServiceTypes.Add(newServiceType);
+
+                existingServiceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
+                {
+                    DurationCost = durationCost
+                });
             }
 
             await _context.SaveChangesAsync();
         }
 
+
         public async Task UpdateServiceTypeAsync(UpdateServiceTypeDto updateServiceTypeDto)
         {
-
             var serviceType = await _context.ServiceTypes
                 .Include(st => st.ServiceTypeDurationCosts)
                     .ThenInclude(stdc => stdc.DurationCost)
@@ -132,7 +137,7 @@ namespace Application.Services.Implementation
                     _context.DurationCosts.Add(existingDurationCost);
                 }
 
-                if (!serviceType.ServiceTypeDurationCosts.Exists(stdc => stdc.DurationCost == existingDurationCost && stdc.DateTo == null))
+                if (!serviceType.ServiceTypeDurationCosts.Any(stdc => stdc.DurationCostId == existingDurationCost.Id && stdc.DateTo == null))
                 {
                     serviceType.ServiceTypeDurationCosts.Add(new ServiceTypeDurationCost
                     {
@@ -143,6 +148,7 @@ namespace Application.Services.Implementation
 
             await _context.SaveChangesAsync();
         }
+
 
         public async Task SoftDeleteServiceTypeAsync(int id)
         {

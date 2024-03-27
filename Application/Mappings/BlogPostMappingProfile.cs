@@ -6,9 +6,9 @@ using Application.Common;
 
 namespace Application.Mappings
 {
-    public class BlogMappingProfile : Profile
+    public class BlogPostMappingProfile : Profile
     {
-        public BlogMappingProfile()
+        public BlogPostMappingProfile()
         {
             CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => MappingUtilities.GenerateSlug(src.Title)));
 

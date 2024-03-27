@@ -14,7 +14,7 @@ namespace Application.DTO.Appointments.Response
         public DateTime StartTime { get; set; }
         public int DurationMinutes { get; set; }
         public string ServiceTypeName { get; set; }
-        public int ClientId { get; set; }
+        public int PersonId { get; set; }
         public string ClientFirstName { get; set; }
         public string ClientSecondName { get; set; }
         public decimal Cost { get; set; }
