@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data;
+using Application.Utilities;
 
 namespace Application.Services.Implementation
 {
@@ -24,58 +26,96 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<BlogPostDto>> GetBlogPostsAsync()
+        public Task CreateBlogPostAsync(CreateBlogPostDto createBlogPostDto)
         {
-            var blogPosts = await _context.BlogPosts.ToListAsync();
-            return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
+            throw new NotImplementedException();
         }
 
-        public async Task<BlogPostDto?> GetBlogPostBySlugAsync(string slug)
+        public Task DeleteBlogPostAsync(string slug)
         {
-            var blogPost = await _context.BlogPosts.Where(x => x.Slug == slug).FirstOrDefaultAsync();
-            if (blogPost == null) throw new Exception($"Blog post with title {slug} not found");
-
-            return _mapper.Map<BlogPostDto>(blogPost);
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync()
+        public Task<BlogPostDto?> GetBlogPostBySlugAsync(string slug)
         {
-            var blogPosts = await _context.BlogPosts.Where(x => x.IsHidden == false).ToListAsync();
-            return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
+            throw new NotImplementedException();
         }
 
-        public async Task CreateBlogPostAsync(CreateBlogPostDto createBlogPostDto)
+        public Task<IEnumerable<BlogPostDto>> GetBlogPostsAsync()
         {
-            var blogPost = _mapper.Map<BlogPost>(createBlogPostDto);
-            _context.BlogPosts.Add(blogPost);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto)
+        public Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync()
         {
-            var blogPost = await _context.BlogPosts.FindAsync(updateBlogPostDto.Slug);
-            if (blogPost == null) throw new Exception("Blog post not found");
-
-            _mapper.Map(updateBlogPostDto, blogPost);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task IncrementBlogPostViewCountAsync(string slug)
+        public Task IncrementBlogPostViewCountAsync(string slug)
         {
-            var blogPost = await _context.BlogPosts.FirstOrDefaultAsync(bp => bp.Slug == slug);
-            if (blogPost == null) throw new Exception($"Blog post with slug {slug} not found");
-
-            blogPost.ViewCount += 1;
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task DeleteBlogPostAsync(string slug)
+        public Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(slug);
-            if (blogPost == null) throw new Exception("Blog post not found");
-
-            _context.BlogPosts.Remove(blogPost);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
+
+        //public async Task<IEnumerable<BlogPostDto>> GetBlogPostsAsync()
+        //{
+        //    var blogPosts = await _context.BlogPosts.ToListAsync();
+        //    return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
+        //}
+
+        //public async Task<BlogPostDto?> GetBlogPostBySlugAsync(string slug)
+        //{
+        //    var blogPost = await _context.BlogPosts.Where(x => x.Slug == slug).FirstOrDefaultAsync();
+        //    if (blogPost == null) throw new Exception($"Blog post with title {slug} not found");
+
+        //    return _mapper.Map<BlogPostDto>(blogPost);
+        //}
+
+        //public async Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync()
+        //{
+        //    var blogPosts = await _context.BlogPosts.Where(x => x.IsHidden == false).ToListAsync();
+        //    return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
+        //}
+
+        //public async Task CreateBlogPostAsync(CreateBlogPostDto createBlogPostDto)
+        //{
+        //    var blogPostsAlreadyExist = await _context.BlogPosts.AnyAsync(bp => bp.Title == createBlogPostDto.Title);
+        //    if (blogPostsAlreadyExist) throw new AlreadyExistsException("Blog post with this title already exists");
+
+        //    var blogPost = _mapper.Map<BlogPost>(createBlogPostDto);
+        //    _context.BlogPosts.Add(blogPost);
+        //    await _context.SaveChangesAsync();
+        //}
+
+        //public async Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto)
+        //{
+        //    var blogPost = await _context.BlogPosts.FindAsync(updateBlogPostDto.Slug);
+        //    if (blogPost == null) throw new Exception("Blog post not found");
+
+        //    _mapper.Map(updateBlogPostDto, blogPost);
+        //    await _context.SaveChangesAsync();
+        //}
+
+        //public async Task IncrementBlogPostViewCountAsync(string slug)
+        //{
+        //    var blogPost = await _context.BlogPosts.FirstOrDefaultAsync(bp => bp.Slug == slug);
+        //    if (blogPost == null) throw new Exception($"Blog post with slug {slug} not found");
+
+        //    blogPost.ViewCount += 1;
+        //    await _context.SaveChangesAsync();
+        //}
+
+        //public async Task DeleteBlogPostAsync(string slug)
+        //{
+        //    var blogPost = await _context.BlogPosts.FindAsync(slug);
+        //    if (blogPost == null) throw new Exception("Blog post not found");
+
+        //    _context.BlogPosts.Remove(blogPost);
+        //    await _context.SaveChangesAsync();
+        //}
     }
 }

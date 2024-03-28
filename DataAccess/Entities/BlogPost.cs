@@ -9,7 +9,6 @@ namespace DataAccess.Entities
 {
     public class BlogPost
     {
-        [Key]
         public string Slug { get; set; }
         public string Title { get; set; }
         public DateTime DatePublished { get; set; }

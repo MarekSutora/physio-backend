@@ -15,6 +15,9 @@ namespace DataAccess.Configurations
         {
             builder.Property(ad => ad.Note)
                     .IsRequired().HasMaxLength(10000);
+
+            builder.HasIndex(ad => ad.AppointmentId)
+                .IsUnique();
         }
     }
 }

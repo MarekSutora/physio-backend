@@ -88,22 +88,23 @@ namespace Application.Services.Implementation
 
         public async Task<IEnumerable<BlogPostViewsStatsDto>> GetBlogPostViewsStatsAsync()
         {
-            var blogPostViewsStats = await _context.BlogPosts
-                .GroupBy(bp => new
-                {
-                    Year = bp.DatePublished.Year,
-                    Month = bp.DatePublished.Month
-                })
-                .Select(g => new BlogPostViewsStatsDto
-                {
-                    Year = g.Key.Year,
-                    Month = g.Key.Month,
-                    TotalViews = g.Sum(bp => bp.ViewCount)
-                })
-                .OrderBy(s => s.Year).ThenBy(s => s.Month)
-                .ToListAsync();
+            //var blogPostViewsStats = await _context.BlogPosts
+            //    .GroupBy(bp => new
+            //    {
+            //        Year = bp.DatePublished.Year,
+            //        Month = bp.DatePublished.Month
+            //    })
+            //    .Select(g => new BlogPostViewsStatsDto
+            //    {
+            //        Year = g.Key.Year,
+            //        Month = g.Key.Month,
+            //        TotalViews = g.Sum(bp => bp.ViewCount)
+            //    })
+            //    .OrderBy(s => s.Year).ThenBy(s => s.Month)
+            //    .ToListAsync();
 
-            return blogPostViewsStats;
+            //return blogPostViewsStats;
+            return [];
         }
     }
 }

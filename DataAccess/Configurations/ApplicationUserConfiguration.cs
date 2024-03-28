@@ -14,7 +14,7 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.Property(ar => ar.RefreshToken)
-                .IsRequired().HasMaxLength(500);
+                .HasMaxLength(500);
 
             builder.Property(ar => ar.RefreshTokenExpiryTime)
                 .IsRequired();

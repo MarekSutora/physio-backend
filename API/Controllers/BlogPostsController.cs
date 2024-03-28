@@ -7,6 +7,7 @@ using Application.DTO.Blog.Response;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Utilities;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -114,6 +115,11 @@ namespace diploma_thesis_backend.Controllers
 
                 _logger.LogInformation("Blog post created successfully.");
                 return Ok("Blog post created successfully.");
+            }
+            catch (AlreadyExistsException ex)
+            {
+                _logger.LogError(ex, "Error creating new blog post.");
+                return BadRequest("Blog post with this title already exists.");
             }
             catch (Exception ex)
             {

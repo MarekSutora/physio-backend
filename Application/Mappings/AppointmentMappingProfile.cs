@@ -22,7 +22,7 @@ namespace Application.Mappings
 
             CreateMap<AppointmentDetail, AppointmentDetailDto>().ReverseMap();
 
-            CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>().ReverseMap();
+            //CreateMap<AppointmentExerciseDetail, AppointmentExerciseDetailDto>().ReverseMap();
 
             CreateMap<ExerciseTypeDto, ExerciseType>().ReverseMap();
 

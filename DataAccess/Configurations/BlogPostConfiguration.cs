@@ -4,7 +4,7 @@ using DataAccess.Entities;
 
 namespace DataAccess.Configurations
 {
-    public class BlogPostEntityConfiguration : IEntityTypeConfiguration<BlogPost>
+    public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
     {
         public void Configure(EntityTypeBuilder<BlogPost> builder)
         {

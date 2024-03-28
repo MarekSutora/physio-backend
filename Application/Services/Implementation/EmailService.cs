@@ -24,9 +24,47 @@ namespace Application.Services.Implementation
             _context = context;
         }
 
-        public Task SendContactFormEmailAsync(ContactFormEmailRequest request)
+        public async Task SendContactFormEmailAsync(ContactFormEmailRequest request)
         {
-            throw new NotImplementedException();
+
+            var email = new MimeMessage();
+            email.Sender = MailboxAddress.Parse(request.Email);
+            email.To.Add(MailboxAddress.Parse(_mailSettings.SmtpUser));
+            email.Subject = "Kontaktný formulár";
+            var builder = new BodyBuilder();
+            builder.HtmlBody = $"<h1>{request.Name} {request.SecondName}</h1>" +
+                $"<p>Email: {request.Email}</p>" +
+                $"<p>Telefónne číslo: {request.PhoneNumber}</p>" +
+                $"<p>{request.Message}</p>";
+            email.Body = builder.ToMessageBody();
+
+            using (var smtpCLient = new SmtpClient())
+            {
+                smtpCLient.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
+                smtpCLient.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
+                await smtpCLient.SendAsync(email);
+                smtpCLient.Disconnect(true);
+            }
+
+            var emailResponse = new MimeMessage();
+            emailResponse.Sender = MailboxAddress.Parse(_mailSettings.SmtpUser);
+            emailResponse.To.Add(MailboxAddress.Parse(request.Email));
+            emailResponse.Subject = "Potvrdenie prijatia správy.";
+            var responseBuilder = new BodyBuilder();
+
+            responseBuilder.HtmlBody = @"
+                    <h1>Ďakujeme za Váš záujem!</h1>
+                    <p>Vašu správu sme úspešne prijali a budeme sa Vám snažiť čo najskôr odpovedať.</p>
+                    <p>S pozdravom,<br>Váš tím</p>";
+            emailResponse.Body = responseBuilder.ToMessageBody();
+
+            using (var smtpClient = new SmtpClient())
+            {
+                smtpClient.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
+                smtpClient.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
+                await smtpClient.SendAsync(emailResponse);
+                smtpClient.Disconnect(true);
+            }
         }
 
         public async Task SendEmailAsync(EmailRequest emailRequest)

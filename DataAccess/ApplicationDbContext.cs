@@ -1,4 +1,5 @@
-﻿using DataAccess.Entities;
+﻿using DataAccess.Configurations;
+using DataAccess.Entities;
 using DataAccess.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -35,6 +36,8 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
 
+            builder.ApplyConfigurationsFromAssembly(typeof(BlogPostConfiguration).Assembly);
+
             builder.Entity<AppointmentServiceTypeDurationCost>()
                 .HasIndex(p => new { p.ServiceTypeDurationCostId, p.AppointmentId })
                 .IsUnique(true);
@@ -62,9 +65,6 @@ namespace DataAccess
                                                   l => l.HasOne<ServiceTypeDurationCost>(e => e.ServiceTypeDurationCost).WithMany(e => e.AppointmentServiceTypeDurationCosts),
                                                   r => r.HasOne<Appointment>(e => e.Appointment).WithMany(e => e.AppointmentServiceTypeDurationCosts));
 
-
-            // Appointment -> AppointmentDetail 1:1
-            builder.Entity<AppointmentDetail>().HasKey(ad => ad.AppointmentId);
 
             builder.Entity<AppointmentDetail>()
                 .HasOne<Appointment>(ad => ad.Appointment)

@@ -28,7 +28,8 @@ namespace DataAccess.Seeding
                 Email = "admin1@example.com",
                 NormalizedEmail = "ADMIN1@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PersonId = 1
+                PersonId = 1,
+                RegisteredDate = DateTime.UtcNow
             };
             admin1.PasswordHash = passwordHasher.HashPassword(admin1, "asdAdmin123!@");
 
@@ -40,7 +41,8 @@ namespace DataAccess.Seeding
                 Email = "admin2@example.com",
                 NormalizedEmail = "ADMIN2@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PersonId = 2
+                PersonId = 2,
+                RegisteredDate = DateTime.UtcNow
             };
             admin2.PasswordHash = passwordHasher.HashPassword(admin2, "asdAdmin123!@");
 
@@ -53,7 +55,8 @@ namespace DataAccess.Seeding
                 Email = "client1@example.com",
                 NormalizedEmail = "CLIENT1@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PersonId = 3
+                PersonId = 3,
+                RegisteredDate = DateTime.UtcNow
             };
             client1.PasswordHash = passwordHasher.HashPassword(client1, "asdClient123!@");
 
@@ -65,7 +68,8 @@ namespace DataAccess.Seeding
                 Email = "client2@example.com",
                 NormalizedEmail = "CLIENT12@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PersonId = 4
+                PersonId = 4,
+                RegisteredDate = DateTime.UtcNow
             };
             client2.PasswordHash = passwordHasher.HashPassword(client2, "asdClient123!@");
 
@@ -77,7 +81,8 @@ namespace DataAccess.Seeding
                 Email = "client3@example.com",
                 NormalizedEmail = "CLIENT3@EXAMPLE.COM",
                 EmailConfirmed = true,
-                PersonId = 5
+                PersonId = 5,
+                RegisteredDate = DateTime.UtcNow
             };
             client3.PasswordHash = passwordHasher.HashPassword(client3, "asdClient123!@");
 

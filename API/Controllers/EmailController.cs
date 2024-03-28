@@ -17,7 +17,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [HttpPost("contact-form")] //contact form email
+        [HttpPost("contact-form")]
         public async Task<IActionResult> SendContactFormEmailAsync([FromBody] ContactFormEmailRequest request)
         {
             _logger.LogInformation("Sending contact form email.");

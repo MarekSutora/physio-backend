@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Application.DTO.ServiceType.Request;
 using System;
 using System.Threading.Tasks;
+using Application.Utilities;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -85,6 +86,11 @@ namespace diploma_thesis_backend.Controllers
 
                 _logger.LogInformation("Service type created or reactivated successfully.");
                 return Ok("Service type created or reactivated successfully");
+            }
+            catch (AlreadyExistsException ex)
+            {
+                _logger.LogError(ex, "Error creating service type");
+                return BadRequest("Service type with this name already exists.");
             }
             catch (Exception ex)
             {

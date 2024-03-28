@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Application.DTO.ServiceType.Request;
 using Application.DTO.ServiceType.Response;
+using Application.Utilities;
 
 
 namespace Application.Services.Implementation
@@ -55,7 +56,11 @@ namespace Application.Services.Implementation
                     .ThenInclude(stdc => stdc.DurationCost)
                 .FirstOrDefaultAsync(st => EF.Functions.Like(st.Name, createNewServiceTypeDto.Name));
 
-            if (existingServiceType != null && !existingServiceType.Active)
+            if (existingServiceType != null && existingServiceType.Active)
+            {
+                throw new AlreadyExistsException($"Service type with the name {createNewServiceTypeDto.Name} already exists.");
+            }
+            else if (existingServiceType != null && !existingServiceType.Active)
             {
                 existingServiceType.Active = true;
 
@@ -160,11 +165,13 @@ namespace Application.Services.Implementation
                 throw new Exception("ServiceType not found");
             }
 
+            DateTime currentDateTime = DateTime.UtcNow.AddHours(1);
+
             serviceType.Active = false;
 
             foreach (var stdc in serviceType.ServiceTypeDurationCosts)
             {
-                stdc.DateTo = DateTime.Now;
+                stdc.DateTo = currentDateTime;
             }
 
             _context.ServiceTypes.Update(serviceType);

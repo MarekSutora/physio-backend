@@ -71,7 +71,7 @@ namespace Application.Services.Implementation
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
                     .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
                         .ThenInclude(stdc => stdc.DurationCost)
-                        .Include(a => a.AppointmentDetail).ThenInclude(ad => ad.AppointmentExerciseDetails).ThenInclude(aed => aed.ExerciseType)
+                .Include(a => a.AppointmentDetail).ThenInclude(ad => ad.AppointmentExerciseDetails).ThenInclude(aed => aed.ExerciseType)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == appointmentId);
 
@@ -207,7 +207,7 @@ namespace Application.Services.Implementation
 
             var appointment = await _context.Appointments
                 .Include(a => a.AppointmentDetail)
-                    .ThenInclude(ad => ad.AppointmentExerciseDetails)
+                .ThenInclude(ad => ad.AppointmentExerciseDetails)
                 .FirstOrDefaultAsync(a => a.Id == appointmentId);
 
             if (appointment == null)
