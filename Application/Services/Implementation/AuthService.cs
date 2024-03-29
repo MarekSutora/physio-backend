@@ -227,15 +227,15 @@ namespace Application.Services.Implementation
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "apinet/auth/confirm-email";
-            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            var _endpointUrl = new Uri(string.Concat($"{origin}/", route));
+            var verificationUrl = QueryHelpers.AddQueryString(_endpointUrl.ToString(), "userId", user.Id);
+            verificationUrl = QueryHelpers.AddQueryString(verificationUrl, "code", code);
 
             var emailRequest = new EmailRequest
             {
                 ToEmail = user.Email,
                 Subject = "Potvrdenie registrácie",
-                Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUri}'>tento odkaz</a>",
+                Body = $"Prosím potvrďte svoju registráciu kliknutím na <a href='{verificationUrl}'>tento odkaz</a>",
             };
 
             await _emailService.SendEmailAsync(emailRequest);

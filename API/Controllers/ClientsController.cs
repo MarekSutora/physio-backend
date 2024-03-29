@@ -21,7 +21,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetClientsAsync()
         {
@@ -81,7 +81,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("{personId}/notes")]
         public async Task<IActionResult> GetNotesForClientAsync(int personId)
         {
@@ -108,7 +108,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("{personId}/notes")]
         public async Task<IActionResult> AddNoteToClientAsync(int personId, [FromBody] CreateClientNoteDto createClientNoteDto)
         {

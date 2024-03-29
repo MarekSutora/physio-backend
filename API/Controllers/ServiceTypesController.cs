@@ -6,6 +6,7 @@ using Application.DTO.ServiceType.Request;
 using System;
 using System.Threading.Tasks;
 using Application.Utilities;
+using System.Security.Claims;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -75,7 +76,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateServiceTypeAsync([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
         {
@@ -99,7 +100,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateServiceTypeAsync([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
@@ -118,7 +119,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServiceTypeAsync(int id)
         {

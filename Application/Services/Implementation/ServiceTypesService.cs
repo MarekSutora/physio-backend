@@ -16,7 +16,7 @@ namespace Application.Services.Implementation
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public ServiceTypesService(ApplicationDbContext context, IMapper mapper, ILogger<ServiceTypesService> logger)
+        public ServiceTypesService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

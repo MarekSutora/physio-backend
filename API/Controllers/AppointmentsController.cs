@@ -124,7 +124,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("finished")]
         public async Task<IActionResult> GetFinishedAppointmentsAsync()
         {
@@ -184,7 +184,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("booked")]
         public async Task<IActionResult> GetBookedAppointmentsAsync()
         {
@@ -211,7 +211,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("unbooked")]
         public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
         {
@@ -274,7 +274,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("booked/{id}/finish")]
         public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
         {
