@@ -51,14 +51,21 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointmentByIdAsync(int id)
         {
             _logger.LogInformation($"Retrieving appointment with Appointment.Id = {id}.");
             try
             {
-                var appointment = await _appointmentsService.GetAppointmentByIdAsync(id);
+                var jwtUserId = User.FindFirstValue("userId");
+
+                if (jwtUserId == null)
+                {
+                    return Unauthorized("You are not authorized to view this appointment.");
+                }
+
+                var appointment = await _appointmentsService.GetAppointmentByIdAsync(id, jwtUserId);
                 if (appointment != null)
                 {
                     _logger.LogInformation($"Appointment with Appointment.Id = {id} retrieved successfully.");
@@ -69,6 +76,11 @@ namespace diploma_thesis_backend.Controllers
                     _logger.LogInformation($"Appointment with Appointment.Id = {id} not found.");
                     return NotFound("Termín nebol nájdený.");
                 }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {id}");
+                return Unauthorized("You are not authorized to view this appointment.");
             }
             catch (Exception ex)
             {

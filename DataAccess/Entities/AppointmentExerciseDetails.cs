@@ -22,6 +22,6 @@ namespace DataAccess.Entities
         public int? RestAfterExerciseInMinutes { get; set; }
         public int? RestBetweenSetsInMinutes { get; set; }
         public int? Order { get; set; }
-        public bool? SuccessfulyPerformed { get; set; } = false;
+        public bool? SuccessfullyPerformed { get; set; } = false;
     }
 }

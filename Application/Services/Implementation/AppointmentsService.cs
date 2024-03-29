@@ -5,18 +5,24 @@ using Application.DTO.Appointments.Request;
 using Application.DTO.Appointments.Response;
 using AutoMapper;
 using DataAccess.Entities;
+using Application.Common.Email;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services.Implementation
 {
     public class AppointmentsService : IAppointmentsService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AppointmentsService(ApplicationDbContext context, IMapper mapper)
+        public AppointmentsService(ApplicationDbContext context, IMapper mapper, IEmailService emailService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _mapper = mapper;
+            _emailService = emailService;
+            _userManager = userManager;
         }
 
         public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()
@@ -59,12 +65,11 @@ namespace Application.Services.Implementation
             return groupedAppointments.ToList();
         }
 
-        public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId, string userId)
         {
-
             var appointment = await _context.Appointments
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
-                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(p => p.Person)
+                    .ThenInclude(astdc => astdc.BookedAppointments).ThenInclude(ba => ba.Person).ThenInclude(p => p.ApplicationUser)
                 .Include(a => a.AppointmentServiceTypeDurationCosts)
                     .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
                         .ThenInclude(stdc => stdc.ServiceType)
@@ -78,6 +83,20 @@ namespace Application.Services.Implementation
             if (appointment == null)
             {
                 throw new Exception("Appointment not found.");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            var isUserOwnAppointment = appointment.AppointmentServiceTypeDurationCosts.Any(astdc => astdc.BookedAppointments.Any(ba => ba.Person.ApplicationUser.Id == userId));
+
+            if (!isAdmin && !isUserOwnAppointment)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to access this appointment.");
             }
 
             var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
@@ -184,13 +203,24 @@ namespace Application.Services.Implementation
                 PersonId = personId,
             };
 
-            var existingBookingsCount = await _context.BookedAppointments
-                        .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == createBookedAppointmentDto.astdcId);
+            var appointmentServiceTypeDurationCost = await _context.AppointmentServiceTypeDurationCosts
+                .Include(astdc => astdc.Appointment)
+                .Include(astdc => astdc.ServiceTypeDurationCost)
+                    .ThenInclude(stdc => stdc.ServiceType)
+                .Include(astdc => astdc.ServiceTypeDurationCost)
+                    .ThenInclude(stdc => stdc.DurationCost)
+                .FirstOrDefaultAsync(astdc => astdc.Id == createBookedAppointmentDto.astdcId);
 
-            var capacity = await _context.AppointmentServiceTypeDurationCosts
-                .Where(astdc => astdc.Id == createBookedAppointmentDto.astdcId)
-                .Select(astdc => astdc.Appointment.Capacity)
-                .FirstOrDefaultAsync();
+            if (appointmentServiceTypeDurationCost == null)
+            {
+                throw new Exception("AppointmentServiceTypeDurationCost not found.");
+            }
+
+            var capacity = appointmentServiceTypeDurationCost.Appointment.Capacity;
+
+            // Check if the appointment is fully booked
+            var existingBookingsCount = await _context.BookedAppointments
+                .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == createBookedAppointmentDto.astdcId);
 
             if (existingBookingsCount >= capacity)
             {
@@ -198,6 +228,22 @@ namespace Application.Services.Implementation
             }
 
             _context.BookedAppointments.Add(bookedAppointment);
+
+            var emailRequest = new EmailRequest
+            {
+                ToEmail = client.ApplicationUser.UserName,
+                Subject = "Potvrdenie rezervácie",
+                Body = $@"<h1>Rezervácia úspešná</h1>
+                <p>Ďakujeme za rezerváciu. Tento email je potvrdením, že ste si úspešne zarezervovali termín.</p>
+                <p>Termín: {bookedAppointment.AppointmentServiceTypeDurationCost.Appointment.StartTime}</p>
+                <p>Typ služby: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name}</p>
+                <p>Čas trvania: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes} minút</p>
+                <p>Cena: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost.ToString("0.00")} €</p>
+                <p>Ďakujeme, že ste si vybrali naše služby.</p>
+                <p>S pozdravom,<br>Váš tím</p>"
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
 
             await _context.SaveChangesAsync();
         }

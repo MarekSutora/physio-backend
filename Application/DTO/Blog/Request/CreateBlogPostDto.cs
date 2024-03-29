@@ -9,25 +9,25 @@ namespace Application.DTO.Blog.Request
 {
     public class CreateBlogPostDto
     {
-        [Required(ErrorMessage = "The title of the blog post is required.")]
-        [StringLength(100, ErrorMessage = "The title must be less than 100 characters.")]
+        [Required]
+        [StringLength(100)]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "The date when the blog post is published is required.")]
+        [Required]
         public DateTime DatePublished { get; set; }
 
-        [Required(ErrorMessage = "The HTML content of the blog post is required.")]
+        [Required]
         public string HTMLContent { get; set; }
 
-        [Required(ErrorMessage = "The author of the blog post is required.")]
-        [StringLength(100, ErrorMessage = "The author's name must be less than 100 characters.")]
+        [Required]
+        [StringLength(100)]
         public string Author { get; set; }
 
-        [Required(ErrorMessage = "Keywords for the blog post are required.")]
-        [StringLength(300, ErrorMessage = "The keywords string must be less than 300 characters.")]
+        [Required]
+        [StringLength(300)]
         public string KeywordsString { get; set; }
 
-        [Required(ErrorMessage = "The main image URL for the blog post is required.")]
+        [Required]
         public string MainImageUrl { get; set; }
 
         public bool IsHidden { get; set; } = false;

@@ -13,7 +13,7 @@ namespace DataAccess.Entities
         public int DurationCostId { get; set; }
         public ServiceType ServiceType { get; set; } = null!;
         public DurationCost DurationCost { get; set; } = null!;
-        public DateTime DateFrom { get; set; }
+        public DateTime DateFrom { get; set; } = DateTime.UtcNow.AddHours(1);
         public DateTime? DateTo { get; set; }
 
 

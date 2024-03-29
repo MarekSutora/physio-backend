@@ -9,19 +9,19 @@ namespace Application.DTO.Auth
         public string Email { get; set; }
 
         [Required]
-        [StringLength(256, ErrorMessage = "Password must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(256, MinimumLength = 6)]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
-        [StringLength(256, ErrorMessage = "First name cannot exceed {1} characters.")]
+        [Required]
+        [StringLength(256)]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required.")]
-        [StringLength(256, ErrorMessage = "Last name cannot exceed {1} characters.")]
+        [Required]
+        [StringLength(256)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Phone number is required.")]
-        [StringLength(10, ErrorMessage = "Phone number must be {1} characters long.")]
+        [Required]
+        [StringLength(10)]
         public string PhoneNumber { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Application.Services.Interfaces
 
         Task DeleteBookedAppointmentAsync(int bookedAppointmentId);
 
-        Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId);
+        Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId, string userId);
 
         Task UpdateAppointmentDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails);
 

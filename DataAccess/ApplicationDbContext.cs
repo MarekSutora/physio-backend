@@ -82,27 +82,5 @@ namespace DataAccess
 
             builder.SeedExerciseTypes();
         }
-
-        public override int SaveChanges()
-        {
-            SetServiceTypeDurationCostDateFrom();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            SetServiceTypeDurationCostDateFrom();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        private void SetServiceTypeDurationCostDateFrom()
-        {
-            var entries = ChangeTracker.Entries().Where(e => e.Entity is ServiceTypeDurationCost && e.State == EntityState.Added);
-
-            foreach (var entry in entries)
-            {
-                ((ServiceTypeDurationCost)entry.Entity).DateFrom = DateTime.Now;
-            }
-        }
     }
 }
