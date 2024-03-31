@@ -293,7 +293,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("booked/{bookedAppointmentId}")]
         public async Task<IActionResult> DeleteBookedAppointmentAsync(int bookedAppointmentId)
         {
@@ -312,7 +312,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> DeleteAppointmentAsync(int appointmentId)
         {

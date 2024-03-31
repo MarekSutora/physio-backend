@@ -66,7 +66,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred during client registration.");
-                return BadRequest(new { message = "An error occurred during registration." });
+                return BadRequest("An error occurred during registration.");
             }
         }
 
@@ -92,11 +92,11 @@ namespace diploma_thesis_backend.Controllers
                             Roles = result.roles,
                             PersonId = result.PersonId
                         },
-                        BackendTokens = new
+                        UserTokens = new
                         {
                             AccessToken = result.AccessToken,
                             RefreshToken = result.RefreshToken,
-                            ExpirationDate = result.ExpiryDate
+                            AccessTokenExpirationDate = result.ExpiryDate
                         }
                     });
                 }
@@ -108,7 +108,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Nastala chyba pri prihlasovaní.");
-                return BadRequest(new { message = "Nastala chyba pri prihlasovaní." });
+                return BadRequest("Nastala chyba pri prihlasovaní.");
             }
         }
 
@@ -137,7 +137,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Nastala chyba pri získavaní refresh tokenu.");
-                return BadRequest(new { message = "Nastala chyba pri získavaní refresh tokenu." });
+                return BadRequest("Nastala chyba pri získavaní refresh tokenu");
             }
         }
 
@@ -155,7 +155,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Nastala chyba pri zmene hesla.");
-                return BadRequest(new { message = "Nastala chyba pri zmene hesla." });
+                return BadRequest("Nastala chyba pri zmene hesla.");
             }
         }
 
@@ -166,12 +166,12 @@ namespace diploma_thesis_backend.Controllers
             try
             {
                 await _authService.ForgotPasswordAsync(forgotPasswordRequestDto);
-                return Ok(new { message = "Email s inštrukciami na obnovenie hesla bol odoslaný." });
+                return Ok("Email s inštrukciami na obnovenie hesla bol odoslaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Nastala chyba pri odosielaní emailu na obnovenie hesla.");
-                return BadRequest(new { message = "Nastala chyba pri odosielaní emailu na obnovenie hesla." });
+                return BadRequest("Nastala chyba pri odosielaní emailu na obnovenie hesla.");
             }
         }
     }
