@@ -26,6 +26,7 @@ namespace DataAccess.Configurations
                 .HasDefaultValue("#14746F");
 
             builder.Property(st => st.Description)
+                .IsRequired()
                 .HasMaxLength(10000);
 
             builder.Property(st => st.Active)

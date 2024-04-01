@@ -96,8 +96,6 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.Failure;
                     }
 
-                    await SendVerificationEmailAsync(user);
-
                     var addToRoleResult = await _userManager.AddToRoleAsync(user, "Client");
                     if (!addToRoleResult.Succeeded)
                     {
@@ -105,8 +103,12 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.Failure;
                     }
 
-                    // If all operations succeeded, commit the transaction
+
                     await transaction.CommitAsync();
+
+                    await SendVerificationEmailAsync(user);
+
+
                     return RegisterUserResult.Success;
                 }
                 catch
