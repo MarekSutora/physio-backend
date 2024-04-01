@@ -93,7 +93,7 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No non-hidden blog posts found");
-                    return NotFound();
+                    return NotFound("No non-hidden blog posts found");
                 }
             }
             catch (Exception ex)
@@ -114,17 +114,17 @@ namespace diploma_thesis_backend.Controllers
                 await _blogService.CreateBlogPostAsync(createBlogPostDto);
 
                 _logger.LogInformation("Blog post created successfully.");
-                return Ok("Blog post created successfully.");
+                return Ok("Nový článok úspešne vytvorený.");
             }
             catch (AlreadyExistsException ex)
             {
                 _logger.LogError(ex, "Error creating new blog post.");
-                return BadRequest("Blog post with this title already exists.");
+                return BadRequest("Článok s týmto názvom už existuje.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating new blog post.");
-                return BadRequest("Error creating new blog post.");
+                return BadRequest("Pri vytváraní článku nastala chyba.");
             }
         }
 
