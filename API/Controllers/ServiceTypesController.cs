@@ -85,13 +85,13 @@ namespace diploma_thesis_backend.Controllers
             {
                 await _serviceTypesService.CreateServiceTypeAsync(createNewServiceTypeDto);
 
-                _logger.LogInformation("Service type created or reactivated successfully.");
-                return Ok("Service type created or reactivated successfully");
+                _logger.LogInformation("Service type created successfully.");
+                return Ok("Služba úspešne vytvorená.");
             }
             catch (AlreadyExistsException ex)
             {
                 _logger.LogError(ex, "Error creating service type");
-                return BadRequest("Service type with this name already exists.");
+                return BadRequest("Služba s týmto názvom už existuje.");
             }
             catch (Exception ex)
             {

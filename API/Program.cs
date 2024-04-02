@@ -1,4 +1,5 @@
 using Application;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text.Json;
 
@@ -10,11 +11,47 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
         .ReadFrom.Configuration(hostingContext.Configuration);
 });
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
+    .ConfigureApiBehaviorOptions(options =>
+        {
+            var builtInFactory = options.InvalidModelStateResponseFactory;
+
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var logger = context.HttpContext.RequestServices
+                                    .GetRequiredService<ILogger<Program>>();
+
+                logger.LogError("Invalid model state: {0}", context.ModelState);
+
+                return builtInFactory(context);
+            };
+        });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 builder.Services.AddApplication(builder.Configuration);
 
@@ -38,23 +75,6 @@ builder.Services.AddCors(options =>
                       });
 });
 
-
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        var builtInFactory = options.InvalidModelStateResponseFactory;
-
-        options.InvalidModelStateResponseFactory = context =>
-        {
-            var logger = context.HttpContext.RequestServices
-                                .GetRequiredService<ILogger<Program>>();
-
-            logger.LogError("Invalid model state: {0}", context.ModelState);
-
-            return builtInFactory(context);
-        };
-    });
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -75,10 +95,10 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseCors("AllowedOriginProd");
-    app.UseHttpsRedirection();
 }
 
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();

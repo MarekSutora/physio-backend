@@ -130,7 +130,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("notes/{noteId}")]
         public async Task<IActionResult> DeleteNoteAsync(int noteId)
         {

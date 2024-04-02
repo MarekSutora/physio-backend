@@ -14,9 +14,6 @@ using DataAccess;
 using Application.Common.Email;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using AutoMapper.Internal;
-using Microsoft.Extensions.Logging;
-using Azure;
 using DataAccess.Entities;
 
 namespace Application.Services.Implementation
@@ -24,7 +21,6 @@ namespace Application.Services.Implementation
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
@@ -32,14 +28,12 @@ namespace Application.Services.Implementation
 
         public AuthService(UserManager<ApplicationUser> userManager,
                 IOptions<JwtSettings> jwtSettings,
-                SignInManager<ApplicationUser> signInManager,
                 ApplicationDbContext dbContext,
                 IEmailService emailService,
                 IConfiguration configuration)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
-            _signInManager = signInManager;
             _context = dbContext;
             _emailService = emailService;
             _configuration = configuration;
@@ -137,15 +131,24 @@ namespace Application.Services.Implementation
                 return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.Email, loginRequestDto.Password, false, lockoutOnFailure: false);
-            if (!result.Succeeded)
+            var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (!result)
             {
+                if (_userManager.SupportsUserLockout)
+                {
+                    await _userManager.AccessFailedAsync(user);
+                }
                 return new LoginUserResult { Outcome = LoginUserOutcome.InvalidCredentials };
             }
 
             var roles = await _userManager.GetRolesAsync(user);
 
             var jwtSecurityToken = await GenerateJwtToken(user);
+
+            if (_userManager.SupportsUserLockout)
+            {
+                await _userManager.ResetAccessFailedCountAsync(user);
+            }
 
             return new LoginUserResult
             {

@@ -52,10 +52,10 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAppointmentByIdAsync(int id)
+        [HttpGet("{appointmentId}")]
+        public async Task<IActionResult> GetAppointmentByIdAsync(int appointmentId)
         {
-            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {id}.");
+            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {appointmentId}.");
             try
             {
                 var jwtUserId = User.FindFirstValue("userId");
@@ -65,33 +65,33 @@ namespace diploma_thesis_backend.Controllers
                     return Unauthorized("You are not authorized to view this appointment.");
                 }
 
-                var appointment = await _appointmentsService.GetAppointmentByIdAsync(id, jwtUserId);
+                var appointment = await _appointmentsService.GetAppointmentByIdAsync(appointmentId, jwtUserId);
                 if (appointment != null)
                 {
-                    _logger.LogInformation($"Appointment with Appointment.Id = {id} retrieved successfully.");
+                    _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} retrieved successfully.");
                     return Ok(appointment);
                 }
                 else
                 {
-                    _logger.LogInformation($"Appointment with Appointment.Id = {id} not found.");
+                    _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} not found.");
                     return NotFound("Termín nebol nájdený.");
                 }
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {id}");
+                _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {appointmentId}");
                 return Unauthorized("You are not authorized to view this appointment.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {id}");
+                _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {appointmentId}");
                 return BadRequest("Error when retrieving appointment.");
             }
         }
 
 
         [Authorize]
-        [HttpGet("client/{personId}/booked")]
+        [HttpGet("clients/{personId}/booked")]
         public async Task<IActionResult> GetClientBookedAppointmentsAsync(int personId)
         {
             _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}");
@@ -152,7 +152,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("client/{personId}/finished")]
+        [HttpGet("clients/{personId}/finished")]
         public async Task<IActionResult> GetClientsFinishedAppointmentsAsync(int personId)
         {
             _logger.LogInformation($"Retrieving finished appointments for Person with Person.Id = {personId}");
