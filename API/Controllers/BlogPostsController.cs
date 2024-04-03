@@ -168,7 +168,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{slug}")]
         public async Task<IActionResult> DeleteBlogPostAsync(string slug)
         {

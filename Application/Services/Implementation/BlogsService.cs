@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using Application.Utilities;
+using Application.Common;
 
 namespace Application.Services.Implementation
 {
@@ -42,7 +43,7 @@ namespace Application.Services.Implementation
 
         public async Task<IEnumerable<BlogPostDto>> GetNonHiddenBlogPostsAsync()
         {
-            var blogPosts = await _context.BlogPosts.Where(x => x.IsHidden == false).ToListAsync();
+            var blogPosts = await _context.BlogPosts.Where(x => x.IsHidden == false).OrderByDescending(bp => bp.DatePublished).ToListAsync();
             return _mapper.Map<IEnumerable<BlogPostDto>>(blogPosts);
         }
 
@@ -58,8 +59,15 @@ namespace Application.Services.Implementation
 
         public async Task UpdateBlogPostAsync(UpdateBlogPostDto updateBlogPostDto)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(updateBlogPostDto.Slug);
+            var blogPost = await _context.BlogPosts.FirstOrDefaultAsync(bp => bp.Slug == updateBlogPostDto.Slug);
+
             if (blogPost == null) throw new Exception("Blog post not found");
+
+            if (blogPost.Title != updateBlogPostDto.Title)
+            {
+                var blogPostsAlreadyExist = await _context.BlogPosts.AnyAsync(bp => bp.Title == updateBlogPostDto.Title);
+                if (blogPostsAlreadyExist) throw new AlreadyExistsException("Blog post with this title already exists");
+            }
 
             _mapper.Map(updateBlogPostDto, blogPost);
             await _context.SaveChangesAsync();
@@ -76,7 +84,7 @@ namespace Application.Services.Implementation
 
         public async Task DeleteBlogPostAsync(string slug)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(slug);
+            var blogPost = await _context.BlogPosts.FirstOrDefaultAsync(bp => bp.Slug == slug);
             if (blogPost == null) throw new Exception("Blog post not found");
 
             _context.BlogPosts.Remove(blogPost);

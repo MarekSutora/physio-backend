@@ -171,7 +171,7 @@ namespace Application.Services.Implementation
 
             var appointment = new Appointment
             {
-                StartTime = createAppointmentDto.StartTime,
+                StartTime = createAppointmentDto.StartTime.AddHours(2),
                 Capacity = createAppointmentDto.Capacity,
             };
 

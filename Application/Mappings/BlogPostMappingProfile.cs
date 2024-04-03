@@ -12,9 +12,9 @@ namespace Application.Mappings
         {
             CreateMap<CreateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => MappingUtilities.GenerateSlug(src.Title)));
 
-            CreateMap<BlogPost, BlogPostDto>();
+            CreateMap<BlogPost, BlogPostDto>().ReverseMap();
 
-            CreateMap<UpdateBlogPostDto, BlogPost>();
+            CreateMap<UpdateBlogPostDto, BlogPost>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => MappingUtilities.GenerateSlug(src.Title)));
         }
     }
 }

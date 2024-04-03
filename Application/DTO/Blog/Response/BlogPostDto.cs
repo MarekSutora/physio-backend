@@ -8,6 +8,7 @@ namespace Application.DTO.Blog.Response
 {
     public class BlogPostDto
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime DatePublished { get; set; }
         public string HTMLContent { get; set; }
