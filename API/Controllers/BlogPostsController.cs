@@ -41,13 +41,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogWarning("No blog posts found.");
-                    return NotFound("No blog posts found.");
+                    return NotFound("Žiadne články neboli nájdené.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving all blog posts.");
-                return BadRequest("Error retrieving all blog posts.");
+                return BadRequest("Chyba pri načítavaní všetkých článkov.");
             }
         }
 
@@ -67,13 +67,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogWarning($"Blog post for slug = {slug} not found");
-                    return NotFound();
+                    return NotFound($"Článok nebol nájdený.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving blog post with title {BlogPostTitle}", slug);
-                return BadRequest("An error occurred while retrieving the blog post");
+                return BadRequest("Pri načítavaní článku došlo k chybe.");
             }
         }
 
@@ -93,13 +93,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No non-hidden blog posts found");
-                    return NotFound("No non-hidden blog posts found");
+                    return NotFound("Neboli nájdené žiadne ne-skryté články.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving non-hidden blog posts");
-                return BadRequest("An error occurred while retrieving the non-hidden blog posts");
+                return BadRequest("Pri načítavaní ne-skrytých článkov došlo k chybe.");
             }
         }
 
@@ -140,12 +140,12 @@ namespace diploma_thesis_backend.Controllers
                 await _blogService.UpdateBlogPostAsync(updateBlogPostDto);
 
                 _logger.LogInformation($"Blog post updated successfully with BlogPost.Slug = {slug}");
-                return Ok("Blog post updated successfully.");
+                return Ok("Článok bol úspešne aktualizovaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error updating blog post with BlogPost.Slug = {slug}");
-                return BadRequest("Error updating blog post.");
+                return BadRequest("Pri aktualizácii článku došlo k chybe.");
             }
         }
 
@@ -159,12 +159,12 @@ namespace diploma_thesis_backend.Controllers
                 await _blogService.IncrementBlogPostViewCountAsync(slug);
 
                 _logger.LogInformation($"Blog post view count incremented successfully for slug: {slug}");
-                return Ok("Blog post view count incremented successfully.");
+                return Ok("Počet zobrazení článku bol úspešne zvýšený.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error incrementing blog post view count for slug: {slug}");
-                return BadRequest("An error occurred while incrementing the blog post view count");
+                return BadRequest("Pri zvyšovaní počtu zobrazení článku došlo k chybe.");
             }
         }
 
@@ -178,12 +178,12 @@ namespace diploma_thesis_backend.Controllers
                 await _blogService.DeleteBlogPostAsync(slug);
 
                 _logger.LogInformation($"Blog post deleted successfully with BlogPost.Slug = {slug}");
-                return Ok("Blog post deleted successfully.");
+                return Ok("Článok bol úspešne vymazaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when deleting blog post with BlogPost.Slug = {slug}");
-                return BadRequest("Error when deleting the blog post");
+                return BadRequest("Pri mazaní článku došlo k chybe.");
             }
         }
     }

@@ -3,8 +3,8 @@ using Application.Services.Interfaces;
 using Application.DTO.Appointments.Request;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Application.DTO.Appointments.Response;
 using Microsoft.AspNetCore.Authorization;
+using Application.DTO.Appointments.Both;
 
 namespace diploma_thesis_backend.Controllers
 {
@@ -24,7 +24,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet("unbooked")]
         public async Task<IActionResult> GetUnbookedAppointmentsAsync()
         {
@@ -41,13 +41,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No unbooked appointments found.");
-                    return NotFound("No unbooked appointments found.");
+                    return NotFound("Nenašiel sa žiadný termín.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when retrieving unbooked appointments.");
-                return BadRequest("Error when retrieving unbooked appointments.");
+                return BadRequest("Chyba pri získavaní termínov.");
             }
         }
 
@@ -62,7 +62,7 @@ namespace diploma_thesis_backend.Controllers
 
                 if (jwtUserId == null)
                 {
-                    return Unauthorized("You are not authorized to view this appointment.");
+                    return Unauthorized("Nie ste autorizovaný.");
                 }
 
                 var appointment = await _appointmentsService.GetAppointmentByIdAsync(appointmentId, jwtUserId);
@@ -80,12 +80,12 @@ namespace diploma_thesis_backend.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {appointmentId}");
-                return Unauthorized("You are not authorized to view this appointment.");
+                return Unauthorized("Nie ste autorizovaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {appointmentId}");
-                return BadRequest("Error when retrieving appointment.");
+                return BadRequest("Chyba pri získavaní termínu.");
             }
         }
 
@@ -100,7 +100,7 @@ namespace diploma_thesis_backend.Controllers
                 if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
                     _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view booked appointments for Client with Person.Id = {personId}");
-                    return Unauthorized("You are not authorized to view these appointments.");
+                    return Unauthorized("Nie ste autorizovaný.");
                 }
 
                 var bookedAppointments = await _appointmentsService.GetBookedAppointmentsAsync(personId);
@@ -113,14 +113,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation($"No booked appointments found for Client with Person.Id = {personId}");
-                    return NotFound("No booked appointments found.");
+                    return NotFound("Žiadne zarezervované termíny neboli najdené.");
                 }
             }
             catch (Exception ex)
             {
-                var ErrorMessage = "Error retrieving booked appointments.";
-                _logger.LogError(ex, ErrorMessage);
-                return BadRequest(ErrorMessage);
+                _logger.LogError(ex, "Error retrieving booked appointments.");
+                return BadRequest("Chyba pri získavaní zarezervovaných termínov.");
             }
         }
 
@@ -141,13 +140,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogWarning("No finished appointments found.");
-                    return NotFound("No finished appointments found.");
+                    return NotFound("Žiadne dokončené termíny nenájdené.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving finished appointments.");
-                return BadRequest("Error retrieving finished appointments.");
+                return BadRequest("Chyba pri získavaní dokončených termínov.");
             }
         }
 
@@ -161,7 +160,7 @@ namespace diploma_thesis_backend.Controllers
                 if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
                     _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view finished appointments for Person with Person.Id = {personId}");
-                    return Unauthorized("You are not authorized to view these appointments.");
+                    return Unauthorized("Nie ste autorizovaný.");
                 }
 
                 var finishedAppointments = await _appointmentsService.GetFinishedAppointmentsAsync(personId);
@@ -174,13 +173,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogWarning($"No finished appointments found for Client with Person.Id = {personId}");
-                    return NotFound("No finished appointments found.");
+                    return NotFound("Žiadné dokončené termíny nenájdené.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error retrieving finished appointments for Client with Person.Id = {personId}.");
-                return BadRequest("Error retrieving finished appointments.");
+                return BadRequest("Chyba pri získavaní dokončených termínov.");
             }
         }
 
@@ -207,7 +206,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving booked appointments.");
-                return BadRequest("Error retrieving booked appointments.");
+                return BadRequest("Chyba pri získavaní dokončených termínov.");
             }
         }
 
@@ -222,12 +221,12 @@ namespace diploma_thesis_backend.Controllers
                 await _appointmentsService.CreateAppointmentAsync(createAppointmentDto);
 
                 _logger.LogInformation("New appointment successfully created.");
-                return Ok("New appointment successfully created.");
+                return Ok("Nový termín bol úspešne vytvorený.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when creating new appointment.");
-                return BadRequest("Error when creating new appointment.");
+                return BadRequest("Chyba pri vytváraní nového termínu.");
             }
         }
 
@@ -251,7 +250,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when retrieving booked appointments for Client with Person.Id = {personId}.");
-                return BadRequest("Error when retrieving booked appointments.");
+                return BadRequest("Chyba pri získavaní rezervovaných termínov klientom.");
             }
         }
 
@@ -265,12 +264,12 @@ namespace diploma_thesis_backend.Controllers
                 await _appointmentsService.UpdateAppointmentDetailsAsync(id, appointmentDetailDto);
 
                 _logger.LogInformation($"Appointment details for appointment with Appointment.Id = {id} updated successfully.");
-                return Ok("Appointment exercise details updated successfully.");
+                return Ok("Detaily termínu úspešne aktualizované.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when updating appointment details for appointment with Appointment.Id = {id}");
-                return BadRequest("Error when updating appointment details");
+                return BadRequest("Chyba pri aktualizácii detailov termínu.");
             }
         }
 
@@ -284,12 +283,12 @@ namespace diploma_thesis_backend.Controllers
                 await _appointmentsService.FinishBookedAppointmentAsync(id);
 
                 _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {id} finished successfully.");
-                return Ok("Appointment finished successfully.");
+                return Ok("Termín úspešne dokončený.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error finishing booked appointment with BookedAppointment.Id = {id}.");
-                return BadRequest("Error finishing booked appointment.");
+                return BadRequest("Chyba pri dokončení termínu.");
             }
         }
 
@@ -308,7 +307,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
-                return BadRequest("Error when deleting booked appointment.");
+                return BadRequest("Chyba pri zrušení termínu.");
             }
         }
 
@@ -327,7 +326,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when deleting appointment with Appointment.Id = {appointmentId}.");
-                return BadRequest("Error when deleting appointment");
+                return BadRequest("Chyba pri mazaní termínu.");
             }
         }
 

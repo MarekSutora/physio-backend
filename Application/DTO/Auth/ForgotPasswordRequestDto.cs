@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTO.Auth
 {
     public class ForgotPasswordRequestDto
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Attribute Email is required.")]
+        [EmailAddress(ErrorMessage = "Attribute Email must be a valid email address.")]
         public string Email { get; set; }
-
     }
 }

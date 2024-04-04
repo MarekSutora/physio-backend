@@ -36,13 +36,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No service type monthly finished appointments counts found.");
-                    return NotFound("No service type monthly finished appointments counts found.");
+                    return NotFound("Nenašli sa žiadne údaje o počte dokončených stretnutí podľa typov služieb za mesiac.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching service type monthly finished appointments counts.");
-                return BadRequest("An unexpected error occurred. Please try again later.");
+                return BadRequest("Chyba pri získavaní štatistík služieb.");
             }
         }
 
@@ -63,13 +63,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No total revenue statistics found.");
-                    return NotFound("No total revenue statistics found.");
+                    return NotFound("Nenašli sa žiadne štatistiky celkových príjmov.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching total revenue statistics.");
-                return BadRequest("An unexpected error occurred. Please try again later.");
+                return BadRequest("Chyba pri získavaní štatistík celkových príjmov.");
             }
         }
 
@@ -90,13 +90,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No new clients trend statistics found.");
-                    return NotFound("No new clients trend statistics found.");
+                    return NotFound("Nenašli sa žiadne štatistiky trendov nových klientov.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching new clients trend.");
-                return BadRequest("An unexpected error occurred. Please try again later.");
+                return BadRequest("Chyba pri získavaní štatistík trendu nových klientov.");
             }
         }
 
@@ -117,13 +117,14 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No blog post views statistics found.");
-                    return NotFound("No blog post views statistics found.");
+                    return NotFound("Nenašli sa žiadne štatistiky zobrazení článkov blogu.");
+
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching blog post views statistics.");
-                return BadRequest("An unexpected error occurred. Please try again later.");
+                return BadRequest("Chyba pri získavaní štatistík zobrazení článkov blogu.");
             }
         }
     }

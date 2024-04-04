@@ -11,7 +11,7 @@ namespace Application.Services.Interfaces
 
         Task<IEnumerable<ClientNoteDto>> GetNotesForClientAsync(int personId);
 
-        Task AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto);
+        Task<int> AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto);
 
         Task DeleteNoteAsync(int noteId);
     }

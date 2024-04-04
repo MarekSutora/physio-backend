@@ -40,13 +40,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No service types found");
-                    return NotFound("No service types found");
+                    return NotFound("Neboli nájdené žiadne typy služieb.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving service types");
-                return BadRequest("An error occurred while retrieving service types");
+                return BadRequest("Pri získavaní typov služieb došlo k chybe.");
             }
         }
 
@@ -66,13 +66,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation($"Service type with slug {slug} not found");
-                    return NotFound("Service type not found");
+                    return NotFound("Typ služby nebol nájdený.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving service type by slug {ServiceTypeSlug}", slug);
-                return BadRequest("An error occurred while retrieving the service type");
+                return BadRequest("Pri získavaní typu služby došlo k chybe.");
             }
         }
 
@@ -96,7 +96,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating service type");
-                return BadRequest("An error occurred while creating the service type");
+                return BadRequest("Pri vytváraní typu služby došlo k chybe.");
             }
         }
 
@@ -110,12 +110,12 @@ namespace diploma_thesis_backend.Controllers
                 await _serviceTypesService.UpdateServiceTypeAsync(updateServiceTypeDto);
 
                 _logger.LogInformation($"Service type updated successfully with ID {updateServiceTypeDto.Id}");
-                return Ok("Service type updated successfully");
+                return Ok("Typ služby bol úspešne aktualizovaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating service type");
-                return BadRequest("An error occurred while updating the service type");
+                return BadRequest("Pri aktualizácii typu služby došlo k chybe.");
             }
         }
 
@@ -129,12 +129,12 @@ namespace diploma_thesis_backend.Controllers
                 await _serviceTypesService.SoftDeleteServiceTypeAsync(id);
 
                 _logger.LogInformation($"Service type with ID {id} successfully deleted");
-                return Ok("Service type successfully deleted");
+                return Ok("Typ služby bol úspešne vymazaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting service type with ID {ServiceTypeId}", id);
-                return BadRequest("An error occurred while deleting the service type");
+                return BadRequest("Pri vymazávaní typu služby došlo k chybe.");
             }
         }
     }

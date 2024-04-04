@@ -25,7 +25,7 @@ namespace Application.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto)
+        public async Task<int> AddNoteToClientAsync(CreateClientNoteDto createClientNoteDto)
         {
 
             var clientExists = await _context.Persons.AnyAsync(p => p.Id == createClientNoteDto.PersonId);
@@ -42,6 +42,8 @@ namespace Application.Services.Implementation
 
             _context.ClientNotes.Add(clientNote);
             await _context.SaveChangesAsync();
+
+            return clientNote.Id;
         }
 
         public async Task DeleteNoteAsync(int noteId)

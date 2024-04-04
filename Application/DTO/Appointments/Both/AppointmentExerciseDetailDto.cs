@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTO.Appointments.Response;
 
-namespace Application.DTO.Appointments.Response
+namespace Application.DTO.Appointments.Both
 {
     public class AppointmentExerciseDetailDto
     {
+        [Required(ErrorMessage = "Attribute ExerciseType is required.")]
         public ExerciseTypeDto ExerciseType { get; set; }
         public decimal? Weight { get; set; }
         public int? NumberOfRepetitions { get; set; }

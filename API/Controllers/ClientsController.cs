@@ -38,13 +38,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No Clients found.");
-                    return NotFound("No Clients found.");
+                    return NotFound("Neboli nájdení žiadni klienti.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving all Clients.");
-                return BadRequest("Error retrieving all Clients.");
+                return BadRequest("Chyba pri načítaní všetkých klientov.");
             }
         }
 
@@ -58,7 +58,7 @@ namespace diploma_thesis_backend.Controllers
                 if (!IsAdminOrAccessingTheirOwnData(personId))
                 {
                     _logger.LogWarning($"User with userId = {User.FindFirstValue("userId")} is not authorized to view Client with Person.Id = {personId}");
-                    return Unauthorized("You are not authorized to view this data.");
+                    return Unauthorized("Nie ste autorizovaný.");
                 }
 
                 var client = await _clientsService.GetClientByIdAsync(personId);
@@ -71,13 +71,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation($"Client with ID {personId} not found.");
-                    return NotFound("Client not found.");
+                    return NotFound("Klient nebol nájdený.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error retrieving Client by Person.Id.");
-                return BadRequest("Error retrieving Client by Person.Id.");
+                return BadRequest("Chyba pri načítaní klienta.");
             }
         }
 
@@ -98,13 +98,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation($"Client with Person.Id {personId} has no notes.");
-                    return NotFound("Client has no notes.");
+                    return NotFound("Klient nemá žiadne poznámky.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving Client's notes.");
-                return BadRequest("Error retrieving Client's notes.");
+                return BadRequest("Chyba pri načítaní poznámok klienta.");
             }
         }
 
@@ -115,18 +115,14 @@ namespace diploma_thesis_backend.Controllers
             _logger.LogInformation($"Adding note to Client with ID {personId}");
             try
             {
-                if (personId != createClientNoteDto.PersonId)
-                {
-                    return BadRequest("Client ID mismatch.");
-                }
 
-                await _clientsService.AddNoteToClientAsync(createClientNoteDto);
-                return Ok("Note successfully added.");
+                var noteId = await _clientsService.AddNoteToClientAsync(createClientNoteDto);
+                return Ok(noteId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding note to Client.");
-                return BadRequest("Error adding note to Client.");
+                return BadRequest("Chyba pri pridaní poznámky klientovi.");
             }
         }
 
@@ -140,12 +136,12 @@ namespace diploma_thesis_backend.Controllers
                 await _clientsService.DeleteNoteAsync(noteId);
 
                 _logger.LogInformation($"Note with Note.Id {noteId} successfully deleted.");
-                return Ok("Note successfully deleted.");
+                return Ok("Poznámka bola úspešne zmazaná.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting Note.");
-                return BadRequest("Error deleting Note.");
+                return BadRequest("Chyba pri mazaní poznámky.");
             }
         }
 

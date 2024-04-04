@@ -7,6 +7,7 @@ using AutoMapper;
 using DataAccess.Entities;
 using Application.Common.Email;
 using Microsoft.AspNetCore.Identity;
+using Application.DTO.Appointments.Both;
 
 namespace Application.Services.Implementation
 {
@@ -198,7 +199,7 @@ namespace Application.Services.Implementation
 
             var bookedAppointment = new BookedAppointment
             {
-                AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.astdcId,
+                AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.AstdcId,
                 AppointmentBookedDate = DateTime.Now,
                 PersonId = personId,
             };
@@ -209,7 +210,7 @@ namespace Application.Services.Implementation
                     .ThenInclude(stdc => stdc.ServiceType)
                 .Include(astdc => astdc.ServiceTypeDurationCost)
                     .ThenInclude(stdc => stdc.DurationCost)
-                .FirstOrDefaultAsync(astdc => astdc.Id == createBookedAppointmentDto.astdcId);
+                .FirstOrDefaultAsync(astdc => astdc.Id == createBookedAppointmentDto.AstdcId);
 
             if (appointmentServiceTypeDurationCost == null)
             {
@@ -220,7 +221,7 @@ namespace Application.Services.Implementation
 
             // Check if the appointment is fully booked
             var existingBookingsCount = await _context.BookedAppointments
-                .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == createBookedAppointmentDto.astdcId);
+                .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == createBookedAppointmentDto.AstdcId);
 
             if (existingBookingsCount >= capacity)
             {

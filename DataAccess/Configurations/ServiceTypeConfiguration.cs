@@ -31,6 +31,10 @@ namespace DataAccess.Configurations
 
             builder.Property(st => st.Active)
                 .HasDefaultValue(true);
+
+            builder.Property(st => st.IconName)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }

@@ -5,6 +5,7 @@ using DataAccess.Entities;
 using Application.DTO.Appointments;
 using Application.DTO.Appointments.Request;
 using Application.DTO.Appointments.Response;
+using Application.DTO.Appointments.Both;
 
 namespace Application.Services.Interfaces
 {

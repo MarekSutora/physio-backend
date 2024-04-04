@@ -10,6 +10,7 @@ using System.Text;
 using Application.DTO.Appointments.Response;
 using Application.DTO.Clients.Request;
 using DataAccess.Entities;
+using Application.DTO.Appointments.Both;
 
 namespace Application.Mappings
 {

@@ -25,12 +25,12 @@ namespace diploma_thesis_backend.Controllers
             {
                 await _emailService.SendContactFormEmailAsync(request);
                 _logger.LogInformation("Contact form email sent.");
-                return Ok();
+                return Ok("Email úspešne odoslaný.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending contact form email.");
-                return BadRequest("An error occurred while sending contact form email.");
+                return BadRequest("Pri odosielaní emailu z kontaktného formulára došlo k chybe.");
             }
         }
     }

@@ -54,16 +54,16 @@ namespace diploma_thesis_backend.Controllers
 
                 return registrationResult switch
                 {
-                    RegisterUserResult.Success => Ok(new { message = "Registrácia prebehla úspešne." }),
-                    RegisterUserResult.EmailAlreadyInUse => BadRequest(new { message = "Email už existuje." }),
-                    RegisterUserResult.Failure => BadRequest(new { message = "Nastala chyba počas registrácie." }),
-                    _ => BadRequest(new { message = "Nastala chyba počas registrácie." }),
+                    RegisterUserResult.Success => Ok("Registrácia prebehla úspešne."),
+                    RegisterUserResult.EmailAlreadyInUse => BadRequest("Email už existuje."),
+                    RegisterUserResult.Failure => BadRequest("Nastala chyba počas registrácie."),
+                    _ => BadRequest("Nastala chyba počas registrácie."),
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred during client registration.");
-                return BadRequest("An error occurred during registration.");
+                return BadRequest("Nastala chyba počas registrácie.");
             }
         }
 
@@ -104,7 +104,7 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba pri prihlasovaní.");
+                _logger.LogError(ex, "Error when logging in a user.");
                 return BadRequest("Nastala chyba pri prihlasovaní.");
             }
         }
@@ -128,7 +128,7 @@ namespace diploma_thesis_backend.Controllers
                 }
                 else
                 {
-                    return Unauthorized("Invalid refresh token.");
+                    return Unauthorized("Nevalidný refresh token.");
                 }
             }
             catch (Exception ex)

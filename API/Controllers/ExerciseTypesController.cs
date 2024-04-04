@@ -34,13 +34,13 @@ namespace diploma_thesis_backend.Controllers
                 else
                 {
                     _logger.LogInformation("No exercise types found.");
-                    return NotFound("No exercise types found.");
+                    return NotFound("Neboli nájdené žiadne typy cvičení.");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting all exercise types.");
-                return BadRequest("Error getting all exercise types.");
+                return BadRequest("Chyba pri získavaní všetkých typov cvičení.");
             }
         }
     }
