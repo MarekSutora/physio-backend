@@ -131,6 +131,13 @@ namespace Application.Services.Implementation
                 return new LoginUserResult { Outcome = LoginUserOutcome.UserNotRegistered };
             }
 
+            var emailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
+            if (!emailConfirmed)
+            {
+                return new LoginUserResult { Outcome = LoginUserOutcome.EmailNotConfirmed };
+            }
+
             var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
             if (!result)
             {

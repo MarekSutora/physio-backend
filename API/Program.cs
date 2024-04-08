@@ -56,6 +56,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -64,8 +66,6 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
-app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
@@ -77,7 +77,6 @@ else
 }
 
 app.UseAuthentication();
-app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();

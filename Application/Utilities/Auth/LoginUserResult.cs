@@ -25,7 +25,7 @@ namespace Application.Common.Auth
             Success,
             UserNotRegistered,
             InvalidCredentials,
-            AccountNotConfirmed
+            EmailNotConfirmed
         }
     }
 }

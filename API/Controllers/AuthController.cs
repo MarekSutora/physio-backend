@@ -97,6 +97,10 @@ namespace diploma_thesis_backend.Controllers
                         }
                     });
                 }
+                else if (result.Outcome == LoginUserResult.LoginUserOutcome.EmailNotConfirmed)
+                {
+                    return BadRequest("Email nie je potvrdený.");
+                }
                 else
                 {
                     return BadRequest("Nesprávne prihlasovacie údaje.");
@@ -133,8 +137,8 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba pri získavaní refresh tokenu.");
-                return BadRequest("Nastala chyba pri získavaní refresh tokenu");
+                _logger.LogError(ex, "Error when refreshing token.");
+                return BadRequest("Nastala chyba pri refreshovani tokenu.");
             }
         }
 
@@ -146,12 +150,12 @@ namespace diploma_thesis_backend.Controllers
             {
                 await _authService.ResetPasswordAsync(resetPasswordRequestDto);
 
-                return Ok(new { message = "Heslo bolo úspešne zmenené." });
+                return Ok("Heslo bolo úspešne zmenené.");
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba pri zmene hesla.");
+                _logger.LogError(ex, "Error when resetting password.");
                 return BadRequest("Nastala chyba pri zmene hesla.");
             }
         }
@@ -167,7 +171,7 @@ namespace diploma_thesis_backend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Nastala chyba pri odosielaní emailu na obnovenie hesla.");
+                _logger.LogError(ex, "Error when sending email.");
                 return BadRequest("Nastala chyba pri odosielaní emailu na obnovenie hesla.");
             }
         }
