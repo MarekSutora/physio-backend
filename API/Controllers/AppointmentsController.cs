@@ -52,10 +52,10 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("{appointmentId}")]
-        public async Task<IActionResult> GetAppointmentByIdAsync(int appointmentId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAppointmentByIdAsync(int id)
         {
-            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {appointmentId}.");
+            _logger.LogInformation($"Retrieving appointment with Appointment.Id = {id}.");
             try
             {
                 var jwtUserId = User.FindFirstValue("userId");
@@ -65,26 +65,26 @@ namespace diploma_thesis_backend.Controllers
                     return Unauthorized("Nie ste autorizovaný.");
                 }
 
-                var appointment = await _appointmentsService.GetAppointmentByIdAsync(appointmentId, jwtUserId);
+                var appointment = await _appointmentsService.GetAppointmentByIdAsync(id, jwtUserId);
                 if (appointment != null)
                 {
-                    _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} retrieved successfully.");
+                    _logger.LogInformation($"Appointment with Appointment.Id = {id} retrieved successfully.");
                     return Ok(appointment);
                 }
                 else
                 {
-                    _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} not found.");
+                    _logger.LogInformation($"Appointment with Appointment.Id = {id} not found.");
                     return NotFound("Termín nebol nájdený.");
                 }
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {appointmentId}");
+                _logger.LogWarning(ex, $"User with userId = {User.FindFirstValue("userId")} is not authorized to view appointment with Appointment.Id = {id}");
                 return Unauthorized("Nie ste autorizovaný.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {appointmentId}");
+                _logger.LogError(ex, $"Error when retrieving appointment with Appointment.Id = {id}");
                 return BadRequest("Chyba pri získavaní termínu.");
             }
         }
@@ -232,7 +232,7 @@ namespace diploma_thesis_backend.Controllers
 
         [Authorize]
         [HttpPost("booked/{personId}")]
-        public async Task<IActionResult> CreateClientBookedAppointmentAsync(int personId, [FromBody] CreateBookedAppointmentDto createBookedAppointmentDto)
+        public async Task<IActionResult> CreateBookedAppointmentAsync(int personId, [FromBody] CreateBookedAppointmentDto createBookedAppointmentDto)
         {
             _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}.");
             try
@@ -293,39 +293,39 @@ namespace diploma_thesis_backend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("booked/{bookedAppointmentId}")]
-        public async Task<IActionResult> DeleteBookedAppointmentAsync(int bookedAppointmentId)
+        [HttpDelete("booked/{id}")]
+        public async Task<IActionResult> DeleteBookedAppointmentAsync(int id)
         {
-            _logger.LogInformation($"Deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
+            _logger.LogInformation($"Deleting booked appointment with BookedAppointment.Id = {id}.");
             try
             {
-                await _appointmentsService.DeleteBookedAppointmentAsync(bookedAppointmentId);
+                await _appointmentsService.DeleteBookedAppointmentAsync(id);
 
-                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {bookedAppointmentId} deleted successfully.");
+                _logger.LogInformation($"Booked appointment with BookedAppointment.Id = {id} deleted successfully.");
                 return Ok("Termín úspešne zrušený.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when deleting booked appointment with BookedAppointment.Id = {bookedAppointmentId}.");
+                _logger.LogError(ex, $"Error when deleting booked appointment with BookedAppointment.Id = {id}.");
                 return BadRequest("Chyba pri zrušení termínu.");
             }
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{appointmentId}")]
-        public async Task<IActionResult> DeleteAppointmentAsync(int appointmentId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAppointmentAsync(int id)
         {
-            _logger.LogInformation($"Deleting appointment with Appointment.Id = {appointmentId}.");
+            _logger.LogInformation($"Deleting appointment with Appointment.Id = {id}.");
             try
             {
-                await _appointmentsService.DeleteAppointmentAsync(appointmentId);
+                await _appointmentsService.DeleteAppointmentAsync(id);
 
-                _logger.LogInformation($"Appointment with Appointment.Id = {appointmentId} deleted successfully.");
+                _logger.LogInformation($"Appointment with Appointment.Id = {id} deleted successfully.");
                 return Ok("Termín úspešne vymazaný.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error when deleting appointment with Appointment.Id = {appointmentId}.");
+                _logger.LogError(ex, $"Error when deleting appointment with Appointment.Id = {id}.");
                 return BadRequest("Chyba pri mazaní termínu.");
             }
         }

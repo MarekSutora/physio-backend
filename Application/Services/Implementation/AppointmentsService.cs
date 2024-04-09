@@ -28,42 +28,30 @@ namespace Application.Services.Implementation
 
         public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()
         {
-
-            var unBookedAppointmentsQuery = _context.AppointmentServiceTypeDurationCosts
-                .Include(astdc => astdc.BookedAppointments)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.ServiceType)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                .Where(astdc => astdc.BookedAppointments.Count < astdc.Appointment.Capacity
-                        && astdc.Appointment.StartTime > DateTime.UtcNow.AddHours(1) && astdc.ServiceTypeDurationCost.DateTo == null)
-                .Select(astdc => new
+            var unBookedAppointments = await _context.Appointments
+                .Where(a => a.AppointmentServiceTypeDurationCosts
+                    .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished) < a.Capacity
+                    && a.StartTime > DateTime.UtcNow.AddHours(1))
+                .Select(a => new UnbookedAppointmentDto
                 {
-                    astdc.Appointment,
-                    BookedCount = astdc.BookedAppointments.Count,
-                    ServiceTypeInfo = new ServiceTypeInfoDto
-                    {
-                        AstdcId = astdc.Id,
-                        Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
-                        DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
-                        Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
-                        HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
-                    }
-                });
+                    Id = a.Id,
+                    StartTime = a.StartTime,
+                    Capacity = a.Capacity,
+                    ReservedCount = a.AppointmentServiceTypeDurationCosts
+                        .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished),
+                    ServiceTypeInfos = a.AppointmentServiceTypeDurationCosts
+                        .Select(astdc => new ServiceTypeInfoDto
+                        {
+                            AstdcId = astdc.Id,
+                            Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
+                            DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+                            Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
+                            HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
+                        }).ToList()
+                }).ToListAsync();
 
-            var groupedAppointments = (await unBookedAppointmentsQuery.ToListAsync())
-                .GroupBy(x => x.Appointment)
-                .OrderBy(g => g.Key.StartTime)
-                .Select(g => new UnbookedAppointmentDto
-                {
-                    Id = g.Key.Id,
-                    StartTime = g.Key.StartTime,
-                    Capacity = g.Key.Capacity,
-                    ReservedCount = g.Sum(x => x.BookedCount), // Aggregate the count here
-                    ServiceTypeInfos = g.Select(x => x.ServiceTypeInfo).ToList()
-                });
 
-            return groupedAppointments.ToList();
+            return unBookedAppointments;
         }
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId, string userId)
@@ -191,42 +179,34 @@ namespace Application.Services.Implementation
         {
 
             var client = await _context.Persons.FindAsync(personId);
+            if (client == null) throw new Exception("Client not found.");
 
-            if (client == null)
-            {
-                throw new Exception("Client not found.");
-            }
+            var astdc = await _context.AppointmentServiceTypeDurationCosts
+                          .Include(x => x.Appointment)
+                          .ThenInclude(x => x.AppointmentServiceTypeDurationCosts)
+                          .ThenInclude(x => x.BookedAppointments)
+                          .FirstOrDefaultAsync(x => x.Id == createBookedAppointmentDto.AstdcId);
+
+            if (astdc == null) throw new Exception("AppointmentServiceTypeDurationCost not found.");
+            if (astdc.Appointment == null) throw new Exception("Appointment not found.");
+
+            bool isAlreadyBooked = astdc.Appointment.AppointmentServiceTypeDurationCosts
+                          .SelectMany(x => x.BookedAppointments)
+                          .Any(ba => ba.PersonId == personId);
+
+            if (isAlreadyBooked) throw new Exception("Client has already booked this appointment.");
+
+            int totalBookings = astdc.Appointment.AppointmentServiceTypeDurationCosts
+                    .Sum(x => x.BookedAppointments.Count);
+
+            if (totalBookings >= astdc.Appointment.Capacity) throw new Exception("Appointment is fully booked.");
 
             var bookedAppointment = new BookedAppointment
             {
                 AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.AstdcId,
-                AppointmentBookedDate = DateTime.Now,
-                PersonId = personId,
+                AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
+                PersonId = personId
             };
-
-            var appointmentServiceTypeDurationCost = await _context.AppointmentServiceTypeDurationCosts
-                .Include(astdc => astdc.Appointment)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.ServiceType)
-                .Include(astdc => astdc.ServiceTypeDurationCost)
-                    .ThenInclude(stdc => stdc.DurationCost)
-                .FirstOrDefaultAsync(astdc => astdc.Id == createBookedAppointmentDto.AstdcId);
-
-            if (appointmentServiceTypeDurationCost == null)
-            {
-                throw new Exception("AppointmentServiceTypeDurationCost not found.");
-            }
-
-            var capacity = appointmentServiceTypeDurationCost.Appointment.Capacity;
-
-            // Check if the appointment is fully booked
-            var existingBookingsCount = await _context.BookedAppointments
-                .CountAsync(ba => ba.AppointmentServiceTypeDurationCostId == createBookedAppointmentDto.AstdcId);
-
-            if (existingBookingsCount >= capacity)
-            {
-                throw new Exception("Appointment is fully booked.");
-            }
 
             _context.BookedAppointments.Add(bookedAppointment);
 
