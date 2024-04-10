@@ -187,7 +187,7 @@ namespace Application.Services.Implementation
             {
                 try
                 {
-                    var client = await _context.Persons.FindAsync(personId);
+                    var client = await _context.Persons.Include(p => p.ApplicationUser).FirstOrDefaultAsync(p => p.ApplicationUser.PersonId == personId);
                     if (client == null) throw new Exception("Client not found.");
 
                     var astdc = await _context.AppointmentServiceTypeDurationCosts
