@@ -236,10 +236,6 @@ namespace diploma_thesis_backend.Controllers
             _logger.LogInformation($"Retrieving booked appointments for Client with Person.Id = {personId}.");
             try
             {
-                if (!IsAdminOrAccessingTheirOwnData(personId))
-                {
-                    return Unauthorized("You are not authorized to view these appointments.");
-                }
 
                 await _appointmentsService.CreateBookedAppointmentAsync(createBookedAppointmentDto, personId);
 
@@ -249,7 +245,7 @@ namespace diploma_thesis_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error when retrieving booked appointments for Client with Person.Id = {personId}.");
-                return BadRequest("Chyba pri získavaní rezervovaných termínov klientom.");
+                return BadRequest("Chyba pri rezervovaní termínu klientom.");
             }
         }
 

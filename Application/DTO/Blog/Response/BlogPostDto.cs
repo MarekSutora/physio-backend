@@ -13,5 +13,6 @@ namespace Application.DTO.Blog.Response
         public string MainImageUrl { get; set; }
         public bool IsHidden { get; set; } = false;
         public string Slug { get; set; }
+        public int ViewCount { get; set; } = 0;
     }
 }

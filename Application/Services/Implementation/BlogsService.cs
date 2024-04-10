@@ -73,6 +73,27 @@ namespace Application.Services.Implementation
             if (blogPost == null) throw new Exception($"Blog post with slug {slug} not found");
 
             blogPost.ViewCount += 1;
+
+            var currentYear = DateTime.UtcNow.Year;
+            var currentMonth = DateTime.UtcNow.Month;
+
+            var stats = await _context.BlogPostsViewsStats
+                                      .FirstOrDefaultAsync(s => s.Year == currentYear && s.Month == currentMonth);
+            if (stats == null)
+            {
+                var newStats = new BlogPostsViewsStats
+                {
+                    Year = currentYear,
+                    Month = currentMonth,
+                    ViewCount = 1,
+                };
+                _context.BlogPostsViewsStats.Add(newStats);
+            }
+            else
+            {
+                stats.ViewCount += 1;
+            }
+
             await _context.SaveChangesAsync();
         }
 

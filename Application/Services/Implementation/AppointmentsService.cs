@@ -48,7 +48,7 @@ namespace Application.Services.Implementation
                             Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
                             HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
                         }).ToList()
-                }).ToListAsync();
+                }).OrderBy(u => u.StartTime).ToListAsync();
 
 
             return unBookedAppointments;
@@ -157,6 +157,10 @@ namespace Application.Services.Implementation
 
         public async Task CreateAppointmentAsync(CreateAppointmentDto createAppointmentDto)
         {
+            if (createAppointmentDto.StdcIds.Count > 1 && createAppointmentDto.Capacity > 1)
+            {
+                throw new Exception("Only one service type can be selected for multiple capacity appointments.");
+            }
 
             var appointment = new Appointment
             {
@@ -168,6 +172,7 @@ namespace Application.Services.Implementation
             var stdcs = await _context.ServiceTypeDurationCosts
                                       .Where(stdc => createAppointmentDto.StdcIds.Contains(stdc.Id))
                                       .ToListAsync();
+
 
             appointment.ServiceTypeDurationCosts.AddRange(stdcs);
 
@@ -194,6 +199,8 @@ namespace Application.Services.Implementation
                     if (astdc == null) throw new Exception("AppointmentServiceTypeDurationCost not found.");
                     if (astdc.Appointment == null) throw new Exception("Appointment not found.");
 
+                    if (astdc.Appointment.StartTime < DateTime.UtcNow.AddHours(2)) throw new Exception("Appointment has already started.");
+
                     bool isAlreadyBooked = astdc.Appointment.AppointmentServiceTypeDurationCosts
                                   .SelectMany(x => x.BookedAppointments)
                                   .Any(ba => ba.PersonId == personId);
@@ -208,7 +215,7 @@ namespace Application.Services.Implementation
                     var bookedAppointment = new BookedAppointment
                     {
                         AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.AstdcId,
-                        AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
+                        AppointmentBookedDate = DateTime.UtcNow.AddHours(2),
                         PersonId = personId
                     };
 

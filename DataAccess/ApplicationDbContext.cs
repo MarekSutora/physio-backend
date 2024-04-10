@@ -21,7 +21,7 @@ namespace DataAccess
         public DbSet<Person> Persons { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceTypeDurationCost> ServiceTypeDurationCosts { get; set; }
-
+        public DbSet<BlogPostsViewsStats> BlogPostsViewsStats { get; set; }
 
         public ApplicationDbContext(DbContextOptions options)
         : base(options)
@@ -74,6 +74,11 @@ namespace DataAccess
             builder.Entity<ApplicationUser>(entity =>
             {
                 entity.HasIndex(e => e.PersonId).IsUnique();
+            });
+
+            builder.Entity<BlogPostsViewsStats>(entity =>
+            {
+                entity.HasKey(e => new { e.Year, e.Month });
             });
 
             builder.SeedApplicationUsers();
