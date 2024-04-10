@@ -30,9 +30,7 @@ namespace Application.Services.Implementation
         {
             var unBookedAppointments = await _context.Appointments
                 .Where(a => a.AppointmentServiceTypeDurationCosts
-                    .Any(astdc => astdc.BookedAppointments.Count(ba => !ba.IsFinished) < a.Capacity
-                                  && astdc.ServiceTypeDurationCost.DateTo == null
-                                  && astdc.ServiceTypeDurationCost.ServiceType.Active)
+                    .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished) < a.Capacity
                     && a.StartTime > DateTime.UtcNow.AddHours(1))
                 .Select(a => new UnbookedAppointmentDto
                 {
@@ -42,7 +40,6 @@ namespace Application.Services.Implementation
                     ReservedCount = a.AppointmentServiceTypeDurationCosts
                         .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished),
                     ServiceTypeInfos = a.AppointmentServiceTypeDurationCosts
-                        .Where(astdc => astdc.ServiceTypeDurationCost.DateTo == null && astdc.ServiceTypeDurationCost.ServiceType.Active)
                         .Select(astdc => new ServiceTypeInfoDto
                         {
                             AstdcId = astdc.Id,
@@ -52,6 +49,7 @@ namespace Application.Services.Implementation
                             HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
                         }).ToList()
                 }).OrderBy(u => u.StartTime).ToListAsync();
+
 
             return unBookedAppointments;
         }
@@ -201,8 +199,6 @@ namespace Application.Services.Implementation
 
                     if (astdc == null) throw new Exception("AppointmentServiceTypeDurationCost not found.");
                     if (astdc.Appointment == null) throw new Exception("Appointment not found.");
-                    if (astdc.ServiceTypeDurationCost.DateTo.HasValue) throw new Exception("Appointment service changed values.");
-                    if (astdc.ServiceTypeDurationCost.ServiceType.Active == false) throw new Exception("Service type is not active.");
 
                     if (astdc.Appointment.StartTime < DateTime.UtcNow.AddHours(2)) throw new Exception("Appointment has already started.");
 
