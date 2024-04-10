@@ -28,15 +28,26 @@ namespace Application.Services.Implementation
 
         public async Task<List<UnbookedAppointmentDto>> GetUnbookedAppointmentsAsync()
         {
+            //filter those where astdc servicetype is inactive or servicetypedurationcost has dateto
+
             var unBookedAppointments = await _context.Appointments
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.BookedAppointments)
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.ServiceType)
+                .Include(a => a.AppointmentServiceTypeDurationCosts)
+                    .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                        .ThenInclude(stdc => stdc.DurationCost)
                 .Where(a => a.AppointmentServiceTypeDurationCosts
-                    .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished) < a.Capacity
-                    && a.StartTime > DateTime.UtcNow.AddHours(1))
-                .Select(a => new UnbookedAppointmentDto
+                                   .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished) < a.Capacity
+                                                      && a.StartTime > DateTime.UtcNow.AddHours(1))
+                .Select(a => new
                 {
                     Id = a.Id,
                     StartTime = a.StartTime,
                     Capacity = a.Capacity,
+                    isActive = a.AppointmentServiceTypeDurationCosts.All(astdc => astdc.ServiceTypeDurationCost.ServiceType.Active),
                     ReservedCount = a.AppointmentServiceTypeDurationCosts
                         .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished),
                     ServiceTypeInfos = a.AppointmentServiceTypeDurationCosts
@@ -50,10 +61,42 @@ namespace Application.Services.Implementation
                         }).ToList()
                 }).OrderBy(u => u.StartTime).ToListAsync();
 
+            var unBookedAppointmentsDto = unBookedAppointments
+                .Where(u => u.isActive)
+                .Select(u => new UnbookedAppointmentDto
+                {
+                    Id = u.Id,
+                    StartTime = u.StartTime,
+                    Capacity = u.Capacity,
+                    ReservedCount = u.ReservedCount,
+                    ServiceTypeInfos = u.ServiceTypeInfos
+                }).ToList();
 
-            return unBookedAppointments;
+
+            //var unBookedAppointments = await _context.Appointments
+            //    .Where(a => a.AppointmentServiceTypeDurationCosts
+            //        .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished) < a.Capacity
+            //        && a.StartTime > DateTime.UtcNow.AddHours(1))
+            //    .Select(a => new UnbookedAppointmentDto
+            //    {
+            //        Id = a.Id,
+            //        StartTime = a.StartTime,
+            //        Capacity = a.Capacity,
+            //        ReservedCount = a.AppointmentServiceTypeDurationCosts
+            //            .SelectMany(astdc => astdc.BookedAppointments).Count(ba => !ba.IsFinished),
+            //        ServiceTypeInfos = a.AppointmentServiceTypeDurationCosts
+            //            .Select(astdc => new ServiceTypeInfoDto
+            //            {
+            //                AstdcId = astdc.Id,
+            //                Name = astdc.ServiceTypeDurationCost.ServiceType.Name,
+            //                DurationMinutes = astdc.ServiceTypeDurationCost.DurationCost.DurationMinutes,
+            //                Cost = astdc.ServiceTypeDurationCost.DurationCost.Cost,
+            //                HexColor = astdc.ServiceTypeDurationCost.ServiceType.HexColor
+            //            }).ToList()
+            //    }).OrderBy(u => u.StartTime).ToListAsync();
+
+            return unBookedAppointmentsDto;
         }
-
 
         public async Task<AppointmentDto> GetAppointmentByIdAsync(int appointmentId, string userId)
         {
