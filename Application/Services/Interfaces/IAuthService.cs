@@ -1,5 +1,4 @@
 ﻿using Application.Common.Auth;
-using Azure;
 using Application.DTO.Auth;
 
 namespace Application.Services.Interfaces

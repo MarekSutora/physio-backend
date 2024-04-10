@@ -1,13 +1,7 @@
 ﻿using Application.Services.Interfaces;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Shared.DTO.Statistics.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services.Implementation
 {

@@ -1,16 +1,7 @@
-﻿using AutoMapper;
-using Application.DTO.Clients.Response;
-using Application.DTO.ServiceType.Request;
-using Application.DTO.ServiceType.Response;
-using Application.DTO.Blog.Request;
-using Application.DTO.Blog.Response;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Text;
+﻿using Application.DTO.Appointments.Both;
 using Application.DTO.Appointments.Response;
-using Application.DTO.Clients.Request;
+using AutoMapper;
 using DataAccess.Entities;
-using Application.DTO.Appointments.Both;
 
 namespace Application.Mappings
 {

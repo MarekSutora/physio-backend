@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Common.Auth;
 using Application.DTO.Auth;
 using Application.Services.Interfaces;
-using Application.Common.Auth;
+using Microsoft.AspNetCore.Mvc;
 
 namespace diploma_thesis_backend.Controllers
 {

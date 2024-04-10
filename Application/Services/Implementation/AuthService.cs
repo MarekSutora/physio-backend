@@ -1,20 +1,20 @@
-﻿using Application.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+﻿using Application.Common.Auth;
+using Application.Common.Email;
 using Application.DTO.Auth;
+using Application.Services.Interfaces;
+using DataAccess;
+using DataAccess.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
-using Application.Common.Auth;
-using static Application.Common.Auth.LoginUserResult;
 using System.Security.Cryptography;
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
-using Application.Common.Email;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using DataAccess.Entities;
+using System.Text;
+using static Application.Common.Auth.LoginUserResult;
 
 namespace Application.Services.Implementation
 {
@@ -64,7 +64,6 @@ namespace Application.Services.Implementation
                         return RegisterUserResult.EmailAlreadyInUse;
                     }
 
-                    // Create a new Person entity
                     var person = new Person
                     {
                         FirstName = registerRequestDto.FirstName,
@@ -107,7 +106,6 @@ namespace Application.Services.Implementation
                 }
                 catch
                 {
-                    // If an exception is thrown, roll back all database operations
                     await transaction.RollbackAsync();
                     throw;
                 }
@@ -220,7 +218,6 @@ namespace Application.Services.Implementation
             var endpointUri = new Uri(string.Concat($"{origin}/", route));
             var passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", encodedToken);
 
-            // Add email to the query string
             passwordResetUrl = QueryHelpers.AddQueryString(passwordResetUrl, "email", forgotPasswordRequestDto.Email);
 
             var emailRequest = new EmailRequest()

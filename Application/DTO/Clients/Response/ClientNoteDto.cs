@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTO.Clients.Response
+﻿namespace Application.DTO.Clients.Response
 {
     public class ClientNoteDto
     {

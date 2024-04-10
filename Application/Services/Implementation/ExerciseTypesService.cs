@@ -1,14 +1,9 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTO.Appointments.Response;
+using Application.Services.Interfaces;
 using AutoMapper;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Application.DTO.Appointments.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services.Implementation
 {

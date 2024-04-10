@@ -1,12 +1,8 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTO.ServiceType.Request;
+using Application.Services.Interfaces;
+using Application.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Application.DTO.ServiceType.Request;
-using System;
-using System.Threading.Tasks;
-using Application.Utilities;
-using System.Security.Claims;
 
 namespace diploma_thesis_backend.Controllers
 {

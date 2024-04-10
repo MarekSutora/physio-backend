@@ -1,18 +1,12 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTO.Blog.Request;
+using Application.DTO.Blog.Response;
+using Application.Services.Interfaces;
+using Application.Utilities;
 using AutoMapper;
 using DataAccess;
 using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Application.DTO.Blog.Request;
-using Application.DTO.Blog.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Data;
-using Application.Utilities;
-using Application.Common;
 
 namespace Application.Services.Implementation
 {

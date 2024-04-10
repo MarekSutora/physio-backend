@@ -1,13 +1,13 @@
-﻿using DataAccess;
-using Application.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Application.Common.Email;
+using Application.DTO.Appointments.Both;
 using Application.DTO.Appointments.Request;
 using Application.DTO.Appointments.Response;
+using Application.Services.Interfaces;
 using AutoMapper;
+using DataAccess;
 using DataAccess.Entities;
-using Application.Common.Email;
 using Microsoft.AspNetCore.Identity;
-using Application.DTO.Appointments.Both;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Implementation
 {
@@ -178,55 +178,76 @@ namespace Application.Services.Implementation
         public async Task CreateBookedAppointmentAsync(CreateBookedAppointmentDto createBookedAppointmentDto, int personId)
         {
 
-            var client = await _context.Persons.FindAsync(personId);
-            if (client == null) throw new Exception("Client not found.");
-
-            var astdc = await _context.AppointmentServiceTypeDurationCosts
-                          .Include(x => x.Appointment)
-                          .ThenInclude(x => x.AppointmentServiceTypeDurationCosts)
-                          .ThenInclude(x => x.BookedAppointments)
-                          .FirstOrDefaultAsync(x => x.Id == createBookedAppointmentDto.AstdcId);
-
-            if (astdc == null) throw new Exception("AppointmentServiceTypeDurationCost not found.");
-            if (astdc.Appointment == null) throw new Exception("Appointment not found.");
-
-            bool isAlreadyBooked = astdc.Appointment.AppointmentServiceTypeDurationCosts
-                          .SelectMany(x => x.BookedAppointments)
-                          .Any(ba => ba.PersonId == personId);
-
-            if (isAlreadyBooked) throw new Exception("Client has already booked this appointment.");
-
-            int totalBookings = astdc.Appointment.AppointmentServiceTypeDurationCosts
-                    .Sum(x => x.BookedAppointments.Count);
-
-            if (totalBookings >= astdc.Appointment.Capacity) throw new Exception("Appointment is fully booked.");
-
-            var bookedAppointment = new BookedAppointment
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.AstdcId,
-                AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
-                PersonId = personId
-            };
+                try
+                {
+                    var client = await _context.Persons.FindAsync(personId);
+                    if (client == null) throw new Exception("Client not found.");
 
-            _context.BookedAppointments.Add(bookedAppointment);
+                    var astdc = await _context.AppointmentServiceTypeDurationCosts
+                                  .Include(x => x.Appointment)
+                                  .ThenInclude(x => x.AppointmentServiceTypeDurationCosts)
+                                  .ThenInclude(x => x.BookedAppointments)
+                                  .FirstOrDefaultAsync(x => x.Id == createBookedAppointmentDto.AstdcId);
 
-            var emailRequest = new EmailRequest
-            {
-                ToEmail = client.ApplicationUser.UserName,
-                Subject = "Potvrdenie rezervácie",
-                Body = $@"<h1>Rezervácia úspešná</h1>
-                <p>Ďakujeme za rezerváciu. Tento email je potvrdením, že ste si úspešne zarezervovali termín.</p>
-                <p>Termín: {bookedAppointment.AppointmentServiceTypeDurationCost.Appointment.StartTime}</p>
-                <p>Typ služby: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name}</p>
-                <p>Čas trvania: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes} minút</p>
-                <p>Cena: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost.ToString("0.00")} €</p>
-                <p>Ďakujeme, že ste si vybrali naše služby.</p>
-                <p>S pozdravom,<br>Váš tím</p>"
-            };
+                    if (astdc == null) throw new Exception("AppointmentServiceTypeDurationCost not found.");
+                    if (astdc.Appointment == null) throw new Exception("Appointment not found.");
 
-            await _emailService.SendEmailAsync(emailRequest);
+                    bool isAlreadyBooked = astdc.Appointment.AppointmentServiceTypeDurationCosts
+                                  .SelectMany(x => x.BookedAppointments)
+                                  .Any(ba => ba.PersonId == personId);
 
-            await _context.SaveChangesAsync();
+                    if (isAlreadyBooked) throw new Exception("Client has already booked this appointment.");
+
+                    int totalBookings = astdc.Appointment.AppointmentServiceTypeDurationCosts
+                            .Sum(x => x.BookedAppointments.Count);
+
+                    if (totalBookings >= astdc.Appointment.Capacity) throw new Exception("Appointment is fully booked.");
+
+                    var bookedAppointment = new BookedAppointment
+                    {
+                        AppointmentServiceTypeDurationCostId = createBookedAppointmentDto.AstdcId,
+                        AppointmentBookedDate = DateTime.UtcNow.AddHours(1),
+                        PersonId = personId
+                    };
+
+                    _context.BookedAppointments.Add(bookedAppointment);
+                    await _context.SaveChangesAsync();
+
+                    bookedAppointment = await _context.BookedAppointments
+                        .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                            .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                                .ThenInclude(stdc => stdc.ServiceType)
+                        .Include(ba => ba.AppointmentServiceTypeDurationCost)
+                            .ThenInclude(astdc => astdc.ServiceTypeDurationCost)
+                                .ThenInclude(stdc => stdc.DurationCost)
+                        .FirstOrDefaultAsync(ba => ba.Id == bookedAppointment.Id);
+
+                    var emailRequest = new EmailRequest
+                    {
+                        ToEmail = client.ApplicationUser.UserName,
+                        Subject = "Potvrdenie rezervácie",
+                        Body = $@"<h1>Rezervácia úspešná</h1>
+                                <p>Ďakujeme za rezerváciu. Tento email je potvrdením, že ste si úspešne zarezervovali termín.</p>
+                                <p>Termín: {bookedAppointment.AppointmentServiceTypeDurationCost.Appointment.StartTime}</p>
+                                <p>Typ služby: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name}</p>
+                                <p>Čas trvania: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes} minút</p>
+                                <p>Cena: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost.ToString("0.00")} €</p>
+                                <p>Ďakujeme, že ste si vybrali naše služby.</p>
+                                <p>S pozdravom,<br>Váš tím</p>"
+                    };
+
+                    await _emailService.SendEmailAsync(emailRequest);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
+
         }
 
         public async Task UpdateAppointmentDetailsAsync(int appointmentId, AppointmentDetailDto appointmentExerciseDetails)

@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Application.Common.Auth;
+using Application.Common.Email;
+using Application.Mappings;
+using Application.Services.Implementation;
+using Application.Services.Interfaces;
+using DataAccess;
+using DataAccess.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Application.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Application.Common.Auth;
-using Application.Services.Implementation;
-using DataAccess;
-using Application.Mappings;
-using Application.Common.Email;
-using DataAccess.Entities;
+using System.Text;
 
 namespace Application
 {

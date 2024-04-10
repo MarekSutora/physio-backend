@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using Application.Common;
 using Application.DTO.Blog.Request;
 using Application.DTO.Blog.Response;
+using AutoMapper;
 using DataAccess.Entities;
-using Application.Common;
 
 namespace Application.Mappings
 {

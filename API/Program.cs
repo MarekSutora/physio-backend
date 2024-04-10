@@ -1,5 +1,4 @@
 using Application;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text.Json;
 

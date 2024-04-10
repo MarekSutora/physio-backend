@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.DTO.Clients.Request;
 using Application.Services.Interfaces;
-using Application.DTO.Clients.Request;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 namespace diploma_thesis_backend.Controllers
 {
     [Route("clients")]
