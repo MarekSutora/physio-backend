@@ -1,4 +1,5 @@
-﻿using Application.DTO.ServiceType.Request;
+﻿using Application.Common;
+using Application.DTO.ServiceType.Request;
 using Application.DTO.ServiceType.Response;
 using Application.Services.Interfaces;
 using Application.Utilities;
@@ -112,6 +113,7 @@ namespace Application.Services.Implementation
             }
 
             serviceType.Name = updateServiceTypeDto.Name;
+            serviceType.Slug = MappingUtilities.GenerateSlug(updateServiceTypeDto.Name);
             serviceType.Description = updateServiceTypeDto.Description;
             serviceType.HexColor = updateServiceTypeDto.HexColor;
             serviceType.IconName = updateServiceTypeDto.IconName;
