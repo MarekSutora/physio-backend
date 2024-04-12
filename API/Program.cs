@@ -4,10 +4,19 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.ConnectionString = aiConnectionString;
+});
+
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
     loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration);
+        .ReadFrom.Configuration(hostingContext.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console();
 });
 
 builder.Services.AddControllers()
@@ -52,8 +61,6 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader();
                       });
 });
-
-builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
