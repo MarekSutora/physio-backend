@@ -1,4 +1,5 @@
 using Application;
+using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 using System.Text.Json;
 
@@ -7,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
     loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration);
+        .ReadFrom.Configuration(hostingContext.Configuration).WriteTo.ApplicationInsights(new TelemetryConfiguration
+        {
+            ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
+        }, TelemetryConverter.Traces);
 });
 
 builder.Services.AddControllers()
