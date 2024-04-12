@@ -4,38 +4,29 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
-
-builder.Services.AddApplicationInsightsTelemetry(options =>
-{
-    options.ConnectionString = aiConnectionString;
-});
-
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
     loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration)
-        .Enrich.FromLogContext()
-        .WriteTo.Console();
+        .ReadFrom.Configuration(hostingContext.Configuration);
 });
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
     .ConfigureApiBehaviorOptions(options =>
+    {
+        var builtInFactory = options.InvalidModelStateResponseFactory;
+
+        options.InvalidModelStateResponseFactory = context =>
         {
-            var builtInFactory = options.InvalidModelStateResponseFactory;
+            var logger = context.HttpContext.RequestServices
+                                .GetRequiredService<ILogger<Program>>();
 
-            options.InvalidModelStateResponseFactory = context =>
-            {
-                var logger = context.HttpContext.RequestServices
-                                    .GetRequiredService<ILogger<Program>>();
+            logger.LogError("Invalid model state: {0}", context.ModelState);
 
-                logger.LogError("Invalid model state: {0}", context.ModelState);
-
-                return builtInFactory(context);
-            };
-        });
+            return builtInFactory(context);
+        };
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
