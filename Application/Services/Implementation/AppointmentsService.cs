@@ -281,7 +281,7 @@ namespace Application.Services.Implementation
                         Subject = "Potvrdenie rezervácie",
                         Body = $@"<h1>Rezervácia úspešná</h1>
                                 <p>Ďakujeme za rezerváciu. Tento email je potvrdením, že ste si úspešne zarezervovali termín.</p>
-                                <p>Termín: {bookedAppointment.AppointmentServiceTypeDurationCost.Appointment.StartTime}</p>
+                                <p>Termín: {bookedAppointment.AppointmentServiceTypeDurationCost.Appointment.StartTime.ToString("dd.MM.yyyy HH:mm")}</p>
                                 <p>Typ služby: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.ServiceType.Name}</p>
                                 <p>Čas trvania: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.DurationMinutes} minút</p>
                                 <p>Cena: {bookedAppointment.AppointmentServiceTypeDurationCost.ServiceTypeDurationCost.DurationCost.Cost.ToString("0.00")} €</p>
