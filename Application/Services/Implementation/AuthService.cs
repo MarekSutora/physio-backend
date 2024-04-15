@@ -136,6 +136,11 @@ namespace Application.Services.Implementation
                 return new LoginUserResult { Outcome = LoginUserOutcome.EmailNotConfirmed };
             }
 
+            if (_userManager.SupportsUserLockout && await _userManager.IsLockedOutAsync(user))
+            {
+                return new LoginUserResult { Outcome = LoginUserOutcome.UserLockedOut };
+            }
+
             var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
             if (!result)
             {

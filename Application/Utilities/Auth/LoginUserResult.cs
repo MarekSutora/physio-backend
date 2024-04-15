@@ -20,7 +20,8 @@ namespace Application.Common.Auth
             Success,
             UserNotRegistered,
             InvalidCredentials,
-            EmailNotConfirmed
+            EmailNotConfirmed,
+            UserLockedOut
         }
     }
 }
