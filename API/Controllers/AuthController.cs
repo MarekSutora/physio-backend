@@ -101,6 +101,10 @@ namespace diploma_thesis_backend.Controllers
                 {
                     return BadRequest("Email nie je potvrdený.");
                 }
+                else if (result.Outcome == LoginUserResult.LoginUserOutcome.UserLockedOut)
+                {
+                    return BadRequest("Účet je zablokovaný. Skúste sa prihlásiť neskôr.");
+                }
                 else
                 {
                     return BadRequest("Nesprávne prihlasovacie údaje.");
