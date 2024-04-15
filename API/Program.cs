@@ -7,11 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
-    loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration).WriteTo.ApplicationInsights(new TelemetryConfiguration
+    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
+    if (!hostingContext.HostingEnvironment.IsDevelopment())
+    {
+        loggerConfiguration.WriteTo.ApplicationInsights(new TelemetryConfiguration
         {
             ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
         }, TelemetryConverter.Traces);
+    }
 });
 
 builder.Services.AddControllers()
