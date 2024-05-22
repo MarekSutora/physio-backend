@@ -131,7 +131,7 @@ namespace diploma_thesis_backend.Controllers
                     {
                         AccessToken = result.AccessToken,
                         RefreshToken = result.RefreshToken,
-                        ExpirationDate = result.ExpiryDate
+                        AccessTokenExpirationDate = result.ExpiryDate
                     });
                 }
                 else
