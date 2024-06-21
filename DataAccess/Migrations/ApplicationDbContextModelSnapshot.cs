@@ -98,85 +98,85 @@ namespace DataAccess.Migrations
                         {
                             Id = "4ab97c50-052f-44af-8516-3a27e4ec3d72",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d098ccf4-8755-4f41-b020-14e35eb517d5",
+                            ConcurrencyStamp = "6594d389-282c-4380-860c-3c4a5276dc74",
                             Email = "admin1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBZp+q7Pc5ovd5hU5VjnDKLmLjGnKKoyL3HKWCFJail3HqkKLdMRYHp826zYnUN7iQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGBIyCrfMjOWLuel4jh36ydXp1eGK0AZFwg0My261he5TrY2Kg3u5Qgx2uszYM7HTA==",
                             PersonId = 1,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 18, 21, 34, 12, 211, DateTimeKind.Utc).AddTicks(8498),
-                            SecurityStamp = "c5a2bc2b-3a40-4959-a973-2f451938ab1d",
+                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 398, DateTimeKind.Utc).AddTicks(2979),
+                            SecurityStamp = "a178169f-e58e-4cf1-a9f5-71cc5b9c4b12",
                             UserName = "admin1@example.com"
                         },
                         new
                         {
                             Id = "faa2cd95-a59c-4127-8f54-916deb38b612",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5ccbc88b-215a-45ca-a3c8-f731cdc11ef0",
+                            ConcurrencyStamp = "6e195802-f8ac-4082-b00f-2c58ca60513f",
                             Email = "admin2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN2@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN2@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAk3LLOlTlfL5S2pu8D3NfiRCGwoaLBDRrcIl4Pu+lolcG7giP2pd/ZC3gi++K5XNQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGnxHOEsRwzZoDH/3+kbqKihWLmrRhiIJQdsUfHLaaaFftjQDY4EmjfqDofvzw18Fg==",
                             PersonId = 2,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 18, 21, 34, 12, 251, DateTimeKind.Utc).AddTicks(9324),
-                            SecurityStamp = "0c72db44-406a-4fa2-b408-cc4cbf10798a",
+                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 436, DateTimeKind.Utc).AddTicks(8476),
+                            SecurityStamp = "51baaafe-7a51-4e22-bed0-22a65855a9b2",
                             UserName = "admin2@example.com"
                         },
                         new
                         {
                             Id = "ea4cbaeb-0869-493c-b80c-372a32b05539",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a1933f78-e9d8-4860-8b48-e817fa4a0bee",
+                            ConcurrencyStamp = "f6a73f4d-28f4-41d0-8979-8aa8919ebce1",
                             Email = "client1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT1@EXAMPLE.COM",
                             NormalizedUserName = "client1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED77RAzYJ/Upq/OAb2L0UqiPearxwVOuZ4vDz1YnJ8usEV7yBtrYJOQHLkULUrWZsg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEANKNralK4L/X40wmhx4N9FfnNJvvYkPnYyUiCWrnmxRNYHTAQ4TXnBm48fXccxfng==",
                             PersonId = 3,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 18, 21, 34, 12, 292, DateTimeKind.Utc).AddTicks(16),
-                            SecurityStamp = "ed473f05-3b41-4f63-8dc4-73ad67ba1b4f",
+                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 475, DateTimeKind.Utc).AddTicks(8487),
+                            SecurityStamp = "b7f82517-6967-4d65-af44-f731745f0010",
                             UserName = "client1@example.com"
                         },
                         new
                         {
                             Id = "55f7cc01-0e49-4cb0-bff8-aced0c399819",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2ee3dbde-b835-4f84-b1ae-b2d3b5f2248f",
+                            ConcurrencyStamp = "8bc3497a-eaee-4be2-8148-8c1e8b7aa310",
                             Email = "client2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT12@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT12@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMxlN45qmXZqyqt3DSCHJfd6wN1wVbDf6sbvcZgxXktinEi7qY2xIoFbSXSCbNt7Pg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENRtu+NE1bHERJDVbiOSizx32Pp7FCPj5s6G4tYsGSJFwMiERmeqLHF0PprDCkHRVA==",
                             PersonId = 4,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 18, 21, 34, 12, 331, DateTimeKind.Utc).AddTicks(3041),
-                            SecurityStamp = "e273e939-323e-4232-bd55-d368dbab4275",
+                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 514, DateTimeKind.Utc).AddTicks(4172),
+                            SecurityStamp = "494721af-9143-46c1-87ae-98e77d65c039",
                             UserName = "client2@example.com"
                         },
                         new
                         {
                             Id = "064b6a0b-8c25-4710-8fc3-95e2d59be04e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b5717850-2f96-4a9b-9151-14ffb6762dc0",
+                            ConcurrencyStamp = "c0992fb5-8039-4db5-8344-7bdf10ee001d",
                             Email = "client3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT3@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT3@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFzI8wIKSqRHAMevzZ8uEVWcLewwxJwMyh1RItHJsRbJtaKX7A+yse8Aw+0nET+7Ng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGjIyA6rGkQeDLk2z6D/qSqr1sbLtTkwS64Ohte9z9+jzQdmplpClq3IwZ34ppVsTA==",
                             PersonId = 5,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 18, 21, 34, 12, 371, DateTimeKind.Utc).AddTicks(3071),
-                            SecurityStamp = "5164130d-60ef-48d9-8532-75f1e3ce19f0",
+                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 553, DateTimeKind.Utc).AddTicks(7595),
+                            SecurityStamp = "fa211463-5656-41b3-a12e-de4758a650b4",
                             UserName = "client3@example.com"
                         });
                 });
@@ -445,6 +445,44 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DurationCosts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Cost = 45.00m,
+                            DurationMinutes = 35
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Cost = 60.00m,
+                            DurationMinutes = 40
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Cost = 60.00m,
+                            DurationMinutes = 45
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Cost = 25.00m,
+                            DurationMinutes = 30
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Cost = 55.00m,
+                            DurationMinutes = 60
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Cost = 50.00m,
+                            DurationMinutes = 45
+                        });
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ExerciseType", b =>
@@ -734,6 +772,52 @@ namespace DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("ServiceTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Active = true,
+                            Description = "Manuálna terapia je špecializovaná forma fyzikálnej terapie poskytovaná zručnými terapeutmi, ktorí používajú svoje ruky na aplikáciu tlaku na svalové tkanivo a manipuláciu s kĺbmi. Tento prístup zameraný na dotyk má za cieľ znížiť bolesť, zvýšiť rozsah pohybu a zlepšiť celkovú funkciu. Medzi bežne používané techniky patria mobilizácia mäkkých tkanív, mobilizácia kĺbov a myofasciálne uvoľňovanie. Manuálna terapia je účinná pri liečbe rôznych stavov, ako je bolesť chrbta, bolesť krku a športové zranenia. Zameriava sa na obnovenie pohybu a funkcie pohybového systému. Terapia často zahŕňa personalizovaný liečebný plán prispôsobený špecifickým potrebám a fyzickému stavu jednotlivca.",
+                            HexColor = "#92A758",
+                            IconName = "FaDiagnoses",
+                            ImageUrl = "/manual-therapy.webp",
+                            Name = "Manuálna terapia",
+                            Slug = "manualna-terapia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Active = true,
+                            Description = "Vstupná diagnostika zahŕňa klinické vyšetrenie, pri ktorom fyzioterapeut hodnotí pacienta vykonávajúceho rôzne pohyby a strečingy. Miestnosť je vybavená diagnostickými nástrojmi, ako je goniometer, anatomické grafy a počítač na zaznamenávanie údajov. Terapeut si robí poznámky na klipbord a pozoruje pacientovu postúru a pohyby. Prostredie je profesionálne a dobre organizované, s plagátmi ľudského pohybového aparátu na stenách a blízko umiestneným liečebným stolom. Celková atmosféra je zameraná na klinické hodnotenie a presnú diagnostiku.",
+                            HexColor = "#4f519c",
+                            IconName = "FaClipboard",
+                            ImageUrl = "/assesment.webp",
+                            Name = "Vstupná diagnostika",
+                            Slug = "vstupna-diagnostika"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Active = true,
+                            Description = "Bankovanie je terapeutická metóda, ktorá sa vykonáva v pokojnom prostredí terapii. Miestnosť je mäkko osvetlená prirodzeným svetlom a zdobená upokojujúcimi prvkami ako sú črepníkové rastliny a difúzory éterických olejov. Pacient leží tvárou nadol na masážnom stole a na chrbte má niekoľko sklenených pohárov. Terapeut používa plameň na vytvorenie vákua v jednom z pohárov pred jeho umiestnením na pokožku pacienta. V pozadí sú viditeľné police s úhľadne usporiadanými uterákmi a terapeutickými nástrojmi. Celková atmosféra je pokojná a prispieva k relaxácii a liečeniu.",
+                            HexColor = "#666699",
+                            IconName = "FaHeart",
+                            ImageUrl = "/bank.webp",
+                            Name = "Bankovanie",
+                            Slug = "bankovanie"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Active = true,
+                            Description = "Cvičenie je kľúčovým prvkom fyzioterapie, zameraným na zlepšenie fyzickej kondície, sily, flexibility a celkového zdravia. Počas fyzioterapeutických relácií sa pacienti učia správne techniky vykonávania rôznych cvikov, ktoré sú špecificky navrhnuté na riešenie ich individuálnych potrieb a zdravotných problémov. Terapeut poskytuje podrobný návod a spätnú väzbu, aby zabezpečil, že cviky sú vykonávané správne a bezpečne. Pacienti sa naučia, ako správne držať telo, ako posilniť slabé svalové skupiny, ako zlepšiť rozsah pohybu a ako predchádzať zraneniam. Tieto zručnosti im pomáhajú nielen počas terapie, ale aj v každodennom živote, čím prispievajú k dlhodobému zdraviu a pohode.",
+                            HexColor = "#993333",
+                            IconName = "FaDumbbell",
+                            ImageUrl = "/exercise.webp",
+                            Name = "Cvičenie",
+                            Slug = "cvicenie"
+                        });
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ServiceTypeDurationCost", b =>
@@ -763,6 +847,50 @@ namespace DataAccess.Migrations
                     b.HasIndex("ServiceTypeId");
 
                     b.ToTable("ServiceTypeDurationCosts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9511),
+                            DurationCostId = 1,
+                            ServiceTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9513),
+                            DurationCostId = 2,
+                            ServiceTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9514),
+                            DurationCostId = 3,
+                            ServiceTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9515),
+                            DurationCostId = 5,
+                            ServiceTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9516),
+                            DurationCostId = 6,
+                            ServiceTypeId = 4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9517),
+                            DurationCostId = 7,
+                            ServiceTypeId = 4
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
