@@ -5,17 +5,13 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
-    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
-    if (!hostingContext.HostingEnvironment.IsDevelopment())
-    {
-        loggerConfiguration.WriteTo.ApplicationInsights(new TelemetryConfiguration
-        {
-            ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
-        }, TelemetryConverter.Traces);
-    }
+    loggerConfiguration
+        .ReadFrom.Configuration(hostingContext.Configuration);
 });
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -60,10 +56,6 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Services.AddApplicationInsightsTelemetry(options =>
-{
-    options.ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
-});
 
 var app = builder.Build();
 
