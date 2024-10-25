@@ -6,11 +6,9 @@ using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
-{
-    loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration);
-});
+builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
+        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+        .ReadFrom.Configuration(context.Configuration));
 
 
 builder.Services.AddControllers()
