@@ -144,10 +144,10 @@ namespace Application.Services.Implementation
             var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
             if (!result)
             {
-                if (_userManager.SupportsUserLockout)
-                {
-                    await _userManager.AccessFailedAsync(user);
-                }
+                //if (_userManager.SupportsUserLockout)
+                //{
+                //    await _userManager.AccessFailedAsync(user);
+                //}
                 return new LoginUserResult { Outcome = LoginUserOutcome.InvalidCredentials };
             }
 
@@ -155,10 +155,10 @@ namespace Application.Services.Implementation
 
             var jwtSecurityToken = await GenerateJwtToken(user);
 
-            if (_userManager.SupportsUserLockout)
-            {
-                await _userManager.ResetAccessFailedCountAsync(user);
-            }
+            //if (_userManager.SupportsUserLockout)
+            //{
+            //    await _userManager.ResetAccessFailedCountAsync(user);
+            //}
 
             return new LoginUserResult
             {
