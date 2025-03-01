@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240621090250_STDCSeeds")]
-    partial class STDCSeeds
+    [Migration("20250301151248_CleanStart")]
+    partial class CleanStart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,85 +101,85 @@ namespace DataAccess.Migrations
                         {
                             Id = "4ab97c50-052f-44af-8516-3a27e4ec3d72",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6594d389-282c-4380-860c-3c4a5276dc74",
+                            ConcurrencyStamp = "628b145f-f12d-40ae-b3ba-34d4a34ac04a",
                             Email = "admin1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN1@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGBIyCrfMjOWLuel4jh36ydXp1eGK0AZFwg0My261he5TrY2Kg3u5Qgx2uszYM7HTA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDuBUTMfhBDDv0FYDbjp0h3i9n4sp4pPAyn05eDHcL9SgKcyRDl4vFfDWTj6AMQdPQ==",
                             PersonId = 1,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 398, DateTimeKind.Utc).AddTicks(2979),
-                            SecurityStamp = "a178169f-e58e-4cf1-a9f5-71cc5b9c4b12",
+                            RegisteredDate = new DateTime(2025, 3, 1, 15, 12, 47, 760, DateTimeKind.Utc).AddTicks(8363),
+                            SecurityStamp = "473ee03f-075f-4b6b-8ca1-d7c2db6195ab",
                             UserName = "admin1@example.com"
                         },
                         new
                         {
                             Id = "faa2cd95-a59c-4127-8f54-916deb38b612",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e195802-f8ac-4082-b00f-2c58ca60513f",
+                            ConcurrencyStamp = "84789583-cf9b-40e8-a024-4aa07547d616",
                             Email = "admin2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN2@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN2@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGnxHOEsRwzZoDH/3+kbqKihWLmrRhiIJQdsUfHLaaaFftjQDY4EmjfqDofvzw18Fg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENutgY79DgUekyqueeEXysPJ14lo9wBZovd3wLit2Ty/+sMxonHcfA6Bh9xfczyxTg==",
                             PersonId = 2,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 436, DateTimeKind.Utc).AddTicks(8476),
-                            SecurityStamp = "51baaafe-7a51-4e22-bed0-22a65855a9b2",
+                            RegisteredDate = new DateTime(2025, 3, 1, 15, 12, 47, 799, DateTimeKind.Utc).AddTicks(9342),
+                            SecurityStamp = "2ab4a77d-9b1c-4a21-8718-0f7d17ab1f68",
                             UserName = "admin2@example.com"
                         },
                         new
                         {
                             Id = "ea4cbaeb-0869-493c-b80c-372a32b05539",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f6a73f4d-28f4-41d0-8979-8aa8919ebce1",
+                            ConcurrencyStamp = "c8faf6ac-7646-409d-8e44-102e038d6366",
                             Email = "client1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT1@EXAMPLE.COM",
                             NormalizedUserName = "client1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEANKNralK4L/X40wmhx4N9FfnNJvvYkPnYyUiCWrnmxRNYHTAQ4TXnBm48fXccxfng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENZeRMBbPL8iXf6HIwJxP/94R6gGOv4V68g8g7VXQMc4EvOn2Y9Fhupoy/+xsS4nJQ==",
                             PersonId = 3,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 475, DateTimeKind.Utc).AddTicks(8487),
-                            SecurityStamp = "b7f82517-6967-4d65-af44-f731745f0010",
+                            RegisteredDate = new DateTime(2025, 3, 1, 15, 12, 47, 839, DateTimeKind.Utc).AddTicks(8935),
+                            SecurityStamp = "d7a0a3f4-71ed-4f65-9f0b-27c51a0cb439",
                             UserName = "client1@example.com"
                         },
                         new
                         {
                             Id = "55f7cc01-0e49-4cb0-bff8-aced0c399819",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8bc3497a-eaee-4be2-8148-8c1e8b7aa310",
+                            ConcurrencyStamp = "c0050fab-7114-445e-b595-5788cf20a52f",
                             Email = "client2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT12@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT12@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENRtu+NE1bHERJDVbiOSizx32Pp7FCPj5s6G4tYsGSJFwMiERmeqLHF0PprDCkHRVA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGlLx0aDb793cg8vasAlSz2h0FQWy9g7Jp9yIdhoY0qBsm03C2ol0a86P8KcPv/vow==",
                             PersonId = 4,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 514, DateTimeKind.Utc).AddTicks(4172),
-                            SecurityStamp = "494721af-9143-46c1-87ae-98e77d65c039",
+                            RegisteredDate = new DateTime(2025, 3, 1, 15, 12, 47, 878, DateTimeKind.Utc).AddTicks(4946),
+                            SecurityStamp = "6f70de70-bbb9-4e68-8c6d-e52ea8fbca64",
                             UserName = "client2@example.com"
                         },
                         new
                         {
                             Id = "064b6a0b-8c25-4710-8fc3-95e2d59be04e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c0992fb5-8039-4db5-8344-7bdf10ee001d",
+                            ConcurrencyStamp = "b42bda5c-7e78-41f1-9a41-3b9250f6cf48",
                             Email = "client3@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CLIENT3@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT3@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGjIyA6rGkQeDLk2z6D/qSqr1sbLtTkwS64Ohte9z9+jzQdmplpClq3IwZ34ppVsTA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAS3ihAiRNs9p8kZiwMYzwyThmNofQ7XixhuibMXkuu17KwGojcT0CufEdl5Afs/6Q==",
                             PersonId = 5,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RegisteredDate = new DateTime(2024, 6, 21, 9, 2, 50, 553, DateTimeKind.Utc).AddTicks(7595),
-                            SecurityStamp = "fa211463-5656-41b3-a12e-de4758a650b4",
+                            RegisteredDate = new DateTime(2025, 3, 1, 15, 12, 47, 916, DateTimeKind.Utc).AddTicks(4631),
+                            SecurityStamp = "3be0c248-de7f-40de-9e61-f773062cc19d",
                             UserName = "client3@example.com"
                         });
                 });
@@ -855,42 +855,42 @@ namespace DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9511),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(573),
                             DurationCostId = 1,
                             ServiceTypeId = 1
                         },
                         new
                         {
                             Id = 2,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9513),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(575),
                             DurationCostId = 2,
                             ServiceTypeId = 1
                         },
                         new
                         {
                             Id = 3,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9514),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(576),
                             DurationCostId = 3,
                             ServiceTypeId = 2
                         },
                         new
                         {
                             Id = 4,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9515),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(577),
                             DurationCostId = 5,
                             ServiceTypeId = 3
                         },
                         new
                         {
                             Id = 5,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9516),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(578),
                             DurationCostId = 6,
                             ServiceTypeId = 4
                         },
                         new
                         {
                             Id = 6,
-                            DateFrom = new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9517),
+                            DateFrom = new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(579),
                             DurationCostId = 7,
                             ServiceTypeId = 4
                         });

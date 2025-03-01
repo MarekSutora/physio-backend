@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class STDCSeeds : Migration
+    public partial class CleanStart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -520,11 +520,11 @@ namespace DataAccess.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonId", "RefreshToken", "RefreshTokenExpiryTime", "RegisteredDate", "SecurityStamp", "UserName" },
                 values: new object[,]
                 {
-                    { "064b6a0b-8c25-4710-8fc3-95e2d59be04e", 0, "c0992fb5-8039-4db5-8344-7bdf10ee001d", "client3@example.com", true, false, null, "CLIENT3@EXAMPLE.COM", "CLIENT3@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGjIyA6rGkQeDLk2z6D/qSqr1sbLtTkwS64Ohte9z9+jzQdmplpClq3IwZ34ppVsTA==", 5, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 6, 21, 9, 2, 50, 553, DateTimeKind.Utc).AddTicks(7595), "fa211463-5656-41b3-a12e-de4758a650b4", "client3@example.com" },
-                    { "4ab97c50-052f-44af-8516-3a27e4ec3d72", 0, "6594d389-282c-4380-860c-3c4a5276dc74", "admin1@example.com", true, false, null, "ADMIN1@EXAMPLE.COM", "ADMIN1@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGBIyCrfMjOWLuel4jh36ydXp1eGK0AZFwg0My261he5TrY2Kg3u5Qgx2uszYM7HTA==", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 6, 21, 9, 2, 50, 398, DateTimeKind.Utc).AddTicks(2979), "a178169f-e58e-4cf1-a9f5-71cc5b9c4b12", "admin1@example.com" },
-                    { "55f7cc01-0e49-4cb0-bff8-aced0c399819", 0, "8bc3497a-eaee-4be2-8148-8c1e8b7aa310", "client2@example.com", true, false, null, "CLIENT12@EXAMPLE.COM", "CLIENT12@EXAMPLE.COM", "AQAAAAIAAYagAAAAENRtu+NE1bHERJDVbiOSizx32Pp7FCPj5s6G4tYsGSJFwMiERmeqLHF0PprDCkHRVA==", 4, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 6, 21, 9, 2, 50, 514, DateTimeKind.Utc).AddTicks(4172), "494721af-9143-46c1-87ae-98e77d65c039", "client2@example.com" },
-                    { "ea4cbaeb-0869-493c-b80c-372a32b05539", 0, "f6a73f4d-28f4-41d0-8979-8aa8919ebce1", "client1@example.com", true, false, null, "CLIENT1@EXAMPLE.COM", "client1@EXAMPLE.COM", "AQAAAAIAAYagAAAAEANKNralK4L/X40wmhx4N9FfnNJvvYkPnYyUiCWrnmxRNYHTAQ4TXnBm48fXccxfng==", 3, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 6, 21, 9, 2, 50, 475, DateTimeKind.Utc).AddTicks(8487), "b7f82517-6967-4d65-af44-f731745f0010", "client1@example.com" },
-                    { "faa2cd95-a59c-4127-8f54-916deb38b612", 0, "6e195802-f8ac-4082-b00f-2c58ca60513f", "admin2@example.com", true, false, null, "ADMIN2@EXAMPLE.COM", "ADMIN2@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGnxHOEsRwzZoDH/3+kbqKihWLmrRhiIJQdsUfHLaaaFftjQDY4EmjfqDofvzw18Fg==", 2, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 6, 21, 9, 2, 50, 436, DateTimeKind.Utc).AddTicks(8476), "51baaafe-7a51-4e22-bed0-22a65855a9b2", "admin2@example.com" }
+                    { "064b6a0b-8c25-4710-8fc3-95e2d59be04e", 0, "b42bda5c-7e78-41f1-9a41-3b9250f6cf48", "client3@example.com", true, false, null, "CLIENT3@EXAMPLE.COM", "CLIENT3@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAS3ihAiRNs9p8kZiwMYzwyThmNofQ7XixhuibMXkuu17KwGojcT0CufEdl5Afs/6Q==", 5, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 916, DateTimeKind.Utc).AddTicks(4631), "3be0c248-de7f-40de-9e61-f773062cc19d", "client3@example.com" },
+                    { "4ab97c50-052f-44af-8516-3a27e4ec3d72", 0, "628b145f-f12d-40ae-b3ba-34d4a34ac04a", "admin1@example.com", true, false, null, "ADMIN1@EXAMPLE.COM", "ADMIN1@EXAMPLE.COM", "AQAAAAIAAYagAAAAEDuBUTMfhBDDv0FYDbjp0h3i9n4sp4pPAyn05eDHcL9SgKcyRDl4vFfDWTj6AMQdPQ==", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 760, DateTimeKind.Utc).AddTicks(8363), "473ee03f-075f-4b6b-8ca1-d7c2db6195ab", "admin1@example.com" },
+                    { "55f7cc01-0e49-4cb0-bff8-aced0c399819", 0, "c0050fab-7114-445e-b595-5788cf20a52f", "client2@example.com", true, false, null, "CLIENT12@EXAMPLE.COM", "CLIENT12@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGlLx0aDb793cg8vasAlSz2h0FQWy9g7Jp9yIdhoY0qBsm03C2ol0a86P8KcPv/vow==", 4, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 878, DateTimeKind.Utc).AddTicks(4946), "6f70de70-bbb9-4e68-8c6d-e52ea8fbca64", "client2@example.com" },
+                    { "ea4cbaeb-0869-493c-b80c-372a32b05539", 0, "c8faf6ac-7646-409d-8e44-102e038d6366", "client1@example.com", true, false, null, "CLIENT1@EXAMPLE.COM", "client1@EXAMPLE.COM", "AQAAAAIAAYagAAAAENZeRMBbPL8iXf6HIwJxP/94R6gGOv4V68g8g7VXQMc4EvOn2Y9Fhupoy/+xsS4nJQ==", 3, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 839, DateTimeKind.Utc).AddTicks(8935), "d7a0a3f4-71ed-4f65-9f0b-27c51a0cb439", "client1@example.com" },
+                    { "faa2cd95-a59c-4127-8f54-916deb38b612", 0, "84789583-cf9b-40e8-a024-4aa07547d616", "admin2@example.com", true, false, null, "ADMIN2@EXAMPLE.COM", "ADMIN2@EXAMPLE.COM", "AQAAAAIAAYagAAAAENutgY79DgUekyqueeEXysPJ14lo9wBZovd3wLit2Ty/+sMxonHcfA6Bh9xfczyxTg==", 2, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 799, DateTimeKind.Utc).AddTicks(9342), "2ab4a77d-9b1c-4a21-8718-0f7d17ab1f68", "admin2@example.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -532,12 +532,12 @@ namespace DataAccess.Migrations
                 columns: new[] { "Id", "DateFrom", "DateTo", "DurationCostId", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9511), null, 1, 1 },
-                    { 2, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9513), null, 2, 1 },
-                    { 3, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9514), null, 3, 2 },
-                    { 4, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9515), null, 5, 3 },
-                    { 5, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9516), null, 6, 4 },
-                    { 6, new DateTime(2024, 6, 21, 9, 2, 50, 592, DateTimeKind.Utc).AddTicks(9517), null, 7, 4 }
+                    { 1, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(573), null, 1, 1 },
+                    { 2, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(575), null, 2, 1 },
+                    { 3, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(576), null, 3, 2 },
+                    { 4, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(577), null, 5, 3 },
+                    { 5, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(578), null, 6, 4 },
+                    { 6, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(579), null, 7, 4 }
                 });
 
             migrationBuilder.InsertData(
