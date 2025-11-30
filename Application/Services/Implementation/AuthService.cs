@@ -79,7 +79,7 @@ namespace Application.Services.Implementation
                         UserName = registerRequestDto.Email,
                         Email = registerRequestDto.Email,
                         PersonId = person.Id,
-                        RegisteredDate = DateTime.Now
+                        RegisteredDate = DateTime.UtcNow
                     };
 
                     var userCreationResult = await _userManager.CreateAsync(user, registerRequestDto.Password);

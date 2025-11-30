@@ -82,7 +82,7 @@ namespace DataAccess
                 entity.HasKey(e => new { e.Year, e.Month });
             });
 
-            builder.SeedApplicationUsers();
+            //builder.SeedApplicationUsers();
 
             builder.SeedExerciseTypes();
 

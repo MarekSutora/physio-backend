@@ -1,4 +1,5 @@
 using Application;
+using DataAccess;
 using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 using System.Text.Json;

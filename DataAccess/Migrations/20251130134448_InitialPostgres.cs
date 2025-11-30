@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class CleanStart : Migration
+    public partial class InitialPostgres : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,10 +18,10 @@ namespace DataAccess.Migrations
                 name: "Appointments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Capacity = table.Column<int>(type: "integer", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,10 +32,10 @@ namespace DataAccess.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,17 +46,17 @@ namespace DataAccess.Migrations
                 name: "BlogPosts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DatePublished = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HTMLContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    KeywordsString = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    MainImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsHidden = table.Column<bool>(type: "bit", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Slug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    DatePublished = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    HTMLContent = table.Column<string>(type: "text", nullable: false),
+                    Author = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    KeywordsString = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    MainImageUrl = table.Column<string>(type: "text", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false),
+                    ViewCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,9 +67,9 @@ namespace DataAccess.Migrations
                 name: "BlogPostsViewsStats",
                 columns: table => new
                 {
-                    Year = table.Column<int>(type: "int", nullable: false),
-                    Month = table.Column<int>(type: "int", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false)
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    Month = table.Column<int>(type: "integer", nullable: false),
+                    ViewCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,9 +80,9 @@ namespace DataAccess.Migrations
                 name: "DurationCosts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DurationMinutes = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DurationMinutes = table.Column<int>(type: "integer", nullable: false),
                     Cost = table.Column<decimal>(type: "money", nullable: false)
                 },
                 constraints: table =>
@@ -93,9 +94,9 @@ namespace DataAccess.Migrations
                 name: "ExerciseTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,11 +107,11 @@ namespace DataAccess.Migrations
                 name: "Persons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,15 +122,15 @@ namespace DataAccess.Migrations
                 name: "ServiceTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    HexColor = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "#14746F"),
-                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IconName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    HexColor = table.Column<string>(type: "text", nullable: false, defaultValue: "#14746F"),
+                    Description = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
+                    Active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    IconName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,10 +141,10 @@ namespace DataAccess.Migrations
                 name: "AppointmentDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppointmentId = table.Column<int>(type: "integer", nullable: false),
+                    Note = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,11 +161,11 @@ namespace DataAccess.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -181,22 +182,22 @@ namespace DataAccess.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RegisteredDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,11 +214,11 @@ namespace DataAccess.Migrations
                 name: "ClientNotes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Note = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Note = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -234,12 +235,12 @@ namespace DataAccess.Migrations
                 name: "ServiceTypeDurationCosts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceTypeId = table.Column<int>(type: "int", nullable: false),
-                    DurationCostId = table.Column<int>(type: "int", nullable: false),
-                    DateFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateTo = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServiceTypeId = table.Column<int>(type: "integer", nullable: false),
+                    DurationCostId = table.Column<int>(type: "integer", nullable: false),
+                    DateFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -262,24 +263,24 @@ namespace DataAccess.Migrations
                 name: "AppointmentExerciseDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppointmentDetailId = table.Column<int>(type: "int", nullable: false),
-                    ExerciseTypeId = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<decimal>(type: "decimal(18,4)", nullable: true),
-                    NumberOfRepetitions = table.Column<int>(type: "int", nullable: true),
-                    NumberOfSets = table.Column<int>(type: "int", nullable: true),
-                    DurationInMinutes = table.Column<int>(type: "int", nullable: true),
-                    RestAfterExerciseInMinutes = table.Column<int>(type: "int", nullable: true),
-                    RestBetweenSetsInMinutes = table.Column<int>(type: "int", nullable: true),
-                    Order = table.Column<int>(type: "int", nullable: true),
-                    SuccessfullyPerformed = table.Column<bool>(type: "bit", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppointmentDetailId = table.Column<int>(type: "integer", nullable: false),
+                    ExerciseTypeId = table.Column<int>(type: "integer", nullable: false),
+                    Weight = table.Column<decimal>(type: "numeric(18,4)", nullable: true),
+                    NumberOfRepetitions = table.Column<int>(type: "integer", nullable: true),
+                    NumberOfSets = table.Column<int>(type: "integer", nullable: true),
+                    DurationInMinutes = table.Column<int>(type: "integer", nullable: true),
+                    RestAfterExerciseInMinutes = table.Column<int>(type: "integer", nullable: true),
+                    RestBetweenSetsInMinutes = table.Column<int>(type: "integer", nullable: true),
+                    Order = table.Column<int>(type: "integer", nullable: true),
+                    SuccessfullyPerformed = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppointmentExerciseDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppointmentExerciseDetails_AppointmentDetails_AppointmentDetailId",
+                        name: "FK_AppointmentExerciseDetails_AppointmentDetails_AppointmentDe~",
                         column: x => x.AppointmentDetailId,
                         principalTable: "AppointmentDetails",
                         principalColumn: "Id",
@@ -296,11 +297,11 @@ namespace DataAccess.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -317,10 +318,10 @@ namespace DataAccess.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -337,8 +338,8 @@ namespace DataAccess.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -361,10 +362,10 @@ namespace DataAccess.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -381,22 +382,22 @@ namespace DataAccess.Migrations
                 name: "AppointmentServiceTypeDurationCosts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceTypeDurationCostId = table.Column<int>(type: "int", nullable: false),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServiceTypeDurationCostId = table.Column<int>(type: "integer", nullable: false),
+                    AppointmentId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppointmentServiceTypeDurationCosts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppointmentServiceTypeDurationCosts_Appointments_AppointmentId",
+                        name: "FK_AppointmentServiceTypeDurationCosts_Appointments_Appointmen~",
                         column: x => x.AppointmentId,
                         principalTable: "Appointments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AppointmentServiceTypeDurationCosts_ServiceTypeDurationCosts_ServiceTypeDurationCostId",
+                        name: "FK_AppointmentServiceTypeDurationCosts_ServiceTypeDurationCost~",
                         column: x => x.ServiceTypeDurationCostId,
                         principalTable: "ServiceTypeDurationCosts",
                         principalColumn: "Id",
@@ -407,20 +408,20 @@ namespace DataAccess.Migrations
                 name: "BookedAppointments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppointmentBookedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
-                    SevenDaysReminderSent = table.Column<bool>(type: "bit", nullable: false),
-                    OneDayReminderSent = table.Column<bool>(type: "bit", nullable: false),
-                    AppointmentServiceTypeDurationCostId = table.Column<int>(type: "int", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppointmentBookedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
+                    SevenDaysReminderSent = table.Column<bool>(type: "boolean", nullable: false),
+                    OneDayReminderSent = table.Column<bool>(type: "boolean", nullable: false),
+                    AppointmentServiceTypeDurationCostId = table.Column<int>(type: "integer", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookedAppointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookedAppointments_AppointmentServiceTypeDurationCosts_AppointmentServiceTypeDurationCostId",
+                        name: "FK_BookedAppointments_AppointmentServiceTypeDurationCosts_Appo~",
                         column: x => x.AppointmentServiceTypeDurationCostId,
                         principalTable: "AppointmentServiceTypeDurationCosts",
                         principalColumn: "Id",
@@ -431,15 +432,6 @@ namespace DataAccess.Migrations
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "8036F52A-701F-4AA4-8639-D9C8123FD8C6", null, "Admin", "ADMIN" },
-                    { "C7D20194-9C7E-40DB-9C63-F71D20116529", null, "Client", "CLIENT" }
                 });
 
             migrationBuilder.InsertData(
@@ -493,18 +485,6 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Persons",
-                columns: new[] { "Id", "FirstName", "LastName", "PhoneNumber" },
-                values: new object[,]
-                {
-                    { 1, "Admin", "One", "1234567890" },
-                    { 2, "Admin", "Two", "1234567890" },
-                    { 3, "Client", "One", "1234567890" },
-                    { 4, "Client", "Two", "1234567890" },
-                    { 5, "Client", "Three", "1234567890" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "ServiceTypes",
                 columns: new[] { "Id", "Active", "Description", "HexColor", "IconName", "ImageUrl", "Name", "Slug" },
                 values: new object[,]
@@ -516,40 +496,16 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonId", "RefreshToken", "RefreshTokenExpiryTime", "RegisteredDate", "SecurityStamp", "UserName" },
-                values: new object[,]
-                {
-                    { "064b6a0b-8c25-4710-8fc3-95e2d59be04e", 0, "b42bda5c-7e78-41f1-9a41-3b9250f6cf48", "client3@example.com", true, false, null, "CLIENT3@EXAMPLE.COM", "CLIENT3@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAS3ihAiRNs9p8kZiwMYzwyThmNofQ7XixhuibMXkuu17KwGojcT0CufEdl5Afs/6Q==", 5, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 916, DateTimeKind.Utc).AddTicks(4631), "3be0c248-de7f-40de-9e61-f773062cc19d", "client3@example.com" },
-                    { "4ab97c50-052f-44af-8516-3a27e4ec3d72", 0, "628b145f-f12d-40ae-b3ba-34d4a34ac04a", "admin1@example.com", true, false, null, "ADMIN1@EXAMPLE.COM", "ADMIN1@EXAMPLE.COM", "AQAAAAIAAYagAAAAEDuBUTMfhBDDv0FYDbjp0h3i9n4sp4pPAyn05eDHcL9SgKcyRDl4vFfDWTj6AMQdPQ==", 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 760, DateTimeKind.Utc).AddTicks(8363), "473ee03f-075f-4b6b-8ca1-d7c2db6195ab", "admin1@example.com" },
-                    { "55f7cc01-0e49-4cb0-bff8-aced0c399819", 0, "c0050fab-7114-445e-b595-5788cf20a52f", "client2@example.com", true, false, null, "CLIENT12@EXAMPLE.COM", "CLIENT12@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGlLx0aDb793cg8vasAlSz2h0FQWy9g7Jp9yIdhoY0qBsm03C2ol0a86P8KcPv/vow==", 4, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 878, DateTimeKind.Utc).AddTicks(4946), "6f70de70-bbb9-4e68-8c6d-e52ea8fbca64", "client2@example.com" },
-                    { "ea4cbaeb-0869-493c-b80c-372a32b05539", 0, "c8faf6ac-7646-409d-8e44-102e038d6366", "client1@example.com", true, false, null, "CLIENT1@EXAMPLE.COM", "client1@EXAMPLE.COM", "AQAAAAIAAYagAAAAENZeRMBbPL8iXf6HIwJxP/94R6gGOv4V68g8g7VXQMc4EvOn2Y9Fhupoy/+xsS4nJQ==", 3, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 839, DateTimeKind.Utc).AddTicks(8935), "d7a0a3f4-71ed-4f65-9f0b-27c51a0cb439", "client1@example.com" },
-                    { "faa2cd95-a59c-4127-8f54-916deb38b612", 0, "84789583-cf9b-40e8-a024-4aa07547d616", "admin2@example.com", true, false, null, "ADMIN2@EXAMPLE.COM", "ADMIN2@EXAMPLE.COM", "AQAAAAIAAYagAAAAENutgY79DgUekyqueeEXysPJ14lo9wBZovd3wLit2Ty/+sMxonHcfA6Bh9xfczyxTg==", 2, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 1, 15, 12, 47, 799, DateTimeKind.Utc).AddTicks(9342), "2ab4a77d-9b1c-4a21-8718-0f7d17ab1f68", "admin2@example.com" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "ServiceTypeDurationCosts",
                 columns: new[] { "Id", "DateFrom", "DateTo", "DurationCostId", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(573), null, 1, 1 },
-                    { 2, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(575), null, 2, 1 },
-                    { 3, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(576), null, 3, 2 },
-                    { 4, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(577), null, 5, 3 },
-                    { 5, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(578), null, 6, 4 },
-                    { 6, new DateTime(2025, 3, 1, 15, 12, 47, 955, DateTimeKind.Utc).AddTicks(579), null, 7, 4 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { "C7D20194-9C7E-40DB-9C63-F71D20116529", "064b6a0b-8c25-4710-8fc3-95e2d59be04e" },
-                    { "8036F52A-701F-4AA4-8639-D9C8123FD8C6", "4ab97c50-052f-44af-8516-3a27e4ec3d72" },
-                    { "C7D20194-9C7E-40DB-9C63-F71D20116529", "55f7cc01-0e49-4cb0-bff8-aced0c399819" },
-                    { "C7D20194-9C7E-40DB-9C63-F71D20116529", "ea4cbaeb-0869-493c-b80c-372a32b05539" },
-                    { "8036F52A-701F-4AA4-8639-D9C8123FD8C6", "faa2cd95-a59c-4127-8f54-916deb38b612" }
+                    { 1, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(444), null, 1, 1 },
+                    { 2, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(446), null, 2, 1 },
+                    { 3, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(448), null, 3, 2 },
+                    { 4, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(472), null, 5, 3 },
+                    { 5, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(473), null, 6, 4 },
+                    { 6, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(474), null, 7, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -574,7 +530,7 @@ namespace DataAccess.Migrations
                 column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppointmentServiceTypeDurationCosts_ServiceTypeDurationCostId_AppointmentId",
+                name: "IX_AppointmentServiceTypeDurationCosts_ServiceTypeDurationCost~",
                 table: "AppointmentServiceTypeDurationCosts",
                 columns: new[] { "ServiceTypeDurationCostId", "AppointmentId" },
                 unique: true);
@@ -588,8 +544,7 @@ namespace DataAccess.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -621,8 +576,7 @@ namespace DataAccess.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BlogPosts_Slug",

@@ -10,8 +10,7 @@ namespace DataAccess
             IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         }
     }
 
