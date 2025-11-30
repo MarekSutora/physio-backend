@@ -7,6 +7,7 @@
 		<RootNamespace>diploma_thesis_backend</RootNamespace>
 		<UserSecretsId>63eaade8-1483-4749-9b5f-05908987e184</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
 
 	<ItemGroup>
