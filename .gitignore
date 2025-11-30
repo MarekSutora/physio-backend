@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /API/appsettings.Development.json
 /DataAccess/Seeding/ApplicationUserSeeding.cs
+/initial_postgres.sql
