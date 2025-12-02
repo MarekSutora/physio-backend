@@ -21,7 +21,7 @@ namespace diploma_thesis_backend.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> GetClientsAsync()
         {
@@ -81,7 +81,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("{personId}/notes")]
         public async Task<IActionResult> GetNotesForClientAsync(int personId)
         {
@@ -108,7 +108,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost("{personId}/notes")]
         public async Task<IActionResult> AddNoteToClientAsync(int personId, [FromBody] CreateClientNoteDto createClientNoteDto)
         {
@@ -126,7 +126,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("notes/{noteId}")]
         public async Task<IActionResult> DeleteNoteAsync(int noteId)
         {
@@ -155,7 +155,7 @@ namespace diploma_thesis_backend.Controllers
             }
 
             var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-            var isAdmin = userRoles.Contains("Admin");
+            var isAdmin = userRoles.Contains("ADMIN");
             var isClientVerified = _authService.VerifyClientByIdAsync(personId, jwtUserId).Result;
             return isAdmin || isClientVerified;
         }

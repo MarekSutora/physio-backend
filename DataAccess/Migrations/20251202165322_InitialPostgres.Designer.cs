@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251130134448_InitialPostgres")]
+    [Migration("20251202165322_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -730,42 +730,42 @@ namespace DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(444),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5934),
                             DurationCostId = 1,
                             ServiceTypeId = 1
                         },
                         new
                         {
                             Id = 2,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(446),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5937),
                             DurationCostId = 2,
                             ServiceTypeId = 1
                         },
                         new
                         {
                             Id = 3,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(448),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5938),
                             DurationCostId = 3,
                             ServiceTypeId = 2
                         },
                         new
                         {
                             Id = 4,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(472),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5939),
                             DurationCostId = 5,
                             ServiceTypeId = 3
                         },
                         new
                         {
                             Id = 5,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(473),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5941),
                             DurationCostId = 6,
                             ServiceTypeId = 4
                         },
                         new
                         {
                             Id = 6,
-                            DateFrom = new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(474),
+                            DateFrom = new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5942),
                             DurationCostId = 7,
                             ServiceTypeId = 4
                         });

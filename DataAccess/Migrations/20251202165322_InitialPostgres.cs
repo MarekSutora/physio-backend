@@ -500,12 +500,12 @@ namespace DataAccess.Migrations
                 columns: new[] { "Id", "DateFrom", "DateTo", "DurationCostId", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(444), null, 1, 1 },
-                    { 2, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(446), null, 2, 1 },
-                    { 3, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(448), null, 3, 2 },
-                    { 4, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(472), null, 5, 3 },
-                    { 5, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(473), null, 6, 4 },
-                    { 6, new DateTime(2025, 11, 30, 13, 44, 47, 668, DateTimeKind.Utc).AddTicks(474), null, 7, 4 }
+                    { 1, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5934), null, 1, 1 },
+                    { 2, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5937), null, 2, 1 },
+                    { 3, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5938), null, 3, 2 },
+                    { 4, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5939), null, 5, 3 },
+                    { 5, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5941), null, 6, 4 },
+                    { 6, new DateTime(2025, 12, 2, 16, 53, 22, 620, DateTimeKind.Utc).AddTicks(5942), null, 7, 4 }
                 });
 
             migrationBuilder.CreateIndex(

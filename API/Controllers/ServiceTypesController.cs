@@ -72,7 +72,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateServiceTypeAsync([FromBody] CreateServiceTypeDto createNewServiceTypeDto)
         {
@@ -96,7 +96,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateServiceTypeAsync([FromBody] UpdateServiceTypeDto updateServiceTypeDto)
         {
@@ -115,7 +115,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServiceTypeAsync(int id)
         {

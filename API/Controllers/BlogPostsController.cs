@@ -98,7 +98,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateBlogPostAsync([FromBody] CreateBlogPostDto createBlogPostDto)
         {
@@ -124,7 +124,7 @@ namespace diploma_thesis_backend.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{slug}")]
         public async Task<IActionResult> UpdateBlogPostAsync(string slug, [FromBody] UpdateBlogPostDto updateBlogPostDto)
         {
@@ -163,7 +163,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{slug}")]
         public async Task<IActionResult> DeleteBlogPostAsync(string slug)
         {

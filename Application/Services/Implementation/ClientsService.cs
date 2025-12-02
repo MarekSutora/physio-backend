@@ -65,7 +65,7 @@ namespace Application.Services.Implementation
 
         public async Task<IEnumerable<ClientDto>> GetClientsAsync()
         {
-            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
+            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "CLIENT");
             var clientUserIds = new List<string>();
 
             if (clientRole != null)
@@ -87,7 +87,7 @@ namespace Application.Services.Implementation
 
         public async Task<ClientDto?> GetClientByIdAsync(int personId)
         {
-            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Client");
+            var clientRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "CLIENT");
             if (clientRole == null)
             {
                 throw new Exception("Client role not found at GetClientByIdAsync.");

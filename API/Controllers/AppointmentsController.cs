@@ -122,7 +122,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("finished")]
         public async Task<IActionResult> GetFinishedAppointmentsAsync()
         {
@@ -182,7 +182,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("booked")]
         public async Task<IActionResult> GetBookedAppointmentsAsync()
         {
@@ -209,7 +209,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost("unbooked")]
         public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
         {
@@ -249,7 +249,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}/details")]
         public async Task<IActionResult> UpdateAppointmentDetailsAsync(int id, [FromBody] AppointmentDetailDto appointmentDetailDto)
         {
@@ -268,7 +268,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("booked/{id}/finish")]
         public async Task<IActionResult> FinishBookedAppointmentAsync(int id)
         {
@@ -287,7 +287,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("booked/{id}")]
         public async Task<IActionResult> DeleteBookedAppointmentAsync(int id)
         {
@@ -306,7 +306,7 @@ namespace diploma_thesis_backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointmentAsync(int id)
         {

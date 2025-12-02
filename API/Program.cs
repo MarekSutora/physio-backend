@@ -1,6 +1,8 @@
+using API.Infrastructure;
 using Application;
 using DataAccess;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
 
@@ -40,7 +42,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOriginDev",
                       policy =>
                       {
-                          policy.WithOrigins("https://localhost:3000")
+                          policy.WithOrigins("http://localhost:3000")
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
@@ -48,7 +50,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOriginProd",
                       policy =>
                       {
-                          policy.WithOrigins("https://mareksutora.sk")
+                          policy.WithOrigins("https://physio-app.ms-apps.online")
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
@@ -66,6 +68,14 @@ app.UseSerilogRequestLogging();
     app.UseSwaggerUI();
 //}
 
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    //db.Database.Migrate();
+//}
+
+//// seed identity users and roles
+//await IdentitySeeder.SeedUsersAndRolesAsync(app.Services);
 
 app.UseHttpsRedirection();
 
