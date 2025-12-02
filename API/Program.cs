@@ -1,8 +1,4 @@
-using API.Infrastructure;
 using Application;
-using DataAccess;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
 
