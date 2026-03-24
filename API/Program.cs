@@ -1,15 +1,10 @@
 using Application;
 using DataAccess.Seeding;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
-        .ReadFrom.Configuration(context.Configuration));
 
 
 builder.Services.AddControllers()
@@ -58,8 +53,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
-
 //if (app.Environment.IsDevelopment())
 //{
     app.UseSwagger();
@@ -93,3 +86,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
