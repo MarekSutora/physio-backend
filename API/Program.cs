@@ -1,4 +1,3 @@
-using API.Infrastructure;
 using Application;
 using DataAccess.Seeding;
 using Microsoft.EntityFrameworkCore;
