@@ -1,4 +1,7 @@
+using API.Infrastructure;
 using Application;
+using DataAccess.Seeding;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
 
@@ -64,14 +67,15 @@ app.UseSerilogRequestLogging();
     app.UseSwaggerUI();
 //}
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//    //db.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataAccess.ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
-//// seed identity users and roles
-//await IdentitySeeder.SeedUsersAndRolesAsync(app.Services);
+// Seed identity users and roles, then appointments
+await IdentitySeeder.SeedUsersAndRolesAsync(app.Services);
+await AppointmentSeeder.SeedAppointmentsAsync(app.Services);
 
 app.UseHttpsRedirection();
 

@@ -211,7 +211,7 @@ namespace diploma_thesis_backend.Controllers
 
         [Authorize(Roles = "ADMIN")]
         [HttpPost("unbooked")]
-        public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto)
+        public async Task<IActionResult> CreateAppointmentAsync([FromBody] CreateAppointmentDto createAppointmentDto) //asd
         {
             _logger.LogInformation("Creating new appointment.");
 
