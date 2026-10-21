@@ -35,7 +35,9 @@ namespace Application.Services.Implementation
             var emailRequest = new EmailRequest
             {
                 From = request.Email,
-                ToEmail = _mailSettings.SmtpUser,
+                ToEmail = string.IsNullOrWhiteSpace(_mailSettings.ContactEmail)
+                    ? _mailSettings.SmtpUser
+                    : _mailSettings.ContactEmail,
                 Subject = subject,
                 Body = body
             };
@@ -50,7 +52,6 @@ namespace Application.Services.Implementation
 
             var confirmationEmailRequest = new EmailRequest
             {
-                From = _mailSettings.SmtpUser,
                 ToEmail = request.Email,
                 Subject = confirmationSubject,
                 Body = confirmationBody
@@ -119,7 +120,18 @@ namespace Application.Services.Implementation
         public async Task SendEmailAsync(EmailRequest emailRequest)
         {
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(emailRequest.From ?? _mailSettings.SmtpUser);
+            var senderAddress = string.IsNullOrWhiteSpace(_mailSettings.EmailFrom)
+                ? _mailSettings.SmtpUser
+                : _mailSettings.EmailFrom;
+            var sender = MailboxAddress.Parse(senderAddress);
+            if (!string.IsNullOrWhiteSpace(_mailSettings.DisplayName))
+                sender.Name = _mailSettings.DisplayName;
+            email.From.Add(sender);
+            email.Sender = sender;
+            if (!string.IsNullOrWhiteSpace(emailRequest.From)
+                && !string.Equals(emailRequest.From, sender.Address, StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(emailRequest.From, _mailSettings.SmtpUser, StringComparison.OrdinalIgnoreCase))
+                email.ReplyTo.Add(MailboxAddress.Parse(emailRequest.From));
             email.To.Add(MailboxAddress.Parse(emailRequest.ToEmail));
             email.Subject = emailRequest.Subject;
             var builder = new BodyBuilder();
